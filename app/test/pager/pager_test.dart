@@ -38,14 +38,14 @@ void main() {
 
     test('getItem', () async {
       var pager = Pager<int>(provider: Provider(2));
-      var item = pager.getItem(0).value;
+      var item = pager.getItemCompleter(0).value;
       expect(item, const TypeMatcher<Future>());
       expect(await item, 0);
     });
 
     test('wait getItem', () async {
       var pager = Pager<int>(provider: Provider(2));
-      var item = pager.getItem(0);
+      var item = pager.getItemCompleter(0);
       expect(item.value, const TypeMatcher<Future>());
       expect(await item.future, 0);
       expect(item.value, 0);
@@ -53,15 +53,15 @@ void main() {
 
     test('wait 2 getItem', () async {
       var pager = Pager<int>(provider: Provider(2));
-      var item1 = pager.getItem(0);
-      var item2 = pager.getItem(1);
+      var item1 = pager.getItemCompleter(0);
+      var item2 = pager.getItemCompleter(1);
       expect(await item1.future, 0);
       expect(await item2.future, 1);
     });
 
     test('cancel getItem', () async {
       var pager = Pager<int>(provider: Provider(2));
-      var item = pager.getItem(0);
+      var item = pager.getItemCompleter(0);
       expect(item.value, const TypeMatcher<Future>());
 
       // Needed to prevent crash
@@ -75,8 +75,8 @@ void main() {
 
     test('cancel 2 getItem', () async {
       var pager = Pager<int>(provider: Provider(2));
-      var item1 = pager.getItem(0);
-      var item2 = pager.getItem(1);
+      var item1 = pager.getItemCompleter(0);
+      var item2 = pager.getItemCompleter(1);
 
       // Needed to prevent crash
       unawaited(item1.future.catchError((_) => null));
@@ -95,8 +95,8 @@ void main() {
 
     test('cancel 1/2 getItem', () async {
       var pager = Pager<int>(provider: Provider(2));
-      var item1 = pager.getItem(0);
-      var item2 = pager.getItem(1);
+      var item1 = pager.getItemCompleter(0);
+      var item2 = pager.getItemCompleter(1);
 
       // Needed to prevent crash
       unawaited(item1.future.catchError((_) => null));
