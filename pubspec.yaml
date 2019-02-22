@@ -1,0 +1,14 @@
+name: tekartik_app_common_utils_repo
+description: Repo
+version: 0.1.0
+homepage: https://www.example.com
+author: alex <alex@tekartik.com>
+
+environment:
+  sdk: '>=2.1.0-dev <3.0.0'
+
+dev_dependencies:
+  chrome_travis:
+    git:
+      url: git://github.com/tekartik/chrome_travis.dart
+      ref: dart2
