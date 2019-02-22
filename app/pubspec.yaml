@@ -1,0 +1,26 @@
+name: tekartik_app_common_utils.dart
+description: A starting point for Dart libraries or applications.
+version: 0.0.1
+homepage: https://www.example.com
+author: alex <alex@tekartik.com>
+
+environment:
+  sdk: '>=2.1.0-dev <3.0.0'
+
+dependencies:
+  tekartik_common_utils:
+    git:
+      url: git://github.com/tekartik/common_utils.dart
+      ref: dart2
+    version: '>=0.9.8+1'
+  pool:
+  quiver:
+  yaml:
+
+dev_dependencies:
+  pedantic: ^1.0.0
+  test: ^1.0.0
+
+dependency_overrides:
+  tekartik_common_utils:
+    path: ../../common_utils.dart
