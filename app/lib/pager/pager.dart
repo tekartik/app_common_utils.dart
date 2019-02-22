@@ -4,6 +4,7 @@ import 'package:meta/meta.dart';
 import 'package:pedantic/pedantic.dart';
 import 'package:pool/pool.dart';
 import 'package:quiver/collection.dart';
+import 'package:tekartik_common_utils/common_utils_import.dart';
 import 'package:tekartik_common_utils/completer/completer.dart';
 import 'package:tekartik_common_utils/model/model.dart';
 
@@ -17,10 +18,14 @@ abstract class PagerDataProvider<T> {
 }
 
 class _PagerData<T> {
+  final lock = Lock();
   List<T> items;
 
   // The current indecies wanted
   final indecies = Set<int>();
+
+  // To check before and after the lock
+  bool get needFetch => indecies.isNotEmpty && items == null;
 
   @override
   String toString() => 'Data($indecies)';
@@ -94,7 +99,7 @@ class Pager<T> {
   }
 
   /// If you don't want the item any more, you can call cancel
-  CancellableCompleter<T> getItem(int index) {
+  CancellableCompleter<T> getItemCompleter(int index) {
     var page = _getItemIndexPage(index);
     var data = _pageCache[page];
     var inPageIndex = _getItemIndexInPageIndex(index);
@@ -108,13 +113,18 @@ class Pager<T> {
       final completer = _ItemCancellableCompleter<T>(data, inPageIndex);
       unawaited(_pool.withResource(() async {
         // Don't fetch if not needed
-        if (data.indecies.isNotEmpty) {
-          data.items =
-              await _provider.getData(_getPageProviderOffset(page), _pageSize);
-          // Complete if needed too
-          if (!completer.isCompleted) {
-            completer.complete(data.items[inPageIndex]);
-          }
+        if (data.needFetch) {
+          await data.lock.synchronized(() async {
+            if (data.needFetch) {
+              data.items = await _provider.getData(
+                  _getPageProviderOffset(page), _pageSize);
+              // Complete if needed too
+
+            }
+          });
+        }
+        if (!completer.isCompleted && data.items != null) {
+          completer.complete(data.items[inPageIndex]);
         }
       }));
 
