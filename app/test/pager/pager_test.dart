@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:pedantic/pedantic.dart';
-import 'package:tekartik_app_common_utils.dart/pager/pager.dart';
+import 'package:tekartik_app_common_utils/pager/pager.dart';
 import 'package:tekartik_common_utils/completer/completer.dart';
 
 import 'package:test/test.dart';
@@ -106,7 +106,6 @@ void main() {
         fail('should fail');
       } on CancelException catch (_) {}
       expect(await item2.value, 1);
-
     });
   });
 }

@@ -27,7 +27,7 @@ class _PagerData<T> {
 }
 
 class _ItemCancellableCompleter<T> with CancellableCompleterMixin<T> {
-  final _PagerData data;
+  final _PagerData<T> data;
   final int index;
   _ItemCancellableCompleter(this.data, this.index) {
     completer = Completer<T>.sync();
@@ -39,7 +39,6 @@ class _ItemCancellableCompleter<T> with CancellableCompleterMixin<T> {
     // if empty we won't need to fetch again
     data.indecies.remove(index);
     super.cancel(reason: reason);
-
   }
 
   @override
@@ -48,7 +47,6 @@ class _ItemCancellableCompleter<T> with CancellableCompleterMixin<T> {
     model['index'] = index;
     return model;
   }
-
 }
 
 /// A pager helps on getting/caching items by page
@@ -90,6 +88,11 @@ class Pager<T> {
     return page * _pageSize;
   }
 
+  /// Use the provider
+  Future<int> getItemCount() {
+    return _provider.getItemCount();
+  }
+
   /// If you don't want the item any more, you can call cancel
   CancellableCompleter<T> getItem(int index) {
     var page = _getItemIndexPage(index);
@@ -104,16 +107,16 @@ class Pager<T> {
       // can be cancelled leter
       final completer = _ItemCancellableCompleter<T>(data, inPageIndex);
       unawaited(_pool.withResource(() async {
-          // Don't fetch if not needed
-          if (data.indecies.isNotEmpty) {
-            data.items = await _provider.getData(
-                _getPageProviderOffset(page), _pageSize);
-            // Complete if needed too
-            if (!completer.isCompleted) {
-              completer.complete(data.items[inPageIndex]);
-            }
+        // Don't fetch if not needed
+        if (data.indecies.isNotEmpty) {
+          data.items =
+              await _provider.getData(_getPageProviderOffset(page), _pageSize);
+          // Complete if needed too
+          if (!completer.isCompleted) {
+            completer.complete(data.items[inPageIndex]);
           }
-        }));
+        }
+      }));
 
       return completer;
     } else {
@@ -128,5 +131,4 @@ class Pager<T> {
     model['pageSize'] = _pageSize;
     return model.toString();
   }
-
 }

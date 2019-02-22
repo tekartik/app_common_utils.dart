@@ -1,6 +1,6 @@
-name: tekartik_app_common_utils.dart
-description: A starting point for Dart libraries or applications.
-version: 0.0.1
+name: tekartik_app_common_utils
+description: App utilities (Pager)
+version: 0.1.1
 homepage: https://www.example.com
 author: alex <alex@tekartik.com>
 
@@ -12,15 +12,18 @@ dependencies:
     git:
       url: git://github.com/tekartik/common_utils.dart
       ref: dart2
-    version: '>=0.9.8+1'
+    version: '>=0.9.8+2'
   pool:
   quiver:
   yaml:
 
 dev_dependencies:
-  pedantic: ^1.0.0
-  test: ^1.0.0
+  pedantic: '>=1.4.0'
+  test: '>=1.5.0'
+  build_runner: '>=1.2.7'
+  build_test: any
+  build_web_compilers: any
 
-dependency_overrides:
-  tekartik_common_utils:
-    path: ../../common_utils.dart
+#dependency_overrides:
+#  tekartik_common_utils:
+#    path: ../../common_utils.dart
