@@ -16,6 +16,8 @@ dependencies:
   pool:
   quiver:
   yaml:
+  pub_semver:
+  meta:
 
 dev_dependencies:
   pedantic: '>=1.4.0'
