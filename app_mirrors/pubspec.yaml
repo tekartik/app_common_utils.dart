@@ -19,6 +19,4 @@ dev_dependencies:
   test: ^1.0.0
   json_annotation:
   process_run:
-  build_runner: '>=1.2.7'
-  build_test: any
-  build_web_compilers: any
+
