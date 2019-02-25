@@ -1,6 +1,6 @@
-name: tekartik_app_common_utils
-description: App utilities (Pager)
-version: 0.1.1
+name: tekartik_app_emit
+description: Emit async
+version: 0.1.2
 homepage: https://www.example.com
 author: alex <alex@tekartik.com>
 
@@ -13,12 +13,7 @@ dependencies:
       url: git://github.com/tekartik/common_utils.dart
       ref: dart2
     version: '>=0.9.8+2'
-  tekartik_app_pager:
-    git:
-      url: git://github.com/tekartik/app_common_utils.dart
-      ref: dart2
-      path: app_pager
-    version: '>=0.1.2'
+  meta:
 
 dev_dependencies:
   pedantic: '>=1.4.0'
@@ -28,9 +23,6 @@ dev_dependencies:
   build_web_compilers: any
   process_run:
 
-dependency_overrides:
-  tekartik_app_pager:
-    path: ../app_pager
-# tmp
+#dependency_overrides:
 #  tekartik_common_utils:
 #    path: ../../common_utils.dart

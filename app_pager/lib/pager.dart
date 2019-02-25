@@ -4,8 +4,9 @@ import 'package:meta/meta.dart';
 import 'package:pedantic/pedantic.dart';
 import 'package:pool/pool.dart';
 import 'package:quiver/collection.dart';
+import 'package:tekartik_app_emit/emit.dart';
+import 'package:tekartik_app_pager/src/data.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
-import 'package:tekartik_common_utils/completer/completer.dart';
 import 'package:tekartik_common_utils/model/model.dart';
 
 /// Provider to implement.
@@ -15,43 +16,6 @@ abstract class PagerDataProvider<T> {
 
   /// Get a page of result.
   Future<List<T>> getData(int offset, int limit);
-}
-
-class _PagerData<T> {
-  final lock = Lock();
-  List<T> items;
-
-  // The current indecies wanted
-  final indecies = Set<int>();
-
-  // To check before and after the lock
-  bool get needFetch => indecies.isNotEmpty && items == null;
-
-  @override
-  String toString() => 'Data($indecies)';
-}
-
-class _ItemCancellableCompleter<T> with CancellableCompleterMixin<T> {
-  final _PagerData<T> data;
-  final int index;
-  _ItemCancellableCompleter(this.data, this.index) {
-    completer = Completer<T>.sync();
-  }
-
-  @override
-  void cancel({String reason}) {
-    // Remove the pending indecies
-    // if empty we won't need to fetch again
-    data.indecies.remove(index);
-    super.cancel(reason: reason);
-  }
-
-  @override
-  Model toDebugModel() {
-    var model = super.toDebugModel();
-    model['index'] = index;
-    return model;
-  }
 }
 
 /// A pager helps on getting/caching items by page
@@ -65,7 +29,7 @@ class Pager<T> {
   final PagerDataProvider<T> _provider;
 
   /// key is the page
-  final LruMap<int, _PagerData<T>> _pageCache;
+  final LruMap<int, PagerData<T>> _pageCache;
 
   Pager(
       {@required PagerDataProvider<T> provider,
@@ -74,7 +38,7 @@ class Pager<T> {
       int poolSize})
       : _provider = provider,
         _pageSize = pageSize ?? defaultPageSize,
-        _pageCache = LruMap<int, _PagerData<T>>(
+        _pageCache = LruMap<int, PagerData<T>>(
             maximumSize: cachePageCount ?? defaultCachePageCount),
         _pool = Pool(poolSize ?? defaultPoolSize);
 
@@ -99,23 +63,27 @@ class Pager<T> {
   }
 
   /// If you don't want the item any more, you can call cancel
-  CancellableCompleter<T> getItemCompleter(int index) {
+  EmitFutureOr<T> getItemFutureOr(int index) {
     var page = _getItemIndexPage(index);
     var data = _pageCache[page];
     var inPageIndex = _getItemIndexInPageIndex(index);
     if (data?.items == null) {
       if (data == null) {
-        data = _PagerData<T>();
+        data = PagerData<T>();
         _pageCache[page] = data;
       }
       data.indecies.add(inPageIndex);
-      // can be cancelled leter
-      final completer = _ItemCancellableCompleter<T>(data, inPageIndex);
+      // can be cancelled later
+      final controller = EmitFutureOrController<T>();
+
+      bool needFetch() {
+        return !(controller.isCompleted) && (data.needFetch);
+      }
       unawaited(_pool.withResource(() async {
         // Don't fetch if not needed
-        if (data.needFetch) {
+        if (needFetch()) {
           await data.lock.synchronized(() async {
-            if (data.needFetch) {
+            if (needFetch()) {
               data.items = await _provider.getData(
                   _getPageProviderOffset(page), _pageSize);
               // Complete if needed too
@@ -123,15 +91,14 @@ class Pager<T> {
             }
           });
         }
-        if (!completer.isCompleted && data.items != null) {
-          completer.complete(data.items[inPageIndex]);
+        if (!controller.isCompleted && data.items != null) {
+          controller.complete(data.items[inPageIndex]);
         }
       }));
 
-      return completer;
+      return controller.futureOr;
     } else {
-      return CancellableCompleter<T>(
-          sync: true, value: data.items[inPageIndex]);
+      return EmitFutureOr<T>.withValue(data.items[inPageIndex]);
     }
   }
 

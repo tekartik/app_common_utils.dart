@@ -1,6 +1,6 @@
-name: tekartik_app_common_utils
-description: App utilities (Pager)
-version: 0.1.1
+name: tekartik_app_pager
+description: Pager helper, assuming a source that can accessed by offset/limit
+version: 0.1.2
 homepage: https://www.example.com
 author: alex <alex@tekartik.com>
 
@@ -13,12 +13,15 @@ dependencies:
       url: git://github.com/tekartik/common_utils.dart
       ref: dart2
     version: '>=0.9.8+2'
-  tekartik_app_pager:
+  tekartik_app_emit:
     git:
       url: git://github.com/tekartik/app_common_utils.dart
       ref: dart2
-      path: app_pager
+      path: app_emit
     version: '>=0.1.2'
+  pool:
+  quiver:
+  dart_style:
 
 dev_dependencies:
   pedantic: '>=1.4.0'
@@ -29,8 +32,7 @@ dev_dependencies:
   process_run:
 
 dependency_overrides:
-  tekartik_app_pager:
-    path: ../app_pager
-# tmp
+  tekartik_app_emit:
+    path: ../app_emit
 #  tekartik_common_utils:
 #    path: ../../common_utils.dart
