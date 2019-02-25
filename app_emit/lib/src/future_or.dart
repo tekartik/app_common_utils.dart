@@ -1,10 +1,8 @@
 import 'dart:async';
 
-import 'package:meta/meta.dart';
 import 'package:tekartik_app_emit/src/exception.dart';
 import 'package:tekartik_common_utils/model/model.dart';
 
-@sealed
 class EmitFutureOrSubscription<T> {
   final EmitFutureOr<T> _emitFutureOr;
 
@@ -20,7 +18,6 @@ class EmitFutureOrSubscription<T> {
 }
 
 /// Emit to listen to
-@sealed
 class EmitFutureOr<T> {
   final EmitFutureOrController<T> _controller;
 
@@ -72,7 +69,6 @@ class EmitFutureOr<T> {
 /// immediately.
 ///
 /// It supports a single listener
-@sealed
 class EmitFutureOrController<T> {
   final Completer<T> _completer = Completer<T>.sync();
 

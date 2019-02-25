@@ -1,6 +1,6 @@
 name: tekartik_app_emit
 description: Emit async
-version: 0.1.1
+version: 0.1.2
 homepage: https://www.example.com
 author: alex <alex@tekartik.com>
 
@@ -13,6 +13,7 @@ dependencies:
       url: git://github.com/tekartik/common_utils.dart
       ref: dart2
     version: '>=0.9.8+2'
+  meta:
 
 dev_dependencies:
   pedantic: '>=1.4.0'

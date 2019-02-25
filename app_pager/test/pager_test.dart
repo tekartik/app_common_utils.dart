@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:pedantic/pedantic.dart';
 import 'package:tekartik_app_emit/emit.dart';
 import 'package:tekartik_app_pager/pager.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
@@ -9,13 +8,22 @@ import 'package:test/test.dart';
 
 bool debug = false;
 
+class Action {
+  final String text;
+
+  Action(this.text);
+}
+
 class Provider implements PagerDataProvider<int> {
   final int count;
+
+  final List<Action> actions = [];
 
   Provider([this.count = 1]);
 
   @override
   Future<List<int>> getData(int offset, int limit) async {
+    actions.add(Action('getData($offset, $limit)'));
     if (debug) {
       print('getting offset $offset limit $limit');
     }
@@ -33,6 +41,7 @@ class Provider implements PagerDataProvider<int> {
     if (debug) {
       print('getting count $count');
     }
+    actions.add(Action('getItemCount()'));
     return count;
   }
 }
@@ -86,17 +95,14 @@ void main() {
     });
 
     test('cancel 2 getItem', () async {
-      var pager = Pager<int>(provider: Provider(2));
+      var provider = Provider(2);
+      var pager = Pager<int>(provider: provider);
       var item1 = pager.getItemFutureOr(0);
       var item2 = pager.getItemFutureOr(1);
 
-      // Needed to prevent crash
-      unawaited(item1.toFuture().catchError((_) => null));
-      unawaited(item2.toFuture().catchError((_) => null));
-
       // onError needed to prevent unit test failure
       var subscription1 = item1.listen(null, onError: (_) => null);
-      var subscription2 = item1.listen(null, onError: (_) => null);
+      var subscription2 = item2.listen(null, onError: (_) => null);
       subscription1.cancel();
       subscription2.cancel();
       var future1 = () async {
@@ -112,20 +118,24 @@ void main() {
         } on EmitCancelException catch (_) {}
       }();
       await Future.wait([future1, future2]);
+      expect(provider.actions.map((action) => action.text), []);
     });
 
     test('cancel 1/2 getItem', () async {
-      var pager = Pager<int>(provider: Provider(2));
+      var provider = Provider(2);
+      var pager = Pager<int>(provider: provider);
       var item1 = pager.getItemFutureOr(0);
       var item2 = pager.getItemFutureOr(1);
 
 // onError needed to prevent unit test failure
       var subscription1 = item1.listen(null, onError: (_) => null);
       subscription1.cancel();
+      expect(provider.actions.map((action) => action.text), []);
       try {
         expect(await item1.toFuture(), isNull);
         fail('should fail');
       } on EmitCancelException catch (_) {}
+      expect(provider.actions.map((action) => action.text), ['getData(0, 50)']);
       expect(await item2.toFuture(), 1);
     });
   });

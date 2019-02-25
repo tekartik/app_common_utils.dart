@@ -13,7 +13,7 @@ dependencies:
       url: git://github.com/tekartik/app_common_utils.dart
       ref: dart2
       path: app_mirrors
-    version: '>=0.9.8+2'
+    version: '>=0.1.0'
   meta:
   dart_style:
   json_annotation:

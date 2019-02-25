@@ -73,13 +73,17 @@ class Pager<T> {
         _pageCache[page] = data;
       }
       data.indecies.add(inPageIndex);
-      // can be cancelled leter
+      // can be cancelled later
       final controller = EmitFutureOrController<T>();
+
+      bool needFetch() {
+        return !(controller.isCompleted) && (data.needFetch);
+      }
       unawaited(_pool.withResource(() async {
         // Don't fetch if not needed
-        if (data.needFetch) {
+        if (needFetch()) {
           await data.lock.synchronized(() async {
-            if (data.needFetch) {
+            if (needFetch()) {
               data.items = await _provider.getData(
                   _getPageProviderOffset(page), _pageSize);
               // Complete if needed too

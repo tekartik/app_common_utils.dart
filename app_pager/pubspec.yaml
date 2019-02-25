@@ -1,6 +1,6 @@
 name: tekartik_app_pager
 description: Pager helper, assuming a source that can accessed by offset/limit
-version: 0.1.1
+version: 0.1.2
 homepage: https://www.example.com
 author: alex <alex@tekartik.com>
 
@@ -18,7 +18,7 @@ dependencies:
       url: git://github.com/tekartik/app_common_utils.dart
       ref: dart2
       path: app_emit
-    version: '>=0.1.0'
+    version: '>=0.1.2'
   pool:
   quiver:
   dart_style:
