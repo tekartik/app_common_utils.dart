@@ -5,7 +5,6 @@ Future main() async {
 
   await shell.run('''
 dartanalyzer --fatal-warnings --fatal-infos lib test
-pub run build_runner test -- -p vm,chrome
-pub run test -p vm,chrome
+pub run test -p vm
 ''');
 }

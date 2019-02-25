@@ -1,22 +1,12 @@
-A library for Dart developers.
+# Setup
 
-Created from templates made available by Stagehand under a BSD-style
-[license](https://github.com/dart-lang/stagehand/blob/master/LICENSE).
+In `pubspec.yaml`
 
-## Usage
-
-A simple usage example:
-
-```dart
-import 'package:app/app.dart';
-
-main() {
-  var awesome = new Awesome();
-}
+```yaml
+tekartik_app_common_utils:
+  git:
+    url: git://github.com/tekartik/app_common_utils.dart
+    ref: dart2
+    path: app
+  version: '>=0.1.0'
 ```
-
-## Features and bugs
-
-Please file feature requests and bugs at the [issue tracker][tracker].
-
-[tracker]: http://example.com/issues/replaceme

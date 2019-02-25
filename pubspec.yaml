@@ -13,3 +13,8 @@ dev_dependencies:
       url: git://github.com/tekartik/chrome_travis.dart
       ref: dart2
   process_run: '>=0.10.0'
+
+dependency_overrides:
+# tmp
+#  process_run:
+#    path: ../process_run.dart
