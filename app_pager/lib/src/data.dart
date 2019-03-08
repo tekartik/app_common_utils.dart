@@ -5,6 +5,7 @@ class PagerData<T> {
   List<T> items;
 
   // The current indecies wanted
+  // ignore: prefer_collection_literals
   final indecies = Set<int>();
 
   // To check before and after the lock
