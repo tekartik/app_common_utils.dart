@@ -4,6 +4,10 @@ class PagerData<T> {
   final lock = Lock();
   List<T> items;
 
+  /// Safe way to get data
+  T getItem(int index) =>
+      (items != null && index < items.length) ? items[index] : null;
+
   // The current indecies wanted
   // ignore: prefer_collection_literals
   final indecies = Set<int>();
