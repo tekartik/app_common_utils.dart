@@ -8,7 +8,7 @@ In your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  tekartik_app_emit:
+  tekartik_app_crypto:
     git:
       url: git://github.com/tekartik/app_common_utils.dart
       ref: dart2
