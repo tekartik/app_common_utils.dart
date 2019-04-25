@@ -1,6 +1,6 @@
 name: tekartik_app_crypto
 description: Crypto utilities
-version: 0.1.1+1
+version: 0.1.2
 homepage: https://www.example.com
 author: alex <alex@tekartik.com>
 
@@ -14,7 +14,7 @@ dependencies:
       ref: dart2
     version: '>=0.9.9+1'
   meta: '>=1.1.6'
-  encrypt: '^2.0.0'
+  encrypt: '^3.0.0'
 
 dev_dependencies:
   pedantic: '>=1.4.0'

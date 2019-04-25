@@ -8,8 +8,8 @@ import 'package:encrypt/encrypt.dart';
 String encrypt(String decoded, String password) {
   final key = Key.fromUtf8(password);
   final iv = IV.fromLength(16);
-  final encrypter = Encrypter(AES(key, iv));
-  return encrypter.encrypt(decoded).base64;
+  final encrypter = Encrypter(AES(key));
+  return encrypter.encrypt(decoded, iv: iv).base64;
 }
 
 /// decrypt the [encoded] text using [password].
@@ -19,6 +19,6 @@ String encrypt(String decoded, String password) {
 String decrypt(String encoded, String password) {
   final key = Key.fromUtf8(password);
   final iv = IV.fromLength(16);
-  final encrypter = Encrypter(AES(key, iv));
-  return encrypter.decrypt(Encrypted.fromBase64(encoded));
+  final encrypter = Encrypter(AES(key));
+  return encrypter.decrypt(Encrypted.fromBase64(encoded), iv: iv);
 }
