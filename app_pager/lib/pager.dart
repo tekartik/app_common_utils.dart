@@ -79,6 +79,7 @@ class Pager<T> {
       bool needFetch() {
         return !(controller.isCompleted) && (data.needFetch);
       }
+
       unawaited(_pool.withResource(() async {
         // Don't fetch if not needed
         if (needFetch()) {
@@ -92,13 +93,13 @@ class Pager<T> {
           });
         }
         if (!controller.isCompleted && data.items != null) {
-          controller.complete(data.items[inPageIndex]);
+          controller.complete(data.getItem(inPageIndex));
         }
       }));
 
       return controller.futureOr;
     } else {
-      return EmitFutureOr<T>.withValue(data.items[inPageIndex]);
+      return EmitFutureOr<T>.withValue(data.getItem(inPageIndex));
     }
   }
 

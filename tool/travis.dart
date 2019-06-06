@@ -8,7 +8,8 @@ Future main() async {
     'app_emit',
     'app_pager',
     'app_serialize',
-    'app_mirrors'
+    'app_mirrors',
+    'app_crypto'
   ]) {
     shell = shell.pushd(dir);
     await shell.run('''
