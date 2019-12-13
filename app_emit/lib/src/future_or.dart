@@ -104,7 +104,7 @@ class EmitFutureOrController<T> {
 
   /// Completes with the supplied values.
   void complete([T value]) {
-    this._value = value;
+    _value = value;
     _completer.complete(value);
   }
 

@@ -49,6 +49,11 @@ dev_dependencies:
       url: git://github.com/tekartik/app_common_utils.dart
       ref: dart2
       path: app_csv
+  tekartik_app_web_socket:
+    git:
+      url: git://github.com/tekartik/app_common_utils.dart
+      ref: dart2
+      path: app_web_socket
 
 dependency_overrides:
 #  tekartik_app_csv:

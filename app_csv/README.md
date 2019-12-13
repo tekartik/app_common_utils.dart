@@ -7,7 +7,7 @@ Convert a dart map to csv
 In `pubspec.yaml`
 
 ```yaml
-tekartik_app_csv_utils:
+tekartik_app_csv:
   git:
     url: git://github.com/tekartik/app_common_utils.dart
     ref: dart2

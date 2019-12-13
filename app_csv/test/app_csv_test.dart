@@ -10,7 +10,7 @@ void expectCsv(String value, String expected) {
 }
 
 void main() {
-  group("src_csv_utils", () {
+  group('src_csv_utils', () {
     test('mapListToCsv', () {
       // null
       expect(mapListToCsv(null), isNull);
@@ -51,7 +51,7 @@ null,2
           ]),
           '''
 int,double,String,bool,Uint8List
-1,2.1,text,true,"[1, 2, 3]"
+1,2.1,text,true,'[1, 2, 3]'
 ''');
     });
   });

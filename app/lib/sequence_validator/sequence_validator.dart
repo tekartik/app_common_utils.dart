@@ -187,7 +187,7 @@ class SequenceValidator {
       _stopwatch = Stopwatch()..start();
     } else {
       var ellapsedMs = timestamp ?? _stopwatch.elapsedMilliseconds;
-      int diff = ellapsedMs - _lastEllapsedMs;
+      var diff = ellapsedMs - _lastEllapsedMs;
       _lastEllapsedMs = ellapsedMs;
 
       // this is the only way to cancel: wait for 1500ms

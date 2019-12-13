@@ -2,7 +2,7 @@ import 'dart:typed_data';
 
 import 'package:tekartik_app_csv/app_csv.dart';
 
-main() {
+void main() {
   var list = [
     {
       'int': 1,

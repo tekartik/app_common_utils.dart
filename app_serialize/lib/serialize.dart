@@ -17,7 +17,7 @@ Future genSerializer({@required String src, @required Type type}) async {
   final sb = StringBuffer();
   final sbTo = StringBuffer();
 
-  final String entityName =
+  final entityName =
       '${typeText.substring(0, 1).toLowerCase()}${typeText.substring(1)}';
 
   sb.writeln('''
