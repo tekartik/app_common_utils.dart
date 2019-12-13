@@ -27,7 +27,7 @@ class Provider implements PagerDataProvider<int> {
     if (debug) {
       print('getting offset $offset limit $limit');
     }
-    int remainings = count - offset;
+    var remainings = count - offset;
     if (remainings < 0) {
       limit = 0;
     } else {

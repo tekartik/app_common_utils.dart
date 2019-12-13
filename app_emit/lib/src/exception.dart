@@ -6,9 +6,9 @@ class EmitCancelException implements Exception {
 
   @override
   String toString() {
-    String result = "Emit cancelled";
+    var result = 'Emit cancelled';
     if (reason != null) {
-      result = "$result due to: $reason";
+      result = '$result due to: $reason';
     }
     return result;
   }

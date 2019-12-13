@@ -27,8 +27,8 @@ void main() {
         controller.complete(1);
 
         int got;
-        EmitFutureOr<int> futureOr = controller.futureOr;
-        EmitFutureOrSubscription<int> subscription = futureOr.listen((data) {
+        var futureOr = controller.futureOr;
+        var subscription = futureOr.listen((data) {
           got = data;
         });
         controller.close();
@@ -39,7 +39,7 @@ void main() {
 
       test('null_listener', () {
         final emitFutureOr = EmitFutureOr<int>.withValue(1);
-        EmitFutureOrSubscription<int> subscription = emitFutureOr.listen(null);
+        var subscription = emitFutureOr.listen(null);
         expect(subscription.asFutureOr(), 1);
       });
     });
@@ -80,7 +80,7 @@ void main() {
 
         expect(completer.isCancelled, isFalse);
         expect(completer.isCompleted, isFalse);
-        bool completed = false;
+        var completed = false;
         unawaited(completer.futureOr.toFuture().then((_) {
           completed = true;
         }));
@@ -105,7 +105,7 @@ void main() {
 
         expect(controller.isCancelled, isFalse);
         expect(controller.isCompleted, isFalse);
-        bool completed = false;
+        var completed = false;
         unawaited(controller.futureOr.toFuture().catchError((e) {
           expect(e, const TypeMatcher<TestException>());
           completed = true;
@@ -133,7 +133,7 @@ void main() {
         var controller = EmitFutureOrController();
         expect(controller.isCancelled, isFalse);
         expect(controller.isCompleted, isFalse);
-        bool cancelled = false;
+        var cancelled = false;
         unawaited(controller.futureOr.toFuture().catchError((e) {
           expect(e, const TypeMatcher<EmitCancelException>());
           cancelled = true;
