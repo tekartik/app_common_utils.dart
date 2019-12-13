@@ -51,7 +51,7 @@ null,2
           ]),
           '''
 int,double,String,bool,Uint8List
-1,2.1,text,true,'[1, 2, 3]'
+1,2.1,text,true,"[1, 2, 3]"
 ''');
     });
   });
