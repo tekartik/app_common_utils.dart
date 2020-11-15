@@ -3,6 +3,7 @@ description: Emit async
 version: 0.1.3
 homepage: https://www.example.com
 author: alex <alex@tekartik.com>
+publish_to: none
 
 environment:
   sdk: '>=2.10.0-0 <3.0.0'

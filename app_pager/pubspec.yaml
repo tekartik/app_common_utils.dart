@@ -3,6 +3,7 @@ description: Pager helper, assuming a source that can accessed by offset/limit
 version: 0.1.4
 homepage: https://www.example.com
 author: alex <alex@tekartik.com>
+publish_to: none
 
 environment:
   sdk: '>=2.10.0-0 <3.0.0'
@@ -24,6 +25,7 @@ dependencies:
   dart_style:
 
 dev_dependencies:
+  dev_test:
   pedantic: '>=1.4.0'
   test: '>=1.5.0'
   build_runner: '>=1.2.7'

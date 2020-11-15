@@ -3,6 +3,7 @@ description: Simple code generator utility from dart class.
 version: 0.1.0
 homepage: https://github.com/tekartik/app_common_utils.dart/app_serialize
 author: alex <alex@ŧekartik.com>
+publish_to: none
 
 environment:
   sdk: '>=2.10.0-0 <3.0.0'
@@ -19,6 +20,7 @@ dependencies:
   json_annotation:
 
 dev_dependencies:
+  dev_test:
   pedantic: ^1.0.0
   test: ^1.0.0
   process_run:
