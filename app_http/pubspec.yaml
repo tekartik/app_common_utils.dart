@@ -1,0 +1,27 @@
+name: tekartik_app_http
+description: Http for flutter app
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: '>=2.10.0-0 <3.0.0'
+
+dependencies:
+  tekartik_http_browser:
+    git:
+      url: git://github.com/tekartik/http.dart
+      path: http_browser
+      ref: dart2
+    version: '>=0.0.1'
+  tekartik_http_io:
+    git:
+      url: git://github.com/tekartik/http.dart
+      path: http_io
+      ref: dart2
+    version: '>=0.0.1'
+
+dev_dependencies:
+  dev_test:
+  process_run:
+  test:
+  build_web_compilers: '>=2.4.0'

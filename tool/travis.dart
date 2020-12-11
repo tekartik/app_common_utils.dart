@@ -12,7 +12,8 @@ Future main() async {
     'app_crypto',
     'app_csv',
     'app_web_socket',
-    'app_bloc'
+    'app_bloc',
+    'app_http'
   ]) {
     shell = shell.pushd(dir);
     await shell.run('''
