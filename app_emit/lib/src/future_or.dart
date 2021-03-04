@@ -10,7 +10,7 @@ class EmitFutureOrSubscription<T> {
 
   EmitFutureOrSubscription._(this._emitFutureOr);
 
-  void cancel({String reason}) {
+  void cancel({String? reason}) {
     _controller.cancel(reason: reason);
   }
 
@@ -29,14 +29,14 @@ class EmitFutureOr<T> {
 
   EmitFutureOr._(this._controller);
 
-  EmitFutureOrSubscription<T> listen(dynamic Function(T value) onValue,
-      {Function onError}) {
+  EmitFutureOrSubscription<T> listen(dynamic Function(T value)? onValue,
+      {Function? onError}) {
     final subscription = EmitFutureOrSubscription._(this);
 
     // if completed send right await
     if (_controller._hasValue) {
       if (onValue != null) {
-        onValue(_controller._value);
+        onValue(_controller._value!);
       }
     } else {
       var future = _controller._completer.future.then((value) {
@@ -74,7 +74,7 @@ class EmitFutureOrController<T> {
 
   /// Only completed immediately if [value] is not null or [nullValue] is true,
   /// [value] taking precedence over [nullValue]
-  EmitFutureOrController({T value, bool nullValue}) {
+  EmitFutureOrController({T? value, bool? nullValue}) {
     if (value != null) {
       complete(value);
     } else if (nullValue == true) {
@@ -91,25 +91,25 @@ class EmitFutureOrController<T> {
   bool get _hasValue => _completer.isCompleted && _error == null;
 
   dynamic _error;
-  T _value;
+  T? _value;
   bool _isCancelled = false;
 
   FutureOr<T> get _futureOr {
     if (_hasValue) {
-      return _value;
+      return _value!;
     } else {
       return _completer.future;
     }
   }
 
   /// Completes with the supplied values.
-  void complete([T value]) {
+  void complete([T? value]) {
     _value = value;
     _completer.complete(value);
   }
 
   /// Safe to cancel any time.
-  void cancel({String reason}) {
+  void cancel({String? reason}) {
     if (!_isCancelled) {
       _isCancelled = true;
       if (!isCompleted) {
@@ -125,8 +125,8 @@ class EmitFutureOrController<T> {
   bool get isCancelled => _isCancelled;
 
   // Complete [with an error.
-  void completeError(Object error, [StackTrace stackTrace]) {
-    _error = error ??= Exception('error');
+  void completeError(Object error, [StackTrace? stackTrace]) {
+    _error = error;
     _completer.completeError(error, stackTrace);
   }
 
