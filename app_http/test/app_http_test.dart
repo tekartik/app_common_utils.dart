@@ -7,7 +7,8 @@ void main() {
   group('app_http', () {
     test('simple', () async {
       // If this fails, it is because the file has been removed from firebase storage
-      var response = await httpClientFactory.newClient().get(simleJsonUrl);
+      var response =
+          await httpClientFactory.newClient().get(Uri.parse(simleJsonUrl));
       print(response.body);
       expect(response.statusCode, httpStatusCodeOk);
     });
