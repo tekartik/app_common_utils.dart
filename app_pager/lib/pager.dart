@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:meta/meta.dart';
 import 'package:pedantic/pedantic.dart';
 import 'package:pool/pool.dart';
 import 'package:quiver/collection.dart';
