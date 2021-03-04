@@ -12,8 +12,6 @@ void expectCsv(String value, String expected) {
 void main() {
   group('src_csv_utils', () {
     test('mapListToCsv', () {
-      // null
-      expect(mapListToCsv(null), isNull);
       // empty
       expect(mapListToCsv(<Map<String, dynamic>>[]), '');
 

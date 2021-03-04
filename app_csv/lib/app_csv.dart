@@ -2,10 +2,7 @@ import 'package:csv/csv.dart';
 
 /// Convert a map list to csv
 String mapListToCsv(List<Map<String, dynamic>> mapList,
-    {ListToCsvConverter converter}) {
-  if (mapList == null) {
-    return null;
-  }
+    {ListToCsvConverter? converter}) {
   converter ??= const ListToCsvConverter();
   var data = <List>[];
   var keys = <String>[];
