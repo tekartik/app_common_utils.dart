@@ -38,7 +38,7 @@ abstract class InstanceMirror implements ObjectMirror {
   /// The class of the reflectee may differ from
   /// the object returned by invoking [runtimeType] on
   /// the reflectee.
-  ClassMirror get type;
+  ClassMirror? get type;
 
   /// If the [InstanceMirror] reflects an instance it is meaningful to
   /// have a local reference to, we provide access to the actual
@@ -87,7 +87,7 @@ abstract class ClassMirror implements TypeMirror {
   /// A mirror on the superclass on the reflectee.
   ///
   /// If this type is [:Object:], the superclass will be null.
-  ClassMirror get superclass;
+  ClassMirror? get superclass;
 
   ///
   /// Returns an immutable map of the declarations actually given in the class

@@ -1,18 +1,18 @@
 name: tekartik_app_mirrors
 description: Mirrors tool for code generation on the VM
-version: 0.1.1
+version: 0.2.0
 homepage: https://github.com/tekartik/app_common_utils.dart/app_mirrors
 author: alex <alex@ŧekartik.com>
 publish_to: none
 
 environment:
-  sdk: '>=2.10.0-0 <3.0.0'
+  sdk: '>=2.12.0-0 <3.0.0'
 
 dependencies:
   tekartik_common_utils:
     git:
       url: git://github.com/tekartik/common_utils.dart
-      ref: dart2
+      ref: null_safety
     version: '>=0.10.7'
 
 dev_dependencies:

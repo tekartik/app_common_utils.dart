@@ -4,17 +4,17 @@ import 'package:tekartik_app_mirrors/mirrors.dart';
 import 'package:test/test.dart';
 
 class MyClass {
-  int value;
+  int? value;
   @JsonKey(name: 'overriden_text')
-  String text;
+  String? text;
 }
 
 class MyBaseClass {
-  int base;
+  int? base;
 }
 
 class MySubClass extends MyBaseClass {
-  int value;
+  int? value;
 }
 
 void main() {
@@ -25,7 +25,7 @@ void main() {
     var typeText = classMirror.reflectedType.toString();
 
     expect(classMirror.reflectedType, MyClass);
-    expect(classMirror.superclass.reflectedType, Object);
+    expect(classMirror.superclass!.reflectedType, Object);
 
     print('Type: $typeText');
 
@@ -55,7 +55,7 @@ void main() {
     var typeText = classMirror.reflectedType.toString();
 
     expect(classMirror.reflectedType, MySubClass);
-    expect(classMirror.superclass.reflectedType, MyBaseClass);
+    expect(classMirror.superclass!.reflectedType, MyBaseClass);
     print('Type: $typeText');
 
     /*
