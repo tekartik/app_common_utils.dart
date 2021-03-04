@@ -24,13 +24,13 @@ Future genSerializer({@required String src, @required Type type}) async {
   import '${basename(src)}';
   
   $typeText ${entityName}FromMap(Map<String, dynamic> map, {$typeText $entityName}) {
-    if (map == null) { return ${entityName}; }
-    ${entityName} ??= ${typeText}();
+    if (map == null) { return $entityName; }
+    $entityName ??= $typeText();
   ''');
 
   sbTo.writeln('''
-  Map<String, dynamic> ${entityName}ToMap(${typeText} ${entityName}, {Map<String, dynamic> map}) {
-    if (${entityName} == null) { return map; }
+  Map<String, dynamic> ${entityName}ToMap($typeText $entityName, {Map<String, dynamic> map}) {
+    if ($entityName == null) { return map; }
     map ??= <String, dynamic>{};
   ''');
   declarations.forEach((symbol, declaration) {
@@ -52,14 +52,14 @@ Future genSerializer({@required String src, @required Type type}) async {
       includeIfNull ??= true;
 
       sb.write('''
-    ${entityName}.${variableSimpleName} = map['$keyName'] as ${variableTypeText};
+    $entityName.$variableSimpleName = map['$keyName'] as $variableTypeText;
   ''');
 
       if (!includeIfNull) {
-        sbTo.writeln('if (${entityName}.${variableSimpleName} != null) {');
+        sbTo.writeln('if ($entityName.$variableSimpleName != null) {');
       }
       sbTo.write('''
-    map['$keyName'] = ${entityName}.$variableSimpleName;
+    map['$keyName'] = $entityName.$variableSimpleName;
   ''');
       if (!includeIfNull) {
         sbTo.writeln('}');
@@ -68,7 +68,7 @@ Future genSerializer({@required String src, @required Type type}) async {
   });
   sb.writeln('''
   
-    return ${entityName};
+    return $entityName;
   }
   ''');
 

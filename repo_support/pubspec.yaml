@@ -1,0 +1,26 @@
+name: flutter_app_example_repo_support
+publish_to: none
+deploy_to: none
+
+environment:
+  sdk: '>=2.10.0-0 <4.0.0'
+
+dependencies:
+  tekartik_build_utils:
+    git:
+      url: git://github.com/tekartik/build_utils.dart
+      ref: dart2
+    version: '>=0.7.8'
+  tekartik_travis_ci_flutter:
+    git:
+      url: git://github.com/tekartik/travis_ci_flutter.dart
+      ref: dart2
+    version: '>=0.1.0'
+
+dev_dependencies:
+  test: '>=1.0.0'
+  dev_test: '>=0.13.4-dev.1'
+
+dependency_overrides:
+#  tekartik_build_utils:
+#    path: ../../../tekartik/build_utils.dart
