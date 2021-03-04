@@ -1,4 +1,5 @@
-name: flutter_app_example_repo_support
+name: app_common_repo_support
+version: 0.1.0
 publish_to: none
 deploy_to: none
 
@@ -11,11 +12,11 @@ dependencies:
       url: git://github.com/tekartik/build_utils.dart
       ref: dart2
     version: '>=0.7.8'
-  tekartik_travis_ci_flutter:
+  chrome_travis:
     git:
-      url: git://github.com/tekartik/travis_ci_flutter.dart
+      url: git://github.com/tekartik/chrome_travis.dart
       ref: dart2
-    version: '>=0.1.0'
+  process_run: '>=0.10.0'
 
 dev_dependencies:
   test: '>=1.0.0'
