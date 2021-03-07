@@ -20,6 +20,7 @@ jobs:
       - uses: cedx/setup-dart@v2
         with:
           release-channel: ${{ matrix.dart }}
+      - uses: actions/checkout@v2
       - run: dart --version
       - run: dart pub get
       - run: dart run tool/run_ci.dart
