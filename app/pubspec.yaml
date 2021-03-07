@@ -1,18 +1,18 @@
 name: tekartik_app_common_utils
 description: App utilities
-version: 0.1.4
+version: 0.2.0
 homepage: https://www.example.com
 author: alex <alex@tekartik.com>
 publish_to: none
 
 environment:
-  sdk: '>=2.10.0-0 <3.0.0'
+  sdk: '>=2.12.0-0 <3.0.0'
 
 dependencies:
   tekartik_common_utils:
     git:
       url: git://github.com/tekartik/common_utils.dart
-      ref: dart2
+      ref: null_safety
     version: '>=0.10.7'
 #  tekartik_app_pager:
 #    git:
