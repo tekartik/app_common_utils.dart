@@ -1,3 +1,4 @@
+import 'package:dev_test/package.dart';
 import 'package:process_run/shell.dart';
 import 'package:path/path.dart';
 
@@ -24,5 +25,11 @@ Future main() async {
   
 ''');
     shell = shell.popd();
+  }
+
+  for (var dir in [
+    'app_cv',
+  ]) {
+    await packageRunCi(join('..', dir));
   }
 }
