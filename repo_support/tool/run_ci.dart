@@ -3,6 +3,7 @@ import 'package:path/path.dart';
 
 Future main() async {
   for (var dir in [
+    'app_cv',
     'app',
     'app_emit',
     'app_pager',
@@ -12,7 +13,7 @@ Future main() async {
     'app_csv',
     'app_web_socket',
     'app_bloc',
-    'app_http'
+    'app_http',
   ]) {
     await packageRunCi(join('..', dir));
   }

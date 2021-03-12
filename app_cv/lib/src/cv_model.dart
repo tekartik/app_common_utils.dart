@@ -6,7 +6,7 @@ import 'content_values.dart';
 /// Read helper
 abstract class CvModelRead implements CvModelCore {
   /// Convert to model
-  Model toModel({List<String> columns});
+  Model toModel({List<String>? columns});
 
   /// Map alias
   Model toMap();
@@ -15,7 +15,7 @@ abstract class CvModelRead implements CvModelCore {
 /// Write helper
 abstract class CvModelWrite implements CvModelCore {
   /// Convert from model.
-  void fromModel(Map map, {List<String> columns});
+  void fromModel(Map map, {List<String>? columns});
 
   /// Map alias
   void fromMap(Map map);
@@ -27,7 +27,7 @@ abstract class CvModelCore {
   List<CvField> get fields;
 
   /// CvField access
-  CvField<T> field<T>(String name);
+  CvField<T>? field<T>(String name);
 }
 
 /// Modifiable map.
@@ -53,5 +53,5 @@ abstract class CvModelBase with CvModelMixin {}
 // ignore: unused_element
 class _CvModelMock extends CvModelBase {
   @override
-  List<CvField> get fields => null;
+  List<CvField> get fields => throw UnimplementedError();
 }

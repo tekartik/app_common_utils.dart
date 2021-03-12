@@ -46,10 +46,10 @@ void main() {
       cv['test'] = null;
       expect(cv.fields, [CvField.withNull('test')]);
       expect(cv.toModel(), {'test': null});
-      cv.field('test').v = 2;
+      cv.field('test')!.v = 2;
       expect(cv.fields, [CvField('test', 2)]);
       expect(cv.toModel(), {'test': 2});
-      cv.field('test').clear();
+      cv.field('test')!.clear();
       expect(cv.fields, []);
       expect(cv.toModel(), {});
     });

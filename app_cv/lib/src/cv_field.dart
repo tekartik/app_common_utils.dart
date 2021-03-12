@@ -15,7 +15,7 @@ bool cvValuesAreEqual(dynamic v1, dynamic v2) {
 /// Basic CvField
 abstract class CvField<T> implements CvFieldCore<T> {
   /// Only set value if not null
-  factory CvField(String name, [T value]) => CvFieldImpl(name, value);
+  factory CvField(String name, [T? value]) => CvFieldImpl(name, value);
 
   /// Force a null value
   factory CvField.withNull(String name) => CvFieldImpl.withNull(name);

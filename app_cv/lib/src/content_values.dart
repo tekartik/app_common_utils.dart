@@ -31,7 +31,7 @@ class _CvMapField<T>
   final ContentValues cv;
 
   /// Only set value if not null
-  _CvMapField(this.cv, String name, [T value]) {
+  _CvMapField(this.cv, String name, [T? value]) {
     this.name = name;
     setValue(value);
   }
@@ -43,7 +43,7 @@ class _CvMapField<T>
   }
 
   @override
-  T get v => cv[name] as T;
+  T? get v => cv[name] as T?;
 
   @override
   CvField<RT> cast<RT>() =>
@@ -93,16 +93,16 @@ class _CvMapField<T>
   }
 
   @override
-  set v(T value) {
+  set v(T? value) {
     cv[name] = value;
   }
 }
 
 mixin _MapBaseMixin implements Map<String, dynamic> {
-  Map<String, dynamic> _map;
+  late Map<String, dynamic> _map;
 
   @override
-  dynamic operator [](Object key) => _map[key];
+  dynamic operator [](Object? key) => _map[key as String];
 
   @override
   void operator []=(String key, value) => _map[key] = value;
@@ -114,7 +114,7 @@ mixin _MapBaseMixin implements Map<String, dynamic> {
   Iterable<String> get keys => _map.keys;
 
   @override
-  dynamic remove(Object key) => _map.remove(key);
+  dynamic remove(Object? key) => _map.remove(key);
 }
 
 // ignore: unused_element
@@ -129,18 +129,18 @@ class ContentValuesMap
         MapMixin<String, dynamic> //ContentValuesMapMixin
     implements
         ContentValues {
-  ContentValuesMap([Map<String, dynamic> map]) {
+  ContentValuesMap([Map<String, dynamic>? map]) {
     _map = map ?? <String, dynamic>{};
   }
 
   @override
   List<CvField> get fields => keys
-      .map((name) => field<dynamic>(name))
-      .where((field) => field != null)
+      .map((name) => field<dynamic>(name)!)
+      //.where((field) => field != null)
       .toList();
 
   @override
-  CvField<T> field<T>(String name) {
+  CvField<T>? field<T>(String name) {
     var value = this[name];
     if (value != null) {
       return _CvMapField(this, name, value as T);
@@ -153,14 +153,14 @@ class ContentValuesMap
   }
 
   @override
-  void fromModel(Map map, {List<String> columns}) {
+  void fromModel(Map? map, {List<String>? columns}) {
     if (columns == null) {
-      map.forEach((key, value) {
+      map!.forEach((key, value) {
         _map[key.toString()] = value;
       });
     } else {
       for (var column in columns) {
-        if (map.containsKey(column)) {
+        if (map!.containsKey(column)) {
           _map[column] = map[column];
         }
       }
@@ -176,13 +176,17 @@ mixin ConventValuesKeysFromCvFieldsMixin implements ContentValues {
 
 mixin ContentValuesMapMixin implements ContentValues {
   @override
-  dynamic operator [](Object key) {
-    return CvField(key?.toString())?.v;
+  dynamic operator [](Object? key) {
+    if (key != null) {
+      return field(key.toString())?.v;
+    } else {
+      return null;
+    }
   }
 
   @override
   void operator []=(key, value) {
-    CvField(key?.toString())?.v = value;
+    field(key.toString())?.v = value;
   }
 
   @override
@@ -191,8 +195,10 @@ mixin ContentValuesMapMixin implements ContentValues {
   }
 
   @override
-  dynamic remove(Object key) {
-    CvField(key?.toString())?.clear();
+  dynamic remove(Object? key) {
+    if (key != null) {
+      field(key.toString())?.clear();
+    }
   }
 }
 

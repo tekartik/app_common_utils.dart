@@ -11,14 +11,14 @@ var debugContent = false; // devWarning(true);
 /// Content mixin
 mixin CvModelMixin implements CvModel {
   @override
-  void fromModel(Map map, {List<String> columns}) {
+  void fromModel(Map map, {List<String>? columns}) {
     _debugCheckCvFields();
-    assert(map != null, 'map cannot be null');
+    // assert(map != null, 'map cannot be null');
     columns ??= fields.map((e) => e.name).toList();
     var model = Model(map);
     for (var column in columns) {
       try {
-        var field = this.field(column);
+        var field = this.field(column)!;
         var entry = model.getModelEntry(field.name);
         if (entry != null) {
           if (field is CvFieldContentList) {
@@ -29,7 +29,12 @@ mixin CvModelMixin implements CvModel {
             }
             field.v = list;
           } else if (field is CvFieldContent) {
-            field.v = field.create(entry.value)..fromModel(entry.value as Map);
+            var entryValue = entry.value;
+            var cvModel = field.create(entryValue);
+            field.v = cvModel;
+            if (entryValue is Map) {
+              cvModel.fromModel(entryValue);
+            }
           } else if (field is CvListField) {
             var list = field.v = field.createList();
             for (var rawItem in entry.value as List) {
@@ -55,7 +60,7 @@ mixin CvModelMixin implements CvModel {
       var recordCvField = model.field(field.name);
       if (recordCvField?.hasValue == true) {
         // ignore: invalid_use_of_visible_for_testing_member
-        field.fromCvField(recordCvField);
+        field.fromCvField(recordCvField!);
       }
     }
   }
@@ -83,16 +88,15 @@ mixin CvModelMixin implements CvModel {
   }
 
   @override
-  Model toModel({List<String> columns}) {
+  Model toModel({List<String>? columns}) {
     _debugCheckCvFields();
     columns ??= fields.map((e) => e.name).toList();
     var model = Model();
     for (var column in columns) {
-      var field = this.field(column);
+      var field = this.field(column)!;
       dynamic value = field.v;
       if (value is List<CvModelCore>) {
-        value =
-            (value as List).map((e) => (e as CvModelRead).toModel()).toList();
+        value = value.map((e) => (e as CvModelRead).toModel()).toList();
       }
       if (value is CvModelRead) {
         value = value.toModel();
@@ -112,13 +116,13 @@ mixin CvModelMixin implements CvModel {
   }
 
   // Only created if necessary
-  Map<String, CvField> _CvFieldMap;
+  Map<String, CvField>? _CvFieldMap;
 
   @override
-  CvField<T> field<T>(String name) {
+  CvField<T>? field<T>(String name) {
     _CvFieldMap ??=
         Map.fromEntries(fields.map((field) => MapEntry(field.name, field)));
-    return _CvFieldMap[name]?.cast<T>();
+    return _CvFieldMap![name]?.cast<T>();
   }
 
   @override

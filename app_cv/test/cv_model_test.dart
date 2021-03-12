@@ -12,7 +12,7 @@ class Note extends CvModelBase {
 }
 
 class IntContent extends CvModelBase {
-  final value = CvField<int>('value');
+  final value = CvField<int?>('value');
 
   @override
   List<CvField> get fields => [value];
@@ -61,12 +61,6 @@ void main() {
       expect(content.value.v, null);
     });
     test('fromModel', () async {
-      try {
-        IntContent().fromModel(null);
-        fail('should have failed');
-      } catch (e) {
-        expect(e, isNot(const TypeMatcher<TestFailure>()));
-      }
       expect(IntContent()..fromModel({}), IntContent());
       expect(IntContent()..fromModel({'value': 1}), IntContent()..value.v = 1);
       expect(
@@ -122,15 +116,15 @@ void main() {
           {'sub': 'sub_value'}
         ]
       };
-      expect(parent.children.v.first.sub.v, 'sub_value');
+      expect(parent.children.v!.first.sub.v, 'sub_value');
       expect(parent.toModel(), map);
       parent = WithChildListCvField()..fromModel(map);
       expect(parent.toModel(), map);
     });
     test('all types', () {
-      AllTypes allTypes;
+      AllTypes? allTypes;
       void _check() {
-        var export = allTypes.toModel();
+        var export = allTypes!.toModel();
         var import = AllTypes()..fromModel(export);
         expect(import, allTypes);
         expect(import.toModel(), allTypes.toModel());

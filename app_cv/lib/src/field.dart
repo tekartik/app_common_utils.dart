@@ -8,10 +8,10 @@ import 'column.dart';
 /// Use [v] for value access.
 abstract class CvFieldCore<T> implements CvColumn<T> {
   /// The value (abbr.)
-  T get v;
+  T? get v;
 
   /// The value
-  T get value;
+  T? get value;
 
   /// The key (abbr.)
   String get k;
@@ -23,10 +23,10 @@ abstract class CvFieldCore<T> implements CvColumn<T> {
   bool get isNull;
 
   /// Set the value, even if null
-  set v(T value);
+  set v(T? value);
 
   /// Set the value, even if null.
-  set value(T value);
+  set value(T? value);
 
   /// Clear value and flag
   void clear();
@@ -112,8 +112,7 @@ class CvFieldImpl<T>
         ColumnNameMixin,
         CvFieldMixin<T> {
   /// Only set value if not null
-  CvFieldImpl(String name, [T value]) {
-    assert(name != null, 'CvField name cannot be null');
+  CvFieldImpl(String name, [T? value]) {
     this.name = name;
     if (value != null) {
       v = value;
@@ -128,7 +127,6 @@ class CvFieldImpl<T>
 
   /// Set value even if null
   CvFieldImpl.withValue(String name, T value) {
-    assert(name != null, 'CvField name cannot be null');
     this.name = name;
     v = value;
   }
@@ -141,17 +139,17 @@ class _TestCvField
     implements CvField {}
 
 mixin CvFieldMixin<T> implements CvField<T> {
-  T _value;
+  T? _value;
 
   /// The value
   @override
-  T get v => _value;
+  T? get v => _value;
 
   @override
   String get key => name;
 
   @override
-  T get value => _value;
+  T? get value => _value;
 
   /// The key
   @override
@@ -161,13 +159,13 @@ mixin CvFieldMixin<T> implements CvField<T> {
   bool get isNull => _value == null;
 
   @override
-  set v(T value) {
+  set v(T? value) {
     _hasValue = true;
     _value = value;
   }
 
   @override
-  set value(T value) => v == value;
+  set value(T? value) => v == value;
 
   /// Clear value and flag
   @override
@@ -186,7 +184,7 @@ mixin CvFieldMixin<T> implements CvField<T> {
 
   /// [presentIfNull] true if null is marked as a value
   @override
-  void setValue(T value, {bool presentIfNull = false}) {
+  void setValue(T? value, {bool presentIfNull = false}) {
     if (value == null) {
       if (presentIfNull) {
         v = value;
@@ -201,13 +199,13 @@ mixin CvFieldMixin<T> implements CvField<T> {
   bool _hasValue = false;
 
   @override
-  bool /*!*/ get hasValue => _hasValue;
+  bool get hasValue => _hasValue;
 
   /// Allow dynamic CvFields
   @override
   @visibleForTesting
   void fromCvField(CvField CvField) {
-    setValue(CvField.v as T, presentIfNull: CvField.hasValue);
+    setValue(CvField.v as T?, presentIfNull: CvField.hasValue);
   }
 
   @override
@@ -219,7 +217,7 @@ mixin CvFieldMixin<T> implements CvField<T> {
     if (this is CvField<RT>) {
       return this as CvField<RT>;
     }
-    return CvField<RT>(name)..v = v as RT;
+    return CvField<RT>(name)..v = v as RT?;
   }
 
   @override

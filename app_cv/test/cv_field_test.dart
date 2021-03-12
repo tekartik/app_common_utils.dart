@@ -24,12 +24,6 @@ void main() {
       expect(CvField('name', 1), isNot(CvField('name', 2)));
       expect(CvField('name'), isNot(CvField('name2')));
       expect(CvField('name'), isNot(CvField('name', 1)));
-      try {
-        CvField(null);
-        fail('should fail');
-      } catch (e) {
-        expect(e, isNot(const TypeMatcher<TestFailure>()));
-      }
     });
 
     test('fromCvField', () {

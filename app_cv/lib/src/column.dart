@@ -16,14 +16,13 @@ class ColumnImpl<T>
     with CvColumnMixin<T>, ColumnNameMixin
     implements CvColumn<T> {
   ColumnImpl(String name) {
-    assert(name != null, 'column name cannot be null');
     this.name = name;
   }
 }
 
 mixin ColumnNameMixin implements RawColumn {
   @override
-  String name;
+  late String name;
 
   @override
   bool operator ==(other) {
