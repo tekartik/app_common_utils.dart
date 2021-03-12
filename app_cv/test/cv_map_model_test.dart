@@ -38,6 +38,15 @@ void main() {
       });
       expect(cv.toModel(columns: []), {});
     });
+    test('withFields', () {
+      var cv = CvMapModel.withFields([CvField('test', 1)]);
+      expect(cv.toModel(), {'test': 1});
+      cv['test2'] = 1;
+      cv['test'] = 2;
+
+      //expect(cv.toModel(), {'test': 1, 'test2': 1});
+      expect(cv.toModel(), {'test': 2});
+    });
     test('map', () {
       var cv = CvMapModel();
       expect(cv.fields, []);

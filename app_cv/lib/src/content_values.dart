@@ -177,12 +177,12 @@ mixin ConventValuesKeysFromCvFieldsMixin implements ContentValues {
 mixin ContentValuesMapMixin implements ContentValues {
   @override
   dynamic operator [](Object key) {
-    return CvField(key?.toString())?.v;
+    return field(key?.toString())?.v;
   }
 
   @override
   void operator []=(key, value) {
-    CvField(key?.toString())?.v = value;
+    field(key?.toString())?.v = value;
   }
 
   @override
@@ -192,7 +192,7 @@ mixin ContentValuesMapMixin implements ContentValues {
 
   @override
   dynamic remove(Object key) {
-    CvField(key?.toString())?.clear();
+    field(key?.toString())?.clear();
   }
 }
 

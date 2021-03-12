@@ -34,6 +34,12 @@ abstract class CvModelCore {
 abstract class CvMapModel implements CvModel, Map<String, dynamic> {
   /// Basic content values factory
   factory CvMapModel() => ContentValuesMap();
+
+  /// Predefined fields, values can be changed but none can added.
+  /// Usage discouraged unless you known the limitations.
+  factory CvMapModel.withFields(List<CvField> list) {
+    return ContentValues.withCvFields(list);
+  }
 }
 
 /// Model to access the data
