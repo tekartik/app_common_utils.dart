@@ -45,11 +45,13 @@ class EmitFutureOr<T> {
         }
       });
       if (onError != null) {
-        future.catchError((error, StackTrace stackTrace) {
+        future.catchError((Object error, StackTrace stackTrace) {
           // try with and without a stack trace
           try {
+            // ignore: avoid_dynamic_calls
             onError(error, stackTrace);
           } catch (_) {
+            // ignore: avoid_dynamic_calls
             onError(error);
           }
         });
