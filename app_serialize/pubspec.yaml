@@ -1,6 +1,6 @@
 name: tekartik_app_serialize
 description: Simple code generator utility from dart class.
-version: 0.1.0
+version: 0.2.0
 homepage: https://github.com/tekartik/app_common_utils.dart/app_serialize
 author: alex <alex@ŧekartik.com>
 publish_to: none
@@ -12,7 +12,7 @@ dependencies:
   tekartik_app_mirrors:
     git:
       url: git://github.com/tekartik/app_common_utils.dart
-      ref: dart2
+      ref: null_safety
       path: app_mirrors
     version: '>=0.1.1'
   meta:

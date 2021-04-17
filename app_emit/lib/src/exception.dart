@@ -1,6 +1,6 @@
 /// Cancel exception thrown when cancelling a completer or controller
 class EmitCancelException implements Exception {
-  final String reason;
+  final String? reason;
 
   EmitCancelException(this.reason);
 

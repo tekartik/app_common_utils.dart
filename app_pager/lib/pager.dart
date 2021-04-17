@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:meta/meta.dart';
 import 'package:pedantic/pedantic.dart';
 import 'package:pool/pool.dart';
 import 'package:quiver/collection.dart';
@@ -32,10 +31,10 @@ class Pager<T> {
   final LruMap<int, PagerData<T>> _pageCache;
 
   Pager(
-      {@required PagerDataProvider<T> provider,
-      int pageSize,
-      int cachePageCount,
-      int poolSize})
+      {required PagerDataProvider<T> provider,
+      int? pageSize,
+      int? cachePageCount,
+      int? poolSize})
       : _provider = provider,
         _pageSize = pageSize ?? defaultPageSize,
         _pageCache = LruMap<int, PagerData<T>>(
@@ -63,7 +62,7 @@ class Pager<T> {
   }
 
   /// If you don't want the item any more, you can call cancel
-  EmitFutureOr<T> getItemFutureOr(int index) {
+  EmitFutureOr<T?> getItemFutureOr(int index) {
     var page = _getItemIndexPage(index);
     var data = _pageCache[page];
     var inPageIndex = _getItemIndexInPageIndex(index);
@@ -77,29 +76,29 @@ class Pager<T> {
       final controller = EmitFutureOrController<T>();
 
       bool needFetch() {
-        return !(controller.isCompleted) && (data.needFetch);
+        return !(controller.isCompleted) && (data!.needFetch);
       }
 
       unawaited(_pool.withResource(() async {
         // Don't fetch if not needed
         if (needFetch()) {
-          await data.lock.synchronized(() async {
+          await data!.lock.synchronized(() async {
             if (needFetch()) {
-              data.items = await _provider.getData(
+              data!.items = await _provider.getData(
                   _getPageProviderOffset(page), _pageSize);
               // Complete if needed too
 
             }
           });
         }
-        if (!controller.isCompleted && data.items != null) {
+        if (!controller.isCompleted && data!.items != null) {
           controller.complete(data.getItem(inPageIndex));
         }
       }));
 
       return controller.futureOr;
     } else {
-      return EmitFutureOr<T>.withValue(data.getItem(inPageIndex));
+      return EmitFutureOr<T?>.withValue(data!.getItem(inPageIndex));
     }
   }
 

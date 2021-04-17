@@ -145,40 +145,40 @@ import 'dart:async';
 /// Helper to validate a simple tick code (morse like)
 class SequenceValidator {
   /// the current sequence
-  int _sequenceIndex;
+  int? _sequenceIndex;
 
   /// the index in the current sequence
-  int _inSequenceIndex;
-  Stopwatch _stopwatch;
-  final List<int> sequence;
-  int _lastEllapsedMs;
+  int? _inSequenceIndex;
+  Stopwatch? _stopwatch;
+  final List<int>? sequence;
+  late int _lastEllapsedMs;
   static const int _smallDiff = 500; // inclusive for small
   static const int _cancelDiff = 1500;
-  Completer<bool> _endValidator;
+  Completer<bool>? _endValidator;
 
   SequenceValidator({this.sequence});
 
   void _cancel() {
     if (_endValidator?.isCompleted == false) {
-      _endValidator.complete(false);
+      _endValidator!.complete(false);
     }
     _endValidator = null;
     _stopwatch = null;
   }
 
   /// true if currently last in sequence
-  bool get _lastInSequence => _inSequenceIndex >= sequence[_sequenceIndex];
+  bool get _lastInSequence => _inSequenceIndex! >= sequence![_sequenceIndex!];
 
-  bool get _lastSequence => _sequenceIndex >= sequence.length - 1;
+  bool get _lastSequence => _sequenceIndex! >= sequence!.length - 1;
 
-  bool _lazyCancelled;
+  late bool _lazyCancelled;
 
   void restart() {
     _cancel();
   }
 
   /// timestamp for testing only
-  FutureOr<bool> validate([int timestamp]) {
+  FutureOr<bool> validate([int? timestamp]) {
     if (_stopwatch == null) {
       _lazyCancelled = false;
       _sequenceIndex = 0;
@@ -186,7 +186,7 @@ class SequenceValidator {
       _lastEllapsedMs = 0;
       _stopwatch = Stopwatch()..start();
     } else {
-      var ellapsedMs = timestamp ?? _stopwatch.elapsedMilliseconds;
+      var ellapsedMs = timestamp ?? _stopwatch!.elapsedMilliseconds;
       var diff = ellapsedMs - _lastEllapsedMs;
       _lastEllapsedMs = ellapsedMs;
 
@@ -210,13 +210,13 @@ class SequenceValidator {
       // What do we expect?
 
       // We are not the first expect a short delay
-      if (_inSequenceIndex > 0) {
+      if (_inSequenceIndex! > 0) {
         // Expect a short delay
         if (diff > _smallDiff) {
           _lazyCancelled = true;
           return false;
         }
-      } else if (_sequenceIndex > 0) {
+      } else if (_sequenceIndex! > 0) {
         // first item of any group but the first one
         if (_inSequenceIndex == 0) {
           // expect a long delay
@@ -226,19 +226,19 @@ class SequenceValidator {
           }
         }
       }
-      _inSequenceIndex++;
+      _inSequenceIndex = _inSequenceIndex! + 1;
     }
     if (_lastInSequence) {
       if (_lastSequence) {
         var completer = _endValidator = Completer<bool>();
         Future.delayed(const Duration(milliseconds: _smallDiff)).then((_) {
-          if (completer?.isCompleted == false) {
+          if (completer.isCompleted == false) {
             completer.complete(true);
           }
         });
         return completer.future;
       } else {
-        _sequenceIndex++;
+        _sequenceIndex = _sequenceIndex! + 1;
         _inSequenceIndex = 0;
       }
     }

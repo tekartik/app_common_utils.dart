@@ -12,7 +12,7 @@ void main() {
         var controller = StreamController<int>(sync: true);
         controller.add(1);
 
-        int got;
+        int? got;
         var subscription = controller.stream.listen((data) {
           got = data;
         });
@@ -26,7 +26,7 @@ void main() {
         var controller = EmitFutureOrController<int>();
         controller.complete(1);
 
-        int got;
+        int? got;
         var futureOr = controller.futureOr;
         var subscription = futureOr.listen((data) {
           got = data;

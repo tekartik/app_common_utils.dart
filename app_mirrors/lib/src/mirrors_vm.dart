@@ -9,7 +9,7 @@ abstract class MirrorSystemVm {
 ClassMirror reflectClass(Type key) => _classMirror(vm.reflectClass(key));
 
 ClassMirror _classMirror(vm.ClassMirror vmClassMirror) =>
-    vmClassMirror != null ? ClassMirrorVm(vmClassMirror) : null;
+    ClassMirrorVm(vmClassMirror);
 
 mixin DeclarationMirrorMixin implements DeclarationMirror {
   dynamic get _vm;
@@ -17,7 +17,7 @@ mixin DeclarationMirrorMixin implements DeclarationMirror {
   @override
   Symbol get simpleName => _vmDeclarationMirror.simpleName;
 
-  List<InstanceMirror> _metadata;
+  List<InstanceMirror>? _metadata;
   @override
   List<InstanceMirror> get metadata =>
       _metadata ??= _vmDeclarationMirror.metadata
@@ -33,20 +33,20 @@ class InstanceMirrorVm with DeclarationMirrorMixin implements InstanceMirror {
   InstanceMirrorVm(this._vm);
 
   @override
-  ClassMirror get type => _classMirror(_vm.type);
+  ClassMirror? get type => _classMirror(_vm.type);
 
   @override
   dynamic get reflectee => _vm.reflectee;
 }
 
 InstanceMirror _instanceMirror(vm.InstanceMirror vmInstanceMirror) =>
-    vmInstanceMirror != null ? InstanceMirrorVm(vmInstanceMirror) : null;
+    InstanceMirrorVm(vmInstanceMirror);
 
 class ClassMirrorVm with DeclarationMirrorMixin implements ClassMirror {
   @override
   final vm.ClassMirror _vm;
 
-  Map<Symbol, DeclarationMirror> _declarations;
+  Map<Symbol, DeclarationMirror>? _declarations;
 
   ClassMirrorVm(this._vm);
   @override
@@ -65,7 +65,8 @@ class ClassMirrorVm with DeclarationMirrorMixin implements ClassMirror {
   bool get hasReflectedType => _vm.hasReflectedType;
 
   @override
-  ClassMirror get superclass => _classMirror(_vm.superclass);
+  ClassMirror? get superclass =>
+      _vm.superclass == null ? null : _classMirror(_vm.superclass!);
 }
 
 class VariableMirrorVm with DeclarationMirrorMixin implements VariableMirror {
@@ -77,8 +78,7 @@ class VariableMirrorVm with DeclarationMirrorMixin implements VariableMirror {
   TypeMirror get type => wrapTypeMirror(_vm.type);
 }
 
-TypeMirror wrapTypeMirror(vm.TypeMirror vmType) =>
-    vmType != null ? TypeMirrorVm(vmType) : null;
+TypeMirror wrapTypeMirror(vm.TypeMirror vmType) => TypeMirrorVm(vmType);
 
 class TypeMirrorVm with DeclarationMirrorMixin implements TypeMirror {
   @override
@@ -94,9 +94,6 @@ class TypeMirrorVm with DeclarationMirrorMixin implements TypeMirror {
 }
 
 DeclarationMirror _declarationMirror(vm.DeclarationMirror vmDeclarationMirror) {
-  if (vmDeclarationMirror == null) {
-    return null;
-  }
   if (vmDeclarationMirror is vm.VariableMirror) {
     return VariableMirrorVm(vmDeclarationMirror);
   }
