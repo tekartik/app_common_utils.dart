@@ -1,11 +1,11 @@
 import 'package:json_annotation/json_annotation.dart';
 
 class Simple {
-  int value;
+  int? value;
 
   @JsonKey(name: 'overriden_text')
-  String text;
+  String? text;
 
   @JsonKey(includeIfNull: false)
-  String dontIncludeIfNull;
+  String? dontIncludeIfNull;
 }

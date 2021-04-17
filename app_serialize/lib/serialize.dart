@@ -2,11 +2,10 @@ import 'dart:io';
 
 import 'package:dart_style/dart_style.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:meta/meta.dart';
 import 'package:path/path.dart';
 import 'package:tekartik_app_mirrors/mirrors.dart';
 
-Future genSerializer({@required String src, @required Type type}) async {
+Future genSerializer({required String src, required Type type}) async {
   var classMirror = reflectClass(type);
 
   //var symbol = classMirror.qualifiedName;
@@ -23,14 +22,12 @@ Future genSerializer({@required String src, @required Type type}) async {
   sb.writeln('''
   import '${basename(src)}';
   
-  $typeText ${entityName}FromMap(Map<String, dynamic> map, {$typeText $entityName}) {
-    if (map == null) { return $entityName; }
+  $typeText ${entityName}FromMap(Map<String, dynamic> map, {$typeText? $entityName}) {
     $entityName ??= $typeText();
   ''');
 
   sbTo.writeln('''
-  Map<String, dynamic> ${entityName}ToMap($typeText $entityName, {Map<String, dynamic> map}) {
-    if ($entityName == null) { return map; }
+  Map<String, dynamic> ${entityName}ToMap($typeText $entityName, {Map<String, Object?>? map}) {
     map ??= <String, dynamic>{};
   ''');
   declarations.forEach((symbol, declaration) {
@@ -38,8 +35,8 @@ Future genSerializer({@required String src, @required Type type}) async {
     if (declaration is VariableMirror) {
       var variableTypeText = declaration.type.reflectedType.toString();
       var variableSimpleName = MirrorSystem.getName(declaration.simpleName);
-      String keyName;
-      bool includeIfNull;
+      String? keyName;
+      bool? includeIfNull;
       declaration.metadata.forEach((InstanceMirror instanceMirror) {
         dynamic reflectee = instanceMirror.reflectee;
 
@@ -52,16 +49,16 @@ Future genSerializer({@required String src, @required Type type}) async {
       includeIfNull ??= true;
 
       sb.write('''
-    $entityName.$variableSimpleName = map['$keyName'] as $variableTypeText;
+    $entityName.$variableSimpleName = map['$keyName'] as $variableTypeText?;
   ''');
 
-      if (!includeIfNull) {
+      if (!includeIfNull!) {
         sbTo.writeln('if ($entityName.$variableSimpleName != null) {');
       }
       sbTo.write('''
     map['$keyName'] = $entityName.$variableSimpleName;
   ''');
-      if (!includeIfNull) {
+      if (!includeIfNull!) {
         sbTo.writeln('}');
       }
     }

@@ -1,7 +1,7 @@
 class Base {
-  int base;
+  int? base;
 }
 
 class Complex extends Base {
-  int value;
+  int? value;
 }
