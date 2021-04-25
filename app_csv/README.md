@@ -10,7 +10,7 @@ In `pubspec.yaml`
 tekartik_app_csv:
   git:
     url: git://github.com/tekartik/app_common_utils.dart
-    ref: dart2
+    ref: null_safety
     path: app_csv
   version: '>=0.1.0'
 ```

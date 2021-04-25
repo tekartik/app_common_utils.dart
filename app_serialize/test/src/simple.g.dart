@@ -1,22 +1,16 @@
 import 'simple.dart';
 
-Simple simpleFromMap(Map<String, dynamic> map, {Simple simple}) {
-  if (map == null) {
-    return simple;
-  }
+Simple simpleFromMap(Map<String, dynamic> map, {Simple? simple}) {
   simple ??= Simple();
 
-  simple.value = map['value'] as int;
-  simple.text = map['overriden_text'] as String;
-  simple.dontIncludeIfNull = map['dontIncludeIfNull'] as String;
+  simple.value = map['value'] as int?;
+  simple.text = map['overriden_text'] as String?;
+  simple.dontIncludeIfNull = map['dontIncludeIfNull'] as String?;
 
   return simple;
 }
 
-Map<String, dynamic> simpleToMap(Simple simple, {Map<String, dynamic> map}) {
-  if (simple == null) {
-    return map;
-  }
+Map<String, dynamic> simpleToMap(Simple simple, {Map<String, Object?>? map}) {
   map ??= <String, dynamic>{};
 
   map['value'] = simple.value;
