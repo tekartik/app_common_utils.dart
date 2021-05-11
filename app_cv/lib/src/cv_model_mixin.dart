@@ -42,7 +42,16 @@ mixin CvModelMixin implements CvModel {
             }
             field.v = list;
           } else {
-            field.v = entry.value;
+            try {
+              field.v = entry.value;
+            } catch (_) {
+              // Special string handling
+              if (field.isTypeString) {
+                field.v = entry.value?.toString();
+              } else {
+                rethrow;
+              }
+            }
           }
         }
       } catch (e) {

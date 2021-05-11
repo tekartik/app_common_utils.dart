@@ -36,13 +36,13 @@ abstract class CvFieldCore<T> implements CvColumn<T> {
   void removeValue();
 
   /// [presentIfNull] true if null is marked as a value
-  void setValue(T value, {bool presentIfNull = false});
+  void setValue(T? value, {bool presentIfNull = false});
 
   bool get hasValue;
 
   /// Allow dynamic CvFields
   @visibleForTesting
-  void fromCvField(CvField CvField);
+  void fromCvField(CvField cvField);
 
   /// Cast if needed
   CvField<RT> cast<RT>();
@@ -204,8 +204,13 @@ mixin CvFieldMixin<T> implements CvField<T> {
   /// Allow dynamic CvFields
   @override
   @visibleForTesting
-  void fromCvField(CvField CvField) {
-    setValue(CvField.v as T?, presentIfNull: CvField.hasValue);
+  void fromCvField(CvField cvField) {
+    if (cvField.v is T?) {
+      setValue(cvField.v as T?, presentIfNull: cvField.hasValue);
+    } else if (isTypeString && cvField.hasValue) {
+      /// To string conversion
+      setValue(cvField.v?.toString() as T?, presentIfNull: true);
+    }
   }
 
   @override
