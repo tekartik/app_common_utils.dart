@@ -19,7 +19,7 @@ abstract class CvFieldCore<T> implements CvColumn<T> {
   /// The key (abbr.)
   String get key;
 
-  /// Return true is null of unset
+  /// Return true is null or unset
   bool get isNull;
 
   /// Set the value, even if null

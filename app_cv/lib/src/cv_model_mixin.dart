@@ -88,7 +88,7 @@ mixin CvModelMixin implements CvModel {
   }
 
   @override
-  Model toModel({List<String>? columns}) {
+  Model toModel({List<String>? columns, bool includeMissingValue = false}) {
     _debugCheckCvFields();
     columns ??= fields.map((e) => e.name).toList();
     var model = Model();
@@ -99,9 +99,10 @@ mixin CvModelMixin implements CvModel {
         value = value.map((e) => (e as CvModelRead).toModel()).toList();
       }
       if (value is CvModelRead) {
-        value = value.toModel();
+        value = value.toModel(includeMissingValue: includeMissingValue);
       }
-      model.setValue(field.name, value, presentIfNull: field.hasValue);
+      model.setValue(field.name, value,
+          presentIfNull: field.hasValue || includeMissingValue);
     }
     return model;
   }

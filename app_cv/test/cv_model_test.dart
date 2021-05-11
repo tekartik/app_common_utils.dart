@@ -32,6 +32,7 @@ void main() {
     });
     test('toModel', () async {
       expect(IntContent().toModel(), {});
+      expect(IntContent().toModel(includeMissingValue: true), {'value': null});
       expect((IntContent()..value.v = 1).toModel(), {'value': 1});
       expect((IntContent()..value.v = 1).toMap(), {'value': 1});
       expect((IntContent()..value.v = 1).toModel(columns: <String>[]), {});
@@ -99,6 +100,15 @@ void main() {
       }
     });
     test('content child', () {
+      expect(WithChildCvField().toModel(), {});
+      expect(WithChildCvField().toModel(includeMissingValue: true),
+          {'child': null});
+      expect(
+          (WithChildCvField()..child.v = ChildContent())
+              .toModel(includeMissingValue: true),
+          {
+            'child': {'sub': null}
+          });
       var parent = WithChildCvField()
         ..child.v = (ChildContent()..sub.v = 'sub_value');
       var map = {
@@ -109,6 +119,10 @@ void main() {
       expect(parent.toModel(), map);
     });
     test('content child list', () {
+      expect(WithChildListCvField().toModel(), {});
+      expect(WithChildListCvField().toModel(includeMissingValue: true),
+          {'children': null});
+
       var parent = WithChildListCvField()
         ..children.v = [ChildContent()..sub.v = 'sub_value'];
       var map = {
