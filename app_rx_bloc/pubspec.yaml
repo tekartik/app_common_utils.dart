@@ -1,0 +1,29 @@
+name: tekartik_app_rx_bloc
+description: Rx Bloc base definition
+version: 0.2.0
+publish_to: none
+
+environment:
+  sdk: '>=2.12.0-0 <3.0.0'
+
+dependencies:
+  tekartik_app_bloc:
+    git:
+      url: git://github.com/tekartik/app_common_utils.dart
+      ref: null_safety
+      path: app_bloc
+    version: '>=0.2.0'
+  rxdart:
+
+dev_dependencies:
+  pedantic:
+  dev_test:
+  test:
+  build_runner: '>=1.2.7'
+  build_test: any
+  build_web_compilers: any
+  process_run:
+
+dependency_overrides:
+  tekartik_app_bloc:
+    path: ../app_bloc
