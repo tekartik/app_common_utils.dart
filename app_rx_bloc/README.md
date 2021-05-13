@@ -8,7 +8,7 @@ In your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  tekartik_rx_app_bloc:
+  tekartik_app_rx_bloc:
     git:
       url: git://github.com/tekartik/app_common_utils.dart
       ref: null_safety
