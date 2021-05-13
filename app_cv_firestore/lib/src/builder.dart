@@ -1,6 +1,6 @@
 import 'package:meta/meta.dart';
 import 'package:tekartik_app_cv/app_cv.dart';
-import 'package:tekartik_app_cv/src/content_values.dart';
+import 'package:tekartik_app_cv/src/content_values.dart'; // ignore: implementation_imports
 
 /// Add builder
 void cvFirestoreAddBuilder<T extends CvModel>(

@@ -39,6 +39,7 @@ void main() {
     });
     test('get/set empty', () async {
       try {
+        // ignore: unnecessary_statements
         CvFsEmpty().exists;
         fail('shoud fail');
       } catch (e) {
@@ -76,6 +77,7 @@ void main() {
         ..path = 'test/single_string'
         ..text.v = 'value';
       try {
+        // ignore: unnecessary_statements
         doc.exists;
         fail('shoud fail');
       } catch (e) {

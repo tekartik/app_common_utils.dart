@@ -126,13 +126,13 @@ mixin CvModelMixin implements CvModel {
   }
 
   // Only created if necessary
-  Map<String, CvField>? _CvFieldMap;
+  Map<String, CvField>? _cvFieldMap;
 
   @override
   CvField<T>? field<T>(String name) {
-    _CvFieldMap ??=
+    _cvFieldMap ??=
         Map.fromEntries(fields.map((field) => MapEntry(field.name, field)));
-    return _CvFieldMap![name]?.cast<T>();
+    return _cvFieldMap![name]?.cast<T>();
   }
 
   @override
