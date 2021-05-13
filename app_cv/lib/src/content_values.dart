@@ -53,10 +53,10 @@ class _CvMapField<T>
   void clear() => cv.remove(name);
 
   @override
-  void fromCvField(CvField CvField) {
+  void fromCvField(CvField cvField) {
     // copy the value whatever the name is
-    if (CvField.hasValue) {
-      cv[name] = CvField.v;
+    if (cvField.hasValue) {
+      cv[name] = cvField.v;
     } else {
       cv.remove(name);
     }

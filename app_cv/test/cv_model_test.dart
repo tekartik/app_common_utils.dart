@@ -12,7 +12,14 @@ class Note extends CvModelBase {
 }
 
 class IntContent extends CvModelBase {
-  final value = CvField<int?>('value');
+  final value = CvField<int>('value');
+
+  @override
+  List<CvField> get fields => [value];
+}
+
+class StringContent extends CvModelBase {
+  final value = CvField<String>('value');
 
   @override
   List<CvField> get fields => [value];
@@ -32,6 +39,7 @@ void main() {
     });
     test('toModel', () async {
       expect(IntContent().toModel(), {});
+      expect(IntContent().toModel(includeMissingValue: true), {'value': null});
       expect((IntContent()..value.v = 1).toModel(), {'value': 1});
       expect((IntContent()..value.v = 1).toMap(), {'value': 1});
       expect((IntContent()..value.v = 1).toModel(columns: <String>[]), {});
@@ -49,7 +57,7 @@ void main() {
           (IntContent()..value.setValue(null, presentIfNull: true)).toModel(),
           {'value': null});
     });
-    test('fromModel', () async {
+    test('fromModel1', () async {
       var content = IntContent()..fromModel({});
       expect(content.value.hasValue, false);
       expect(content.value.v, null);
@@ -59,8 +67,17 @@ void main() {
       content = IntContent()..fromMap({'value': null});
       expect(content.value.hasValue, true);
       expect(content.value.v, null);
+
+      // Bad type
+      content = IntContent()..fromMap({'value': 'not an int'});
+      expect(content.value.hasValue, false);
+      expect(content.value.v, null);
+      // Bad type, ok for string
+      var stringContent = StringContent()..fromMap({'value': 12});
+      expect(stringContent.value.hasValue, true);
+      expect(stringContent.value.v, '12');
     });
-    test('fromModel', () async {
+    test('fromModel2', () async {
       expect(IntContent()..fromModel({}), IntContent());
       expect(IntContent()..fromModel({'value': 1}), IntContent()..value.v = 1);
       expect(
@@ -99,6 +116,15 @@ void main() {
       }
     });
     test('content child', () {
+      expect(WithChildCvField().toModel(), {});
+      expect(WithChildCvField().toModel(includeMissingValue: true),
+          {'child': null});
+      expect(
+          (WithChildCvField()..child.v = ChildContent())
+              .toModel(includeMissingValue: true),
+          {
+            'child': {'sub': null}
+          });
       var parent = WithChildCvField()
         ..child.v = (ChildContent()..sub.v = 'sub_value');
       var map = {
@@ -109,6 +135,10 @@ void main() {
       expect(parent.toModel(), map);
     });
     test('content child list', () {
+      expect(WithChildListCvField().toModel(), {});
+      expect(WithChildListCvField().toModel(includeMissingValue: true),
+          {'children': null});
+
       var parent = WithChildListCvField()
         ..children.v = [ChildContent()..sub.v = 'sub_value'];
       var map = {

@@ -29,6 +29,14 @@ void main() {
     test('fromCvField', () {
       expect(CvField<String>('name')..fromCvField(CvField('name', 'value')),
           CvField('name', 'value'));
+      // bad type
+      expect(CvField<int>('name')..fromCvField(CvField('name', 'value')),
+          CvField('name'));
+    });
+
+    test('fromCvFieldToString', () {
+      expect(CvField<String>('name')..fromCvField(CvField('name', 12)),
+          CvField('name', '12'));
     });
 
     test('hasValue', () {

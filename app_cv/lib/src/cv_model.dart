@@ -6,7 +6,7 @@ import 'content_values.dart';
 /// Read helper
 abstract class CvModelRead implements CvModelCore {
   /// Convert to model
-  Model toModel({List<String>? columns});
+  Model toModel({List<String>? columns, bool includeMissingValue = false});
 
   /// Map alias
   Model toMap();

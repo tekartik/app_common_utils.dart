@@ -13,6 +13,7 @@ Future main() async {
     'app_csv',
     'app_web_socket',
     'app_bloc',
+    'app_rx_bloc',
     'app_http',
   ]) {
     await packageRunCi(join('..', dir));

@@ -42,7 +42,16 @@ mixin CvModelMixin implements CvModel {
             }
             field.v = list;
           } else {
-            field.v = entry.value;
+            try {
+              field.v = entry.value;
+            } catch (_) {
+              // Special string handling
+              if (field.isTypeString) {
+                field.v = entry.value?.toString();
+              } else {
+                rethrow;
+              }
+            }
           }
         }
       } catch (e) {
@@ -88,7 +97,7 @@ mixin CvModelMixin implements CvModel {
   }
 
   @override
-  Model toModel({List<String>? columns}) {
+  Model toModel({List<String>? columns, bool includeMissingValue = false}) {
     _debugCheckCvFields();
     columns ??= fields.map((e) => e.name).toList();
     var model = Model();
@@ -99,9 +108,10 @@ mixin CvModelMixin implements CvModel {
         value = value.map((e) => (e as CvModelRead).toModel()).toList();
       }
       if (value is CvModelRead) {
-        value = value.toModel();
+        value = value.toModel(includeMissingValue: includeMissingValue);
       }
-      model.setValue(field.name, value, presentIfNull: field.hasValue);
+      model.setValue(field.name, value,
+          presentIfNull: field.hasValue || includeMissingValue);
     }
     return model;
   }
