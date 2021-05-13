@@ -1,7 +1,7 @@
 import 'package:tekartik_app_cv/app_cv.dart';
 
-import 'cv_model_mixin.dart';
 import 'content_values.dart';
+import 'cv_model_mixin.dart';
 
 /// Read helper
 abstract class CvModelRead implements CvModelCore {

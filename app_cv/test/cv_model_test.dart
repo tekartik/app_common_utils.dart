@@ -183,11 +183,11 @@ void main() {
 }
 
 class WithDuplicatedCvFields extends CvModelBase {
-  final CvField1 = CvField<String>('CvField1');
-  final CvField2 = CvField<String>('CvField1');
+  final cvField1 = CvField<String>('CvField1');
+  final cvField2 = CvField<String>('CvField1');
 
   @override
-  List<CvField> get fields => [CvField1, CvField2];
+  List<CvField> get fields => [cvField1, cvField2];
 }
 
 class WithChildCvField extends CvModelBase {

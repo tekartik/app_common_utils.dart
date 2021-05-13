@@ -3,6 +3,7 @@ import 'package:path/path.dart';
 
 Future main() async {
   for (var dir in [
+    'app_cv_firestore',
     'app_cv',
     'app',
     'app_emit',

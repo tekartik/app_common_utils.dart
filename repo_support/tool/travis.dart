@@ -1,3 +1,4 @@
+import 'package:dev_test/package.dart';
 import 'package:process_run/shell.dart';
 import 'package:path/path.dart';
 
@@ -5,17 +6,7 @@ Future main() async {
   var shell = Shell();
 
   for (var dir in [
-    'app',
     'app_emit',
-    'app_pager',
-    'app_serialize',
-    'app_mirrors',
-    'app_crypto',
-    'app_csv',
-    'app_web_socket',
-    'app_bloc',
-    'app_rx_bloc',
-    'app_http'
   ]) {
     shell = shell.pushd(join('..', dir));
     await shell.run('''
@@ -25,5 +16,22 @@ Future main() async {
   
 ''');
     shell = shell.popd();
+  }
+
+  for (var dir in [
+    'app',
+    'app_bloc',
+    'app_cv',
+    'app_cv_firestore',
+    'app_rx_bloc',
+    'app_crypto',
+    'app_csv',
+    'app_http',
+    'app_web_socket',
+    'app_serialize',
+    'app_pager',
+    'app_mirrors',
+  ]) {
+    await packageRunCi(join('..', dir));
   }
 }
