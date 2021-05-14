@@ -19,6 +19,12 @@ abstract class CvModelWrite implements CvModelCore {
 
   /// Map alias
   void fromMap(Map map);
+
+  /// Clear content
+  void clear();
+
+  /// Copy from another model
+  void copyFrom(CvModel model);
 }
 
 /// Core model

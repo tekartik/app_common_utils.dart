@@ -14,6 +14,19 @@ void main() {
       cv.fromModel({'test': 2});
       expect(cv.toModel(), {'test': 2});
     });
+    test('copyFrom', () {
+      var src = CvMapModel();
+      src['test'] = 1;
+      expect(src.toModel(), {'test': 1});
+      var cv = CvMapModel()..copyFrom(src);
+      expect(cv.toModel(), {'test': 1});
+      cv = CvMapModel()..copyFrom(IntContent());
+      expect(cv.toModel(), {});
+      cv = CvMapModel()..copyFrom(IntContent()..value.v = null);
+      expect(cv.toModel(), {'value': null});
+      cv = CvMapModel()..copyFrom(IntContent()..value.v = 1);
+      expect(cv.toModel(), {'value': 1});
+    });
     test('toModel', () {
       var cv = CvMapModel();
       cv['test'] = 1;
@@ -61,6 +74,12 @@ void main() {
       cv.field('test')!.clear();
       expect(cv.fields, []);
       expect(cv.toModel(), {});
+
+      cv = CvMapModel();
+      cv['test'] = 1;
+      expect(cv.fields, [CvField('test', 1)]);
+      cv.clear();
+      expect(cv.fields, []);
     });
   });
 }

@@ -166,6 +166,15 @@ class ContentValuesMap
       }
     }
   }
+
+  @override
+  void copyFrom(CvModel model) {
+    for (var field in model.fields) {
+      if (field.hasValue) {
+        _map[field.k] = field.v;
+      }
+    }
+  }
 }
 
 /// Keys from CvFields
