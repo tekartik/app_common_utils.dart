@@ -140,7 +140,7 @@ extension CvFirestoreDocumentReferenceExt on DocumentReference {
 }
 
 /// Easy extension
-extension CvFsDocumentSnapshotsExt on List<DocumentSnapshot> {
+extension CvFsDocumentSnapshotsExt on Iterable<DocumentSnapshot> {
   /// Create a list of DbRecords from a snapshot
   Iterable<T> cv<T extends CvFirestoreDocument>() =>
       map((snapshot) => snapshot.cv<T>());

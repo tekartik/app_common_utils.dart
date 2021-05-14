@@ -11,6 +11,7 @@ export 'src/builder.dart'
 export 'src/firestore_extension.dart'
     show
         CvFirestoreDocumentSnapshotExt,
+        CvFsDocumentSnapshotsExt,
         CvFirestoreQuerySnapshotExt,
         CvFirestoreExt,
         CvFirestoreCollectionReferenceExt,
