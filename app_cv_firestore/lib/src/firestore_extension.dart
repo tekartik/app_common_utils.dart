@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:tekartik_app_cv/app_cv.dart';
 import 'package:tekartik_app_cv_firestore/app_cv_firestore.dart';
+import 'package:tekartik_common_utils/list_utils.dart';
 import 'package:tekartik_firebase_firestore/firestore.dart';
 
 /// Easy extension
@@ -104,7 +105,7 @@ extension CvFirestoreCollectionReferenceExt on CollectionReference {
 /// Easy extension
 extension CvFirestoreQueryExt on Query {
   /// path is updated upon add
-  Future<Iterable<T>> cvGet<T extends CvFirestoreDocument>() async {
+  Future<List<T>> cvGet<T extends CvFirestoreDocument>() async {
     var querySnapshot = await get();
     return querySnapshot.cv<T>();
   }
@@ -140,16 +141,16 @@ extension CvFirestoreDocumentReferenceExt on DocumentReference {
 }
 
 /// Easy extension
-extension CvFsDocumentSnapshotsExt on Iterable<DocumentSnapshot> {
+extension CvFirestoreDocumentSnapshotsExt on Iterable<DocumentSnapshot> {
   /// Create a list of DbRecords from a snapshot
-  Iterable<T> cv<T extends CvFirestoreDocument>() =>
-      map((snapshot) => snapshot.cv<T>());
+  List<T> cv<T extends CvFirestoreDocument>() =>
+      lazy<T>((snapshot) => snapshot.cv());
 }
 
 /// Easy extension
 extension CvFirestoreQuerySnapshotExt on QuerySnapshot {
   /// Create a list of DbRecords from a snapshot
-  Iterable<T> cv<T extends CvFirestoreDocument>() => docs.cv<T>();
+  List<T> cv<T extends CvFirestoreDocument>() => docs.cv<T>();
 }
 
 /// Easy extension
