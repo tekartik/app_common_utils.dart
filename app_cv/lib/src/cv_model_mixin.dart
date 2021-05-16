@@ -63,6 +63,7 @@ mixin CvModelMixin implements CvModel {
   }
 
   /// Copy content
+  @override
   void copyFrom(CvModel model) {
     _debugCheckCvFields();
     for (var field in fields) {
@@ -151,6 +152,13 @@ mixin CvModelMixin implements CvModel {
 
   @override
   Model toMap() => toModel();
+
+  @override
+  void clear() {
+    for (var field in fields) {
+      field.clear();
+    }
+  }
 }
 
 final _debugCvFieldsCheckDone = <Type, bool>{};

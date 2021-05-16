@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:test/test.dart';
 import 'package:tekartik_app_csv/app_csv.dart';
+import 'package:test/test.dart';
 
 void expectCsv(String value, String expected) {
   expect(const LineSplitter().convert(value),

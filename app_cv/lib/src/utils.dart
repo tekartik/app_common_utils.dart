@@ -23,8 +23,8 @@ bool cvModelAreEquals(CvModelRead model1, CvModelRead model2) {
   if (model1.fields.length != model2.fields.length) {
     return false;
   }
-  for (var CvField in model2.fields) {
-    if (model1.field(CvField.name) != CvField) {
+  for (var cvField in model2.fields) {
+    if (model1.field(cvField.name) != cvField) {
       return false;
     }
   }

@@ -86,6 +86,26 @@ void main() {
           IntContent()..value.v = 1);
       expect(IntContent()..fromModel({'value': 1}, columns: []), IntContent());
     });
+    test('copyFrom', () {
+      var cv = IntContent()..copyFrom(IntContent());
+      expect(cv.toModel(), {});
+      cv = IntContent()..copyFrom(IntContent()..value.v = null);
+      expect(cv.toModel(), {'value': null});
+      cv = IntContent()..copyFrom(IntContent()..value.v = 1);
+      expect(cv.toModel(), {'value': 1});
+
+      var src = CvMapModel();
+      src['value'] = 1;
+      expect(src.toModel(), {'value': 1});
+      cv = IntContent()..copyFrom(src);
+      expect(cv.toModel(), {'value': 1});
+
+      src = CvMapModel();
+      src['test'] = 1;
+      expect(src.toModel(), {'test': 1});
+      cv = IntContent()..copyFrom(src);
+      expect(cv.toModel(), {});
+    });
     test('alltoModel', () async {
       var note = Note()
         ..title.v = 'my_title'

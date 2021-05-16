@@ -1,8 +1,8 @@
 import 'package:tekartik_app_cv/app_cv.dart';
 import 'package:tekartik_app_cv_firestore/app_cv_firestore.dart';
 import 'package:tekartik_firebase_firestore/firestore.dart';
-import 'package:test/test.dart';
 import 'package:tekartik_firebase_firestore_sembast/firestore_sembast.dart';
+import 'package:test/test.dart';
 
 class CvFsEmpty extends CvFirestoreDocumentBase {
   @override
@@ -11,12 +11,14 @@ class CvFsEmpty extends CvFirestoreDocumentBase {
 
 class CvFsSingleString extends CvFirestoreDocumentBase {
   final text = CvField<String>('text');
+
   @override
   List<CvField> get fields => [text];
 }
 
 class CvFsAllFields extends CvFirestoreDocumentBase {
   final intValue = CvField<int>('intValue');
+
   @override
   List<CvField> get fields => [intValue];
 }
