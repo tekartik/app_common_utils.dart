@@ -1,6 +1,8 @@
 import 'package:tekartik_app_cv/app_cv.dart';
 import 'package:test/test.dart';
 
+import 'cv_model_test.dart';
+
 void main() {
   group('CvField', () {
     test('cvValuesAreEquals', () {
@@ -75,6 +77,11 @@ void main() {
       expect(field.v, 1);
       field.value = 2;
       expect(field.v, 2);
+    });
+    test('CvModelField', () {
+      var modelField = CvModelField<IntContent>('test');
+      cvAddBuilder<IntContent>((_) => IntContent());
+      expect(modelField.create({}), const TypeMatcher<IntContent>());
     });
   });
 }

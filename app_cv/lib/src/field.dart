@@ -56,7 +56,7 @@ abstract class CvFieldCore<T> implements CvColumn<T> {
 /// Nested CvField content
 abstract class CvFieldContent<T extends CvModel> implements CvField<T> {
   /// contentValue should be ignored
-  T create(dynamic contentValue);
+  T create(Map contentValue);
 
   /// Only set value if not null
   factory CvFieldContent(
@@ -69,7 +69,7 @@ abstract class CvFieldContentList<T extends CvModel>
     implements CvField<List<T>> {
   /// contentValue should be ignored or could be used to create the proper object
   /// but its content should not be populated.
-  T create(dynamic contentValue);
+  T create(Map contentValue);
   List<T> createList();
 
   /// Only set value if not null
@@ -124,7 +124,7 @@ class CvFieldContentListImpl<T extends CvModel> extends CvFieldImpl<List<T>>
   CvFieldContentListImpl(String name, this._create) : super(name);
 
   @override
-  T create(contentValue) => _create(contentValue);
+  T create(Map contentValue) => _create(contentValue);
 
   @override
   Type get itemType => T;
@@ -132,11 +132,12 @@ class CvFieldContentListImpl<T extends CvModel> extends CvFieldImpl<List<T>>
 
 class CvFieldContentImpl<T extends CvModel> extends CvFieldImpl<T>
     implements CvFieldContent<T>, CvModelField<T> {
-  final T Function(dynamic contentValue) _create;
+  final T Function(Map contentValue)? _create;
   CvFieldContentImpl(String name, this._create) : super(name);
 
   @override
-  T create(contentValue) => _create(contentValue);
+  T create(Map contentValue) =>
+      _create != null ? _create!(contentValue) : cvBuildModel<T>(contentValue);
 }
 
 class CvFieldImpl<T>

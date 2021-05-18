@@ -152,10 +152,11 @@ extension CvModelFieldUtilsExt<T extends CvModel> on CvModelField<T> {
 /// Nested model
 abstract class CvModelField<T extends CvModel> implements CvField<T> {
   /// contentValue should be ignored
-  T create(dynamic contentValue);
+  T create(Map contentValue);
 
   /// Only set value if not null
-  factory CvModelField(String name, T Function(dynamic contentValue) create) =>
+  factory CvModelField(String name,
+          [T Function(dynamic contentValue)? create]) =>
       CvFieldContentImpl<T>(name, create);
 }
 
@@ -163,7 +164,7 @@ abstract class CvModelField<T extends CvModel> implements CvField<T> {
 abstract class CvModelListField<T extends CvModel> implements CvListField<T> {
   /// contentValue should be ignored or could be used to create the proper object
   /// but its content should not be populated.
-  T create(dynamic contentValue);
+  T create(Map contentValue);
 
   @override
   List<T> createList();
