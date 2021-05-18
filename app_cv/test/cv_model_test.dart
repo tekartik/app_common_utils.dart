@@ -36,8 +36,13 @@ class Custom {
 class CustomContent extends CvModelBase {
   final custom1 = CvField<Custom>('custom1');
   final custom2 = CvField<Custom>('custom2');
+  final text = CvField<String>('text');
   @override
-  List<CvField> get fields => [custom1, custom2];
+  List<CvField> get fields => [
+        custom1,
+        custom2,
+        text,
+      ];
 }
 
 class StringContent extends CvModelBase {
@@ -310,7 +315,11 @@ void main() {
                       return null;
                     })))
               .toModel(),
-          {'custom1': Custom('custom_1'), 'custom2': Custom('custom_2')});
+          {
+            'custom1': Custom('custom_1'),
+            'custom2': Custom('custom_2'),
+            'text': 'text_3'
+          });
     });
     test('custom', () {
       expect((CustomContent()..custom1.v = Custom('test')).toModel(),

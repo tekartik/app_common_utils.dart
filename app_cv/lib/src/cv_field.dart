@@ -89,7 +89,7 @@ class CvFillOptions {
   final CvFillOptionsGenerateFunction? generate;
   Object? generateValue(Type type) => (generate == null)
       ? cvFillOptionsGenerateBasicType(type, this)
-      : (generate!(type, this) ?? cvFillOptionsGenerateBasicType);
+      : (generate!(type, this) ?? cvFillOptionsGenerateBasicType(type, this));
   CvFillOptions({this.collectionSize, this.valueStart, this.generate});
 }
 
