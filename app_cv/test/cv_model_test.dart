@@ -199,6 +199,78 @@ void main() {
         ];
       _check();
     });
+
+    test('fillModel', () {
+      expect(
+          (CvModelField<IntContent>('int', (_) => IntContent())
+                ..fillModel(CvFillOptions(valueStart: 0)))
+              .v,
+          IntContent()..value.v = 1);
+    });
+
+    test('fillModelList', () {
+      expect(
+          (CvModelListField<IntContent>('int', (_) => IntContent())
+                ..fillList(CvFillOptions(collectionSize: 1, valueStart: 0)))
+              .v,
+          [IntContent()..value.v = 1]);
+    });
+
+    test('fillModel', () {
+      expect((IntContent()..fillModel()).toModel(), {'value': null});
+      expect((WithChildCvField()..fillModel()).toModel(), {
+        'child': {'sub': null}
+      });
+      expect(
+          (WithChildListCvField()..fillModel()).toModel(), {'children': null});
+      expect((AllTypes()..fillModel()).toModel(), {
+        'int': null,
+        'num': null,
+        'string': null,
+        'children': null,
+        'intList': null,
+        'map': null,
+        'mapList': null
+      });
+    });
+    test('fillModel', () {
+      expect((IntContent()..fillModel(CvFillOptions(valueStart: 0))).toModel(),
+          {'value': 1});
+      expect(
+          (WithChildCvField()..fillModel(CvFillOptions(valueStart: 0)))
+              .toModel(),
+          {
+            'child': {'sub': 'text_1'}
+          });
+      expect(
+          (WithChildListCvField()
+                ..fillModel(CvFillOptions(valueStart: 0, collectionSize: 1)))
+              .toModel(),
+          {
+            'children': [
+              {'sub': 'text_1'}
+            ]
+          });
+      expect(
+          (AllTypes()
+                ..fillModel(CvFillOptions(valueStart: 0, collectionSize: 1)))
+              .toModel(),
+          {
+            'int': 1,
+            'num': 2,
+            'string': 'text_3',
+            'children': [
+              {
+                'child': {'sub': 'text_4'}
+              }
+            ],
+            'intList': [5],
+            'map': null,
+            'mapList': [
+              {'field_0': 6}
+            ]
+          });
+    });
   });
 }
 

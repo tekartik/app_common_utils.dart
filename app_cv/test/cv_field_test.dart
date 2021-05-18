@@ -39,6 +39,28 @@ void main() {
           CvField('name', '12'));
     });
 
+    test('fillField', () {
+      expect((CvField<int>('int')..fillField()).v, null);
+      expect((CvField<int>('int')..fillField()).hasValue, true);
+      expect(
+          (CvField<int>('int')..fillField(CvFillOptions(valueStart: 0))).v, 1);
+      expect(
+          (CvField<String>('text')..fillField(CvFillOptions(valueStart: 0))).v,
+          'text_1');
+      expect((CvField<num>('num')..fillField(CvFillOptions(valueStart: 0))).v,
+          1.5);
+      expect(
+          (CvField<num>('double')..fillField(CvFillOptions(valueStart: 0))).v,
+          1.5);
+    });
+
+    test('fillList', () {
+      expect(
+          (CvListField<int>('int')
+                ..fillList(CvFillOptions(collectionSize: 1, valueStart: 0)))
+              .v,
+          [1]);
+    });
     test('hasValue', () {
       var field = CvField('name');
       expect(field.hasValue, isFalse);
@@ -49,6 +71,10 @@ void main() {
       field.clear();
       expect(field.hasValue, isFalse);
       expect(field.v, isNull);
+      field.v = 1;
+      expect(field.v, 1);
+      field.value = 2;
+      expect(field.v, 2);
     });
   });
 }

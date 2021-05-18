@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:meta/meta.dart';
 import 'package:tekartik_app_cv/app_cv.dart';
 
@@ -76,25 +78,56 @@ abstract class CvFieldContentList<T extends CvModel>
       CvFieldContentListImpl(name, create);
 }
 
+class _List<T> extends ListBase<T> {
+  final _list = <T?>[];
+
+  @override
+  void add(T element) {
+    _list.add(element);
+  }
+
+  @override
+  int get length => _list.length;
+
+  @override
+  T operator [](int index) {
+    return _list[index]!;
+  }
+
+  @override
+  void operator []=(int index, T value) {
+    _list[index] = value;
+  }
+
+  @override
+  set length(int newLength) => _list.length = newLength;
+}
+
 /// Nested list implementation.
 class ListCvFieldImpl<T> extends CvFieldImpl<List<T>>
     implements CvField<List<T>>, CvListField<T> {
   @override
-  List<T> createList() => <T>[];
+  List<T> createList() => _List<T>();
 
   ListCvFieldImpl(String name) : super(name);
+
+  @override
+  Type get itemType => T;
 }
 
 /// Nested list of object implementation.
 class CvFieldContentListImpl<T extends CvModel> extends CvFieldImpl<List<T>>
     implements CvFieldContentList<T>, CvModelListField<T> {
   @override
-  List<T> createList() => <T>[];
+  List<T> createList() => _List<T>();
   final T Function(dynamic contentValue) _create;
   CvFieldContentListImpl(String name, this._create) : super(name);
 
   @override
   T create(contentValue) => _create(contentValue);
+
+  @override
+  Type get itemType => T;
 }
 
 class CvFieldContentImpl<T extends CvModel> extends CvFieldImpl<T>
@@ -165,7 +198,7 @@ mixin CvFieldMixin<T> implements CvField<T> {
   }
 
   @override
-  set value(T? value) => v == value;
+  set value(T? value) => v = value;
 
   /// Clear value and flag
   @override

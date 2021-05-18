@@ -1,4 +1,5 @@
 import 'package:tekartik_app_cv/app_cv.dart';
+import 'package:tekartik_app_cv/src/cv_field.dart';
 
 import 'content_values.dart';
 import 'cv_model_mixin.dart';
@@ -66,4 +67,17 @@ abstract class CvModelBase with CvModelMixin {}
 class _CvModelMock extends CvModelBase {
   @override
   List<CvField> get fields => throw UnimplementedError();
+}
+
+extension CvModelUtilsExt on CvModel {
+  /// Fill all null in model including leaves
+  ///
+  /// Fill list if listSize is set
+  ///
+  void fillModel([CvFillOptions? options]) {
+    var fields = this.fields;
+    for (var field in fields) {
+      field.fillField(options);
+    }
+  }
 }
