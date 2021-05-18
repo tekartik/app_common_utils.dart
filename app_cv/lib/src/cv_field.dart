@@ -47,7 +47,7 @@ extension CvFieldUtilsExt<T> on CvField<T> {
       var modelValue = (this as CvModelField).create({})..fillModel(options);
       v = modelValue as T;
     } else if (options.valueStart != null) {
-      v = generateBasicType(type, options) as T;
+      v = options.generateValue(type) as T;
     } else {
       // Default to null
       v = null;
@@ -55,7 +55,8 @@ extension CvFieldUtilsExt<T> on CvField<T> {
   }
 }
 
-Object? generateBasicType(Type type, CvFillOptions options) {
+/// Generate for bool, int, num, text
+Object? cvFillOptionsGenerateBasicType(Type type, CvFillOptions options) {
   Object? v;
   if (options.valueStart != null) {
     var valueStart = options.valueStart! + 1;
@@ -67,6 +68,8 @@ Object? generateBasicType(Type type, CvFillOptions options) {
       v = (valueStart + .5);
     } else if (type == String) {
       v = 'text_$valueStart';
+    } else if (type == bool) {
+      v = valueStart.isEven;
     }
     if (v != null) {
       options.valueStart = valueStart;
@@ -76,12 +79,21 @@ Object? generateBasicType(Type type, CvFillOptions options) {
   return v;
 }
 
+typedef CvFillOptionsGenerateFunction = Object? Function(
+    Type type, CvFillOptions options);
+
+/// Fill options for unit tests
 class CvFillOptions {
-  int? collectionSize;
+  final int? collectionSize;
   int? valueStart;
-  CvFillOptions({this.collectionSize, this.valueStart});
+  final CvFillOptionsGenerateFunction? generate;
+  Object? generateValue(Type type) => (generate == null)
+      ? cvFillOptionsGenerateBasicType(type, this)
+      : (generate!(type, this) ?? cvFillOptionsGenerateBasicType);
+  CvFillOptions({this.collectionSize, this.valueStart, this.generate});
 }
 
+/// Fill helpers
 extension CvListFieldUtilsExt<T> on CvListField<T> {
   void fillList([CvFillOptions? options]) {
     options ??= CvFillOptions();
@@ -100,7 +112,7 @@ extension CvListFieldUtilsExt<T> on CvListField<T> {
             print('map $this');
             var map = <String, Object?>{};
             for (var i = 0; i < collectionSize; i++) {
-              map['field_$i'] = generateBasicType(int, options);
+              map['field_$i'] = options.generateValue(int);
             }
             list.add(map as T);
           }
@@ -109,14 +121,14 @@ extension CvListFieldUtilsExt<T> on CvListField<T> {
             print('list $this');
             var subList = <Object?>[];
             for (var i = 0; i < collectionSize; i++) {
-              subList.add(generateBasicType(int, options));
+              subList.add(options.generateValue(int));
             }
             list.add(subList as T);
           }
         } else {
           if (options.valueStart != null) {
             print('item $this');
-            list.add(generateBasicType(itemType, options) as T);
+            list.add(options.generateValue(itemType) as T);
           }
         }
       }

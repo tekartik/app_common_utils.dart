@@ -18,6 +18,28 @@ class IntContent extends CvModelBase {
   List<CvField> get fields => [value];
 }
 
+class Custom {
+  final String value;
+
+  Custom(this.value);
+  @override
+  String toString() => value;
+
+  @override
+  int get hashCode => value.hashCode;
+  @override
+  bool operator ==(Object other) {
+    return other is Custom && (other.value == value);
+  }
+}
+
+class CustomContent extends CvModelBase {
+  final custom1 = CvField<Custom>('custom1');
+  final custom2 = CvField<Custom>('custom2');
+  @override
+  List<CvField> get fields => [custom1, custom2];
+}
+
 class StringContent extends CvModelBase {
   final value = CvField<String>('value');
 
@@ -224,6 +246,7 @@ void main() {
       expect(
           (WithChildListCvField()..fillModel()).toModel(), {'children': null});
       expect((AllTypes()..fillModel()).toModel(), {
+        'bool': null,
         'int': null,
         'num': null,
         'string': null,
@@ -256,20 +279,42 @@ void main() {
                 ..fillModel(CvFillOptions(valueStart: 0, collectionSize: 1)))
               .toModel(),
           {
-            'int': 1,
-            'num': 2,
-            'string': 'text_3',
+            'bool': false,
+            'int': 2,
+            'num': 3.5,
+            'string': 'text_4',
             'children': [
               {
-                'child': {'sub': 'text_4'}
+                'child': {'sub': 'text_5'}
               }
             ],
-            'intList': [5],
+            'intList': [6],
             'map': null,
             'mapList': [
-              {'field_0': 6}
+              {'field_0': 7}
             ]
           });
+      expect(
+          (CustomContent()
+                ..fillModel(CvFillOptions(
+                    valueStart: 0,
+                    collectionSize: 1,
+                    generate: (type, options) {
+                      if (type == Custom) {
+                        if (options.valueStart != null) {
+                          var value =
+                              options.valueStart = options.valueStart! + 1;
+                          return Custom('custom_$value');
+                        }
+                      }
+                      return null;
+                    })))
+              .toModel(),
+          {'custom1': Custom('custom_1'), 'custom2': Custom('custom_2')});
+    });
+    test('custom', () {
+      expect((CustomContent()..custom1.v = Custom('test')).toModel(),
+          {'custom1': Custom('test')});
     });
   });
 }
@@ -305,6 +350,7 @@ class ChildContent extends CvModelBase {
 }
 
 class AllTypes extends CvModelBase {
+  final boolCvField = CvField<bool>('bool');
   final intCvField = CvField<int>('int');
   final numCvField = CvField<num>('num');
   final stringCvField = CvField<String>('string');
@@ -316,6 +362,7 @@ class AllTypes extends CvModelBase {
 
   @override
   List<CvField> get fields => [
+        boolCvField,
         intCvField,
         numCvField,
         stringCvField,
