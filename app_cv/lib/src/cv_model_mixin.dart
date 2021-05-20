@@ -1,7 +1,6 @@
 import 'package:tekartik_app_cv/app_cv.dart';
 import 'package:tekartik_app_cv/src/cv_model.dart';
 import 'package:tekartik_common_utils/env_utils.dart';
-import 'package:tekartik_common_utils/model/model.dart';
 
 import 'field.dart';
 import 'utils.dart';

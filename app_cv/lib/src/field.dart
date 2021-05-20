@@ -70,6 +70,7 @@ abstract class CvFieldContentList<T extends CvModel>
   /// contentValue should be ignored or could be used to create the proper object
   /// but its content should not be populated.
   T create(Map contentValue);
+
   List<T> createList();
 
   /// Only set value if not null
@@ -121,6 +122,7 @@ class CvFieldContentListImpl<T extends CvModel> extends CvFieldImpl<List<T>>
   @override
   List<T> createList() => _List<T>();
   final T Function(dynamic contentValue) _create;
+
   CvFieldContentListImpl(String name, this._create) : super(name);
 
   @override
@@ -133,6 +135,7 @@ class CvFieldContentListImpl<T extends CvModel> extends CvFieldImpl<List<T>>
 class CvFieldContentImpl<T extends CvModel> extends CvFieldImpl<T>
     implements CvFieldContent<T>, CvModelField<T> {
   final T Function(Map contentValue)? _create;
+
   CvFieldContentImpl(String name, this._create) : super(name);
 
   @override

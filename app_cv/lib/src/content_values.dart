@@ -2,7 +2,6 @@ import 'dart:collection';
 
 import 'package:tekartik_app_cv/app_cv.dart';
 import 'package:tekartik_app_cv/src/column.dart';
-import 'package:tekartik_app_cv/src/cv_model.dart';
 
 import 'cv_model_mixin.dart';
 import 'field.dart';

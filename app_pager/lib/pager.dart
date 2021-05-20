@@ -5,7 +5,6 @@ import 'package:pool/pool.dart';
 import 'package:quiver/collection.dart';
 import 'package:tekartik_app_emit/emit.dart';
 import 'package:tekartik_app_pager/src/data.dart';
-import 'package:tekartik_common_utils/common_utils_import.dart';
 import 'package:tekartik_common_utils/model/model.dart';
 
 /// Provider to implement.

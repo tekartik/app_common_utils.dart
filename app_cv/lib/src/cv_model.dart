@@ -1,5 +1,4 @@
 import 'package:tekartik_app_cv/app_cv.dart';
-import 'package:tekartik_app_cv/src/cv_field.dart';
 
 import 'content_values.dart';
 import 'cv_model_mixin.dart';

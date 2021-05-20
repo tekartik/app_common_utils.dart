@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:tekartik_app_cv/app_cv.dart';
+
 import 'cv_model.dart';
 import 'field.dart';
 
@@ -87,9 +88,11 @@ class CvFillOptions {
   final int? collectionSize;
   int? valueStart;
   final CvFillOptionsGenerateFunction? generate;
+
   Object? generateValue(Type type) => (generate == null)
       ? cvFillOptionsGenerateBasicType(type, this)
       : (generate!(type, this) ?? cvFillOptionsGenerateBasicType(type, this));
+
   CvFillOptions({this.collectionSize, this.valueStart, this.generate});
 }
 
