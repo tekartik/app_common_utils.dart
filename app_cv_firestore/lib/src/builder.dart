@@ -10,7 +10,7 @@ void cvFirestoreAddBuilder<T extends CvModel>(
 }
 
 mixin _WithPath implements CvFirestoreDocument {
-  late String? _path;
+  String? _path;
 
   /// Id
   @override

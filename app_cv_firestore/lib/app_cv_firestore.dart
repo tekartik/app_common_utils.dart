@@ -16,4 +16,6 @@ export 'src/firestore_extension.dart'
         CvFirestoreExt,
         CvFirestoreCollectionReferenceExt,
         CvFirestoreDocumentReferenceExt,
-        CvFirestoreQueryExt;
+        CvFirestoreQueryExt,
+        CvFirestoreWriteBatch,
+        CvFirestoreTransaction;

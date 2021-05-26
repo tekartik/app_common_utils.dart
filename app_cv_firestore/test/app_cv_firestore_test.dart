@@ -68,6 +68,40 @@ void main() {
       await firestore.cvSet(cvFsEmpty);
     });
 
+    test('missing path', () async {
+      // No path set
+      var cvFsEmpty = CvFsEmpty();
+      try {
+        await firestore.cvSet(cvFsEmpty);
+        fail('should fail');
+      } on ArgumentError catch (_) {}
+      try {
+        await firestore.cvUpdate(cvFsEmpty);
+        fail('should fail');
+      } on ArgumentError catch (_) {}
+
+      await firestore.cvRunTransaction((transaction) {
+        try {
+          transaction.cvSet(cvFsEmpty);
+          fail('should fail');
+        } on ArgumentError catch (_) {}
+        try {
+          transaction.cvUpdate(cvFsEmpty);
+          fail('should fail');
+        } on ArgumentError catch (_) {}
+      });
+
+      var batch = firestore.cvBatch();
+      try {
+        batch.cvSet(cvFsEmpty);
+        fail('should fail');
+      } on ArgumentError catch (_) {}
+      try {
+        batch.cvUpdate(cvFsEmpty);
+        fail('should fail');
+      } on ArgumentError catch (_) {}
+    });
+
     test('single string', () async {
       void _check(CvFsSingleString doc) {
         expect(doc.exists, isTrue);
@@ -146,6 +180,39 @@ void main() {
       readDoc = await firestore.cvGet<CvFsSingleString>(doc.path);
       expect(readDoc, doc);
       expect(readDoc.path, doc.path);
+    });
+
+    test('batch', () async {
+      var doc = CvFsSingleString()
+        ..path = 'batch/single_string'
+        ..text.v = 'value';
+      var batch = firestore.cvBatch();
+      batch.cvSet(doc);
+      await batch.commit();
+
+      var readDoc = await firestore.cvGet<CvFsSingleString>(doc.path);
+      expect(readDoc, doc);
+
+      batch = firestore.cvBatch();
+      batch.cvUpdate(doc..text.v = 'new value');
+      await batch.commit();
+
+      readDoc = await firestore.cvGet<CvFsSingleString>(doc.path);
+      expect(readDoc, doc);
+
+      batch = firestore.cvBatch();
+      batch.cvDelete(doc.path);
+      await batch.commit();
+
+      readDoc = await firestore.cvGet<CvFsSingleString>(doc.path);
+      expect(readDoc.exists, isFalse);
+    });
+
+    test('api', () {
+      // ignore: unnecessary_statements
+      CvFirestoreWriteBatch;
+      // ignore: unnecessary_statements
+      CvFirestoreTransaction;
     });
   });
 }
