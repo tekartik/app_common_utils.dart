@@ -1,6 +1,5 @@
 import 'dart:collection';
 
-import 'package:meta/meta.dart';
 import 'package:tekartik_app_cv/app_cv.dart';
 
 import 'column.dart';
@@ -42,8 +41,7 @@ abstract class CvFieldCore<T> implements CvColumn<T> {
 
   bool get hasValue;
 
-  /// Allow dynamic CvFields
-  @visibleForTesting
+  /// Allow dynamic CvFields, copy if the value if set, otherwise delete it
   void fromCvField(CvField cvField);
 
   /// Cast if needed
@@ -240,7 +238,6 @@ mixin CvFieldMixin<T> implements CvField<T> {
 
   /// Allow dynamic CvFields
   @override
-  @visibleForTesting
   void fromCvField(CvField cvField) {
     if (cvField.v is T?) {
       setValue(cvField.v as T?, presentIfNull: cvField.hasValue);
