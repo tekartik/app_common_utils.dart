@@ -325,6 +325,34 @@ void main() {
       expect((CustomContent()..custom1.v = Custom('test')).toModel(),
           {'custom1': Custom('test')});
     });
+    test('CvFieldWithParent', () {
+      var object = WithCvFieldWithParent();
+      expect(object.fields.map((e) => e.name), ['sub.value', 'sub.value2']);
+      expect((WithCvFieldWithParent()..value.v = 1).toModel(), {
+        'sub': {'value': 1}
+      });
+      expect(
+          (WithCvFieldWithParent()
+                ..value.v = 1
+                ..value2.v = 2)
+              .toModel(),
+          {
+            'sub': {'value': 1, 'value2': 2}
+          });
+      expect((WithCvFieldWithParent()..value.v = null).toModel(), {
+        'sub': {'value': null}
+      });
+      expect(WithCvFieldWithParent().toModel(), {});
+
+      var field = WithCvFieldWithParent()
+        ..fromModel({
+          'sub': {'value': 1}
+        });
+      expect(field.value.v, 1);
+      expect(field.toModel(), {
+        'sub': {'value': 1}
+      });
+    });
   });
 }
 
@@ -349,6 +377,14 @@ class WithChildListCvField extends CvModelBase {
 
   @override
   List<CvField> get fields => [children];
+}
+
+class WithCvFieldWithParent extends CvModelBase {
+  final value = CvField<int>('value').withParent('sub');
+  final value2 = CvField<int>('value2').withParent('sub');
+
+  @override
+  List<CvField> get fields => [value, value2];
 }
 
 class ChildContent extends CvModelBase {

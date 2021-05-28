@@ -83,5 +83,9 @@ void main() {
       cvAddBuilder<IntContent>((_) => IntContent());
       expect(modelField.create({}), const TypeMatcher<IntContent>());
     });
+    test('withParent', () {
+      var field = CvField('name').withParent('parent');
+      expect(field.name, 'parent.name');
+    });
   });
 }

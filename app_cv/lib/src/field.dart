@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:tekartik_app_cv/app_cv.dart';
+import 'package:tekartik_app_cv/src/cv_field_with_parent.dart';
 
 import 'column.dart';
 
@@ -49,6 +50,9 @@ abstract class CvFieldCore<T> implements CvColumn<T> {
 
   /// Force the null value.
   void setNull();
+
+  /// Make the field an inner field, the parent being a map
+  CvField<T> withParent(String parent);
 }
 
 /// Nested CvField content
@@ -284,6 +288,9 @@ mixin CvFieldMixin<T> implements CvField<T> {
   void setNull() {
     setValue(null, presentIfNull: true);
   }
+
+  @override
+  CvField<T> withParent(String parent) => CvFieldWithParentImpl(this, parent);
 }
 
 CvField<int> intCvField(String name) => CvField<int>(name);

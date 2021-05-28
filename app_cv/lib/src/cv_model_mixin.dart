@@ -1,4 +1,5 @@
 import 'package:tekartik_app_cv/app_cv.dart';
+import 'package:tekartik_app_cv/src/cv_field_with_parent.dart';
 import 'package:tekartik_app_cv/src/cv_model.dart';
 import 'package:tekartik_common_utils/env_utils.dart';
 
@@ -18,7 +19,27 @@ mixin CvModelMixin implements CvModel {
     for (var column in columns) {
       try {
         var field = this.field(column)!;
-        var entry = model.getModelEntry(field.name);
+        ModelEntry? entry;
+
+        if (field is CvFieldWithParent) {
+          var parentModel = model;
+          var parentField = field;
+          while (true) {
+            var child = parentModel.getValue(parentField.parent);
+            if (child is Map) {
+              parentModel = Model(child);
+              var subField = parentField.field;
+              if (subField is CvFieldWithParent) {
+                parentField = subField;
+              } else {
+                entry = parentModel.getModelEntry(subField.name);
+                break;
+              }
+            }
+          }
+        } else {
+          entry = model.getModelEntry(field.name);
+        }
         if (entry != null) {
           if (field is CvFieldContentList) {
             var list = field.v = field.createList();
@@ -99,19 +120,36 @@ mixin CvModelMixin implements CvModel {
   @override
   Model toModel({List<String>? columns, bool includeMissingValue = false}) {
     _debugCheckCvFields();
+
+    void _toModel(Model model, CvField field) {
+      dynamic value = field.v;
+      if (value is List<CvModelCore>) {
+        value = value.map((e) => (e as CvModelRead).toModel()).toList();
+      } else if (value is CvModelRead) {
+        value = value.toModel(includeMissingValue: includeMissingValue);
+      }
+      if (field is CvFieldWithParent) {
+        // Check sub model
+        if (field.hasValue || includeMissingValue) {
+          var subModel = model[field.parent] as Model?;
+          if (!(subModel is Model)) {
+            subModel = Model();
+            model.setValue(field.parent, subModel);
+          }
+          // Try existing if any
+          _toModel(subModel, field.field);
+        }
+      } else {
+        model.setValue(field.name, value,
+            presentIfNull: field.hasValue || includeMissingValue);
+      }
+    }
+
     columns ??= fields.map((e) => e.name).toList();
     var model = Model();
     for (var column in columns) {
       var field = this.field(column)!;
-      dynamic value = field.v;
-      if (value is List<CvModelCore>) {
-        value = value.map((e) => (e as CvModelRead).toModel()).toList();
-      }
-      if (value is CvModelRead) {
-        value = value.toModel(includeMissingValue: includeMissingValue);
-      }
-      model.setValue(field.name, value,
-          presentIfNull: field.hasValue || includeMissingValue);
+      _toModel(model, field);
     }
     return model;
   }
