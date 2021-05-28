@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:tekartik_app_cv/app_cv.dart';
+import 'package:tekartik_app_cv/src/cv_field_with_parent.dart';
 
 import 'cv_model.dart';
 import 'field.dart';
@@ -47,6 +48,8 @@ extension CvFieldUtilsExt<T> on CvField<T> {
     } else if (this is CvModelField) {
       var modelValue = (this as CvModelField).create({})..fillModel(options);
       v = modelValue as T;
+    } else if (this is CvFieldWithParent) {
+      (this as CvFieldWithParent).field.fillField(options);
     } else if (options.valueStart != null) {
       v = options.generateValue(type) as T;
     } else {

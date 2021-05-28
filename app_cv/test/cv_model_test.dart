@@ -352,6 +352,14 @@ void main() {
       expect(field.toModel(), {
         'sub': {'value': 1}
       });
+
+      expect(
+          (WithCvFieldWithParent()
+                ..fillModel(CvFillOptions(valueStart: 0, collectionSize: 1)))
+              .toModel(),
+          {
+            'sub': {'value': 1, 'value2': 2}
+          });
     });
   });
 }
