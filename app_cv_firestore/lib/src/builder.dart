@@ -54,6 +54,15 @@ abstract class CvFirestoreDocument implements CvModel {
   set exists(bool exists);
 }
 
+/// common helper
+extension CvFirestoreDocumentExt on CvFirestoreDocument {
+  /// Id or null
+  String? get idOrNull => hasId ? id : null;
+
+  /// Path or null
+  String? get pathOrNull => hasId ? path : null;
+}
+
 /// Only the content is compared on equals
 abstract class CvFirestoreDocumentBase extends CvModelBase with _WithPath {}
 

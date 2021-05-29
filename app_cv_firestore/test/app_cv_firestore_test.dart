@@ -102,6 +102,30 @@ void main() {
       } on ArgumentError catch (_) {}
     });
 
+    test('model', () async {
+      var doc = CvFsSingleString();
+      expect(doc.idOrNull, null);
+      expect(doc.pathOrNull, null);
+      try {
+        doc.id;
+        fail('should fail');
+      } catch (e) {
+        expect(e, isNot(const TypeMatcher<TestFailure>()));
+      }
+      try {
+        doc.path;
+        fail('should fail');
+      } catch (e) {
+        expect(e, isNot(const TypeMatcher<TestFailure>()));
+      }
+
+      doc.path = 'test/id';
+      expect(doc.pathOrNull, 'test/id');
+      expect(doc.idOrNull, 'id');
+      expect(doc.path, 'test/id');
+      expect(doc.id, 'id');
+    });
+
     test('single string', () async {
       void _check(CvFsSingleString doc) {
         expect(doc.exists, isTrue);

@@ -6,7 +6,8 @@ export 'src/builder.dart'
         CvFirestoreDocument,
         CvFirestoreDocumentBase,
         cvFirestoreAddBuilder,
-        CvFirestoreMapDocument;
+        CvFirestoreMapDocument,
+        CvFirestoreDocumentExt;
 
 export 'src/firestore_extension.dart'
     show
