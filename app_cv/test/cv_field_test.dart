@@ -87,5 +87,13 @@ void main() {
       var field = CvField('name').withParent('parent');
       expect(field.name, 'parent.name');
     });
+    test('List<CvField>', () {
+      var field1 = CvField<String>('name');
+      var field2 = CvField<int>('count');
+      [field1, field2]
+          .fromCvFields([CvField('other', 'test'), CvField('yet', 1)]);
+      expect(field1.v, 'test');
+      expect(field2.v, 1);
+    });
   });
 }

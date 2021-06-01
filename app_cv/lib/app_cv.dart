@@ -14,6 +14,7 @@ export 'src/cv_field.dart'
         cvValuesAreEqual,
         CvModelListField,
         CvListField,
+        CvFieldListExt,
         CvModelField,
         CvModelFieldUtilsExt,
         CvFieldUtilsExt,

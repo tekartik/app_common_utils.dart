@@ -166,6 +166,17 @@ abstract class CvModelField<T extends CvModel> implements CvField<T> {
       CvFieldContentImpl<T>(name, create);
 }
 
+/// Utilities
+extension CvFieldListExt on List<CvField> {
+  /// Copy all fields
+  void fromCvFields(List<CvField> fields) {
+    assert(length == fields.length);
+    for (var i = 0; i < length; i++) {
+      this[i].fromCvField(fields[i]);
+    }
+  }
+}
+
 /// Nested list
 abstract class CvModelListField<T extends CvModel> implements CvListField<T> {
   /// contentValue should be ignored or could be used to create the proper object
