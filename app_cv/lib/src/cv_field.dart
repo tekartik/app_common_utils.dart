@@ -176,7 +176,7 @@ abstract class CvModelListField<T extends CvModel> implements CvListField<T> {
   List<T> createList();
 
   /// Only set value if not null
-  factory CvModelListField(
-          String name, T Function(dynamic contentValue) create) =>
+  factory CvModelListField(String name,
+          [T Function(dynamic contentValue)? create]) =>
       CvFieldContentListImpl<T>(name, create);
 }

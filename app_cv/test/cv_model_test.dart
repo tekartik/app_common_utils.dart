@@ -2,6 +2,9 @@ import 'package:tekartik_app_cv/app_cv.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
 import 'package:test/test.dart';
 
+CvFillOptions get testFillOptions =>
+    CvFillOptions(valueStart: 0, collectionSize: 1);
+
 class Note extends CvModelBase {
   final title = CvField<String>('title');
   final content = CvField<String>('content');
@@ -22,11 +25,13 @@ class Custom {
   final String value;
 
   Custom(this.value);
+
   @override
   String toString() => value;
 
   @override
   int get hashCode => value.hashCode;
+
   @override
   bool operator ==(Object other) {
     return other is Custom && (other.value == value);
@@ -37,6 +42,7 @@ class CustomContent extends CvModelBase {
   final custom1 = CvField<Custom>('custom1');
   final custom2 = CvField<Custom>('custom2');
   final text = CvField<String>('text');
+
   @override
   List<CvField> get fields => [
         custom1,
@@ -361,6 +367,16 @@ void main() {
             'sub': {'value': 1, 'value2': 2}
           });
     });
+    test('auto children', () {
+      cvAddBuilder<ChildContent>((_) => ChildContent());
+
+      expect((WithAutoChildren()..fillModel(testFillOptions)).toModel(), {
+        'child': {'sub': 'text_1'},
+        'children': [
+          {'sub': 'text_2'}
+        ]
+      });
+    });
   });
 }
 
@@ -424,4 +440,12 @@ class AllTypes extends CvModelBase {
         mapCvField,
         mapListCvField
       ];
+}
+
+class WithAutoChildren extends CvModelBase {
+  final child = CvModelField<ChildContent>('child');
+  final children = CvModelListField<ChildContent>('children');
+
+  @override
+  List<CvField> get fields => [child, children];
 }

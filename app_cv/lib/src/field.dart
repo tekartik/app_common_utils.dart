@@ -55,11 +55,16 @@ abstract class CvFieldCore<T> implements CvColumn<T> {
   CvField<T> withParent(String parent);
 }
 
-/// Nested CvField content
-abstract class CvFieldContent<T extends CvModel> implements CvField<T> {
-  /// contentValue should be ignored
+/// Base for sub model or list of models
+abstract class CvModelFieldCreator<T extends CvModel> {
+  /// contentValue should be ignored or could be used to create the proper object
+  /// but its content should not be populated.
   T create(Map contentValue);
+}
 
+/// Nested CvField content
+abstract class CvFieldContent<T extends CvModel>
+    implements CvField<T>, CvModelFieldCreator<T> {
   /// Only set value if not null
   factory CvFieldContent(
           String name, T Function(dynamic contentValue) create) =>
@@ -68,11 +73,7 @@ abstract class CvFieldContent<T extends CvModel> implements CvField<T> {
 
 /// Nested list
 abstract class CvFieldContentList<T extends CvModel>
-    implements CvField<List<T>> {
-  /// contentValue should be ignored or could be used to create the proper object
-  /// but its content should not be populated.
-  T create(Map contentValue);
-
+    implements CvField<List<T>>, CvModelFieldCreator<T> {
   List<T> createList();
 
   /// Only set value if not null
@@ -118,31 +119,39 @@ class ListCvFieldImpl<T> extends CvFieldImpl<List<T>>
   Type get itemType => T;
 }
 
+/// Content creator mixin
+mixin CvFieldContentCreatorMixin<T extends CvModel>
+    implements CvModelFieldCreator<T> {
+  T Function(Map contentValue)? _create;
+  @override
+  T create(Map contentValue) =>
+      _create != null ? _create!(contentValue) : cvBuildModel<T>(contentValue);
+}
+
 /// Nested list of object implementation.
 class CvFieldContentListImpl<T extends CvModel> extends CvFieldImpl<List<T>>
+    with CvFieldContentCreatorMixin<T>
     implements CvFieldContentList<T>, CvModelListField<T> {
   @override
   List<T> createList() => _List<T>();
-  final T Function(dynamic contentValue) _create;
 
-  CvFieldContentListImpl(String name, this._create) : super(name);
-
-  @override
-  T create(Map contentValue) => _create(contentValue);
+  CvFieldContentListImpl(
+      String name, T Function(Map contentValue)? createObjectFn)
+      : super(name) {
+    _create = createObjectFn;
+  }
 
   @override
   Type get itemType => T;
 }
 
 class CvFieldContentImpl<T extends CvModel> extends CvFieldImpl<T>
+    with CvFieldContentCreatorMixin<T>
     implements CvFieldContent<T>, CvModelField<T> {
-  final T Function(Map contentValue)? _create;
-
-  CvFieldContentImpl(String name, this._create) : super(name);
-
-  @override
-  T create(Map contentValue) =>
-      _create != null ? _create!(contentValue) : cvBuildModel<T>(contentValue);
+  CvFieldContentImpl(String name, T Function(Map contentValue)? createObjectFn)
+      : super(name) {
+    _create = createObjectFn;
+  }
 }
 
 class CvFieldImpl<T>
