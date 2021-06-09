@@ -3,6 +3,7 @@ import 'package:tekartik_app_cv_firestore/app_cv_firestore.dart';
 import 'package:tekartik_firebase_firestore/firestore.dart';
 import 'package:tekartik_firebase_firestore_sembast/firestore_sembast.dart';
 import 'package:test/test.dart';
+import 'package:path/path.dart';
 
 class CvFsEmpty extends CvFirestoreDocumentBase {
   @override
@@ -237,6 +238,23 @@ void main() {
       CvFirestoreWriteBatch;
       // ignore: unnecessary_statements
       CvFirestoreTransaction;
+    });
+
+    test('onSnapshot', () async {
+      var doc = CvFsSingleString()
+        ..path = 'test/single_string'
+        ..text.v = 'value';
+
+      await firestore.cvSet(doc);
+      expect(
+          await firestore.doc(doc.path).cvOnSnapshot<CvFsSingleString>().first,
+          doc);
+      expect(
+          await firestore
+              .collection(url.dirname(doc.path))
+              .cvOnSnapshots<CvFsSingleString>()
+              .first,
+          [doc]);
     });
   });
 }

@@ -118,6 +118,11 @@ extension CvFirestoreQueryExt on Query {
     var querySnapshot = await get();
     return querySnapshot.cv<T>();
   }
+
+  Stream<List<T>> cvOnSnapshots<T extends CvFirestoreDocument>() => onSnapshot()
+          .transform(StreamTransformer.fromHandlers(handleData: (data, sink) {
+        sink.add(data.docs.cv<T>());
+      }));
 }
 
 /// Easy extension
@@ -147,6 +152,12 @@ extension CvFirestoreDocumentReferenceExt on DocumentReference {
   Future<T> cvGet<T extends CvFirestoreDocument>() async {
     return (await get()).cv();
   }
+
+  /// on snapshots
+  Stream<T> cvOnSnapshot<T extends CvFirestoreDocument>() => onSnapshot()
+          .transform(StreamTransformer.fromHandlers(handleData: (data, sink) {
+        sink.add(data.cv<T>());
+      }));
 }
 
 /// Easy extension
