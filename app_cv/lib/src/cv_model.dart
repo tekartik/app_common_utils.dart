@@ -67,3 +67,16 @@ class _CvModelMock extends CvModelBase {
   @override
   List<CvField> get fields => throw UnimplementedError();
 }
+
+extension CvModelUtilsExt on CvModel {
+  /// Fill all null in model including leaves
+  ///
+  /// Fill list if listSize is set
+  ///
+  void fillModel([CvFillOptions? options]) {
+    var fields = this.fields;
+    for (var field in fields) {
+      field.fillField(options);
+    }
+  }
+}

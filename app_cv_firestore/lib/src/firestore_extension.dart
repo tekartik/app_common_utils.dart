@@ -5,22 +5,24 @@ import 'package:tekartik_app_cv_firestore/app_cv_firestore.dart';
 import 'package:tekartik_common_utils/list_utils.dart';
 import 'package:tekartik_firebase_firestore/firestore.dart';
 
+void _ensurePathSet(CvFirestoreDocument document) {
+  if (!document.hasId) {
+    throw ArgumentError('path must be set on document $document');
+  }
+}
+
 /// Easy extension
 extension CvFirestoreExt on Firestore {
   /// Add a document
   Future<void> cvSet<T extends CvFirestoreDocument>(T document,
       [SetOptions? options]) async {
-    if (!document.hasId) {
-      throw StateError('Cannot set a document without a path ($document)');
-    }
+    _ensurePathSet(document);
     await doc(document.path).set(document.toModel(), options);
   }
 
   /// Update a document
   Future<void> cvUpdate<T extends CvFirestoreDocument>(T document) async {
-    if (!document.hasId) {
-      throw StateError('Cannot update a document without a path ($document)');
-    }
+    _ensurePathSet(document);
     await doc(document.path).update(document.toModel());
   }
 
@@ -41,6 +43,11 @@ extension CvFirestoreExt on Firestore {
     return runTransaction<T>((transaction) async {
       return action(CvFirestoreTransaction(this, transaction));
     });
+  }
+
+  /// Batch
+  CvFirestoreWriteBatch cvBatch() {
+    return CvFirestoreWriteBatch(this, batch());
   }
 }
 
@@ -63,11 +70,13 @@ class CvFirestoreTransaction extends Transaction {
 
   /// Set
   void cvSet<T extends CvFirestoreDocument>(T document, [SetOptions? options]) {
+    _ensurePathSet(document);
     set(_firestore.doc(document.path), document.toModel(), options);
   }
 
   /// update
   void cvUpdate<T extends CvFirestoreDocument>(T document) {
+    _ensurePathSet(document);
     update(_firestore.doc(document.path), document.toModel());
   }
 
@@ -109,6 +118,11 @@ extension CvFirestoreQueryExt on Query {
     var querySnapshot = await get();
     return querySnapshot.cv<T>();
   }
+
+  Stream<List<T>> cvOnSnapshots<T extends CvFirestoreDocument>() => onSnapshot()
+          .transform(StreamTransformer.fromHandlers(handleData: (data, sink) {
+        sink.add(data.docs.cv<T>());
+      }));
 }
 
 /// Easy extension
@@ -138,6 +152,12 @@ extension CvFirestoreDocumentReferenceExt on DocumentReference {
   Future<T> cvGet<T extends CvFirestoreDocument>() async {
     return (await get()).cv();
   }
+
+  /// on snapshots
+  Stream<T> cvOnSnapshot<T extends CvFirestoreDocument>() => onSnapshot()
+          .transform(StreamTransformer.fromHandlers(handleData: (data, sink) {
+        sink.add(data.cv<T>());
+      }));
 }
 
 /// Easy extension
@@ -176,11 +196,15 @@ class CvFirestoreWriteBatch extends WriteBatch {
   void delete(DocumentReference ref) => _writeBatch.delete(ref);
 
   /// set document
-  void cvSet(CvFirestoreDocument document, [SetOptions? options]) =>
-      set(_firestore.doc(document.path), document.toModel(), options);
+  void cvSet(CvFirestoreDocument document, [SetOptions? options]) {
+    _ensurePathSet(document);
+    set(_firestore.doc(document.path), document.toModel(), options);
+  }
 
-  void cvUpdate(CvFirestoreDocument document) =>
-      update(_firestore.doc(document.path), document.toModel());
+  void cvUpdate(CvFirestoreDocument document) {
+    _ensurePathSet(document);
+    update(_firestore.doc(document.path), document.toModel());
+  }
 
   void cvDelete(String path) => delete(_firestore.doc(path));
 }

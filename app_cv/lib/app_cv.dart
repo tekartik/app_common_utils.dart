@@ -9,5 +9,16 @@ export 'src/builder.dart'
         CvMapExt,
         CvMapListExt;
 export 'src/cv_field.dart'
-    show CvField, cvValuesAreEqual, CvModelListField, CvListField, CvModelField;
-export 'src/cv_model.dart' show CvModel, CvMapModel, CvModelBase;
+    show
+        CvField,
+        cvValuesAreEqual,
+        CvModelListField,
+        CvListField,
+        CvFieldListExt,
+        CvModelField,
+        CvModelFieldUtilsExt,
+        CvFieldUtilsExt,
+        CvListFieldUtilsExt,
+        CvFillOptions;
+export 'src/cv_model.dart'
+    show CvModel, CvMapModel, CvModelBase, CvModelUtilsExt;

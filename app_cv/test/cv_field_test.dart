@@ -1,6 +1,8 @@
 import 'package:tekartik_app_cv/app_cv.dart';
 import 'package:test/test.dart';
 
+import 'cv_model_test.dart';
+
 void main() {
   group('CvField', () {
     test('cvValuesAreEquals', () {
@@ -39,6 +41,28 @@ void main() {
           CvField('name', '12'));
     });
 
+    test('fillField', () {
+      expect((CvField<int>('int')..fillField()).v, null);
+      expect((CvField<int>('int')..fillField()).hasValue, true);
+      expect(
+          (CvField<int>('int')..fillField(CvFillOptions(valueStart: 0))).v, 1);
+      expect(
+          (CvField<String>('text')..fillField(CvFillOptions(valueStart: 0))).v,
+          'text_1');
+      expect((CvField<num>('num')..fillField(CvFillOptions(valueStart: 0))).v,
+          1.5);
+      expect(
+          (CvField<num>('double')..fillField(CvFillOptions(valueStart: 0))).v,
+          1.5);
+    });
+
+    test('fillList', () {
+      expect(
+          (CvListField<int>('int')
+                ..fillList(CvFillOptions(collectionSize: 1, valueStart: 0)))
+              .v,
+          [1]);
+    });
     test('hasValue', () {
       var field = CvField('name');
       expect(field.hasValue, isFalse);
@@ -49,6 +73,27 @@ void main() {
       field.clear();
       expect(field.hasValue, isFalse);
       expect(field.v, isNull);
+      field.v = 1;
+      expect(field.v, 1);
+      field.value = 2;
+      expect(field.v, 2);
+    });
+    test('CvModelField', () {
+      var modelField = CvModelField<IntContent>('test');
+      cvAddBuilder<IntContent>((_) => IntContent());
+      expect(modelField.create({}), const TypeMatcher<IntContent>());
+    });
+    test('withParent', () {
+      var field = CvField('name').withParent('parent');
+      expect(field.name, 'parent.name');
+    });
+    test('List<CvField>', () {
+      var field1 = CvField<String>('name');
+      var field2 = CvField<int>('count');
+      [field1, field2]
+          .fromCvFields([CvField('other', 'test'), CvField('yet', 1)]);
+      expect(field1.v, 'test');
+      expect(field2.v, 1);
     });
   });
 }

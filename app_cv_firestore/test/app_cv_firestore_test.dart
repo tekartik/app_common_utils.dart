@@ -1,3 +1,4 @@
+import 'package:path/path.dart';
 import 'package:tekartik_app_cv/app_cv.dart';
 import 'package:tekartik_app_cv_firestore/app_cv_firestore.dart';
 import 'package:tekartik_firebase_firestore/firestore.dart';
@@ -66,6 +67,64 @@ void main() {
       expect(cvFsEmpty.toModel(), {});
 
       await firestore.cvSet(cvFsEmpty);
+    });
+
+    test('missing path', () async {
+      // No path set
+      var cvFsEmpty = CvFsEmpty();
+      try {
+        await firestore.cvSet(cvFsEmpty);
+        fail('should fail');
+      } on ArgumentError catch (_) {}
+      try {
+        await firestore.cvUpdate(cvFsEmpty);
+        fail('should fail');
+      } on ArgumentError catch (_) {}
+
+      await firestore.cvRunTransaction((transaction) {
+        try {
+          transaction.cvSet(cvFsEmpty);
+          fail('should fail');
+        } on ArgumentError catch (_) {}
+        try {
+          transaction.cvUpdate(cvFsEmpty);
+          fail('should fail');
+        } on ArgumentError catch (_) {}
+      });
+
+      var batch = firestore.cvBatch();
+      try {
+        batch.cvSet(cvFsEmpty);
+        fail('should fail');
+      } on ArgumentError catch (_) {}
+      try {
+        batch.cvUpdate(cvFsEmpty);
+        fail('should fail');
+      } on ArgumentError catch (_) {}
+    });
+
+    test('model', () async {
+      var doc = CvFsSingleString();
+      expect(doc.idOrNull, null);
+      expect(doc.pathOrNull, null);
+      try {
+        doc.id;
+        fail('should fail');
+      } catch (e) {
+        expect(e, isNot(const TypeMatcher<TestFailure>()));
+      }
+      try {
+        doc.path;
+        fail('should fail');
+      } catch (e) {
+        expect(e, isNot(const TypeMatcher<TestFailure>()));
+      }
+
+      doc.path = 'test/id';
+      expect(doc.pathOrNull, 'test/id');
+      expect(doc.idOrNull, 'id');
+      expect(doc.path, 'test/id');
+      expect(doc.id, 'id');
     });
 
     test('single string', () async {
@@ -146,6 +205,76 @@ void main() {
       readDoc = await firestore.cvGet<CvFsSingleString>(doc.path);
       expect(readDoc, doc);
       expect(readDoc.path, doc.path);
+    });
+
+    test('batch', () async {
+      var doc = CvFsSingleString()
+        ..path = 'batch/single_string'
+        ..text.v = 'value';
+      var batch = firestore.cvBatch();
+      batch.cvSet(doc);
+      await batch.commit();
+
+      var readDoc = await firestore.cvGet<CvFsSingleString>(doc.path);
+      expect(readDoc, doc);
+
+      batch = firestore.cvBatch();
+      batch.cvUpdate(doc..text.v = 'new value');
+      await batch.commit();
+
+      readDoc = await firestore.cvGet<CvFsSingleString>(doc.path);
+      expect(readDoc, doc);
+
+      batch = firestore.cvBatch();
+      batch.cvDelete(doc.path);
+      await batch.commit();
+
+      readDoc = await firestore.cvGet<CvFsSingleString>(doc.path);
+      expect(readDoc.exists, isFalse);
+    });
+
+    test('api', () {
+      // ignore: unnecessary_statements
+      CvFirestoreWriteBatch;
+      // ignore: unnecessary_statements
+      CvFirestoreTransaction;
+    });
+
+    test('onSnapshot', () async {
+      var doc = CvFsSingleString()
+        ..path = 'test/single_string'
+        ..text.v = 'value';
+
+      await firestore.cvSet(doc);
+      expect(
+          await firestore.doc(doc.path).cvOnSnapshot<CvFsSingleString>().first,
+          doc);
+      expect(
+          await firestore
+              .collection(url.dirname(doc.path))
+              .cvOnSnapshots<CvFsSingleString>()
+              .first,
+          [doc]);
+    });
+
+    test('collection', () async {
+      var collection = CvCollectionReference<CvFsSingleString>('test');
+      var docRef = collection.doc('1');
+      expect(docRef.path, 'test/1');
+      expect(await collection.get(firestore), []);
+      var doc = docRef.cv()..text.v = 'value';
+      await firestore.cvSet(doc);
+      expect(await collection.get(firestore), [doc]);
+      //var doc = docRef.cv();
+    });
+
+    test('document', () async {
+      var docRef = CvDocumentReference<CvFsSingleString>('test/1');
+      expect(docRef.path, 'test/1');
+      var doc = docRef.cv();
+      doc.text.v = 'value';
+      await firestore.cvSet(doc);
+      expect(await docRef.get(firestore), doc);
     });
   });
 }

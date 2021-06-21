@@ -1,5 +1,7 @@
-import 'package:meta/meta.dart';
+import 'dart:collection';
+
 import 'package:tekartik_app_cv/app_cv.dart';
+import 'package:tekartik_app_cv/src/cv_field_with_parent.dart';
 
 import 'column.dart';
 
@@ -40,8 +42,7 @@ abstract class CvFieldCore<T> implements CvColumn<T> {
 
   bool get hasValue;
 
-  /// Allow dynamic CvFields
-  @visibleForTesting
+  /// Allow dynamic CvFields, copy if the value if set, otherwise delete it
   void fromCvField(CvField cvField);
 
   /// Cast if needed
@@ -49,13 +50,21 @@ abstract class CvFieldCore<T> implements CvColumn<T> {
 
   /// Force the null value.
   void setNull();
+
+  /// Make the field an inner field, the parent being a map
+  CvField<T> withParent(String parent);
+}
+
+/// Base for sub model or list of models
+abstract class CvModelFieldCreator<T extends CvModel> {
+  /// contentValue should be ignored or could be used to create the proper object
+  /// but its content should not be populated.
+  T create(Map contentValue);
 }
 
 /// Nested CvField content
-abstract class CvFieldContent<T extends CvModel> implements CvField<T> {
-  /// contentValue should be ignored
-  T create(dynamic contentValue);
-
+abstract class CvFieldContent<T extends CvModel>
+    implements CvField<T>, CvModelFieldCreator<T> {
   /// Only set value if not null
   factory CvFieldContent(
           String name, T Function(dynamic contentValue) create) =>
@@ -64,10 +73,7 @@ abstract class CvFieldContent<T extends CvModel> implements CvField<T> {
 
 /// Nested list
 abstract class CvFieldContentList<T extends CvModel>
-    implements CvField<List<T>> {
-  /// contentValue should be ignored or could be used to create the proper object
-  /// but its content should not be populated.
-  T create(dynamic contentValue);
+    implements CvField<List<T>>, CvModelFieldCreator<T> {
   List<T> createList();
 
   /// Only set value if not null
@@ -76,34 +82,76 @@ abstract class CvFieldContentList<T extends CvModel>
       CvFieldContentListImpl(name, create);
 }
 
+class _List<T> extends ListBase<T> {
+  final _list = <T?>[];
+
+  @override
+  void add(T element) {
+    _list.add(element);
+  }
+
+  @override
+  int get length => _list.length;
+
+  @override
+  T operator [](int index) {
+    return _list[index]!;
+  }
+
+  @override
+  void operator []=(int index, T value) {
+    _list[index] = value;
+  }
+
+  @override
+  set length(int newLength) => _list.length = newLength;
+}
+
 /// Nested list implementation.
 class ListCvFieldImpl<T> extends CvFieldImpl<List<T>>
     implements CvField<List<T>>, CvListField<T> {
   @override
-  List<T> createList() => <T>[];
+  List<T> createList() => _List<T>();
 
   ListCvFieldImpl(String name) : super(name);
+
+  @override
+  Type get itemType => T;
+}
+
+/// Content creator mixin
+mixin CvFieldContentCreatorMixin<T extends CvModel>
+    implements CvModelFieldCreator<T> {
+  T Function(Map contentValue)? _create;
+  @override
+  T create(Map contentValue) =>
+      _create != null ? _create!(contentValue) : cvBuildModel<T>(contentValue);
 }
 
 /// Nested list of object implementation.
 class CvFieldContentListImpl<T extends CvModel> extends CvFieldImpl<List<T>>
+    with CvFieldContentCreatorMixin<T>
     implements CvFieldContentList<T>, CvModelListField<T> {
   @override
-  List<T> createList() => <T>[];
-  final T Function(dynamic contentValue) _create;
-  CvFieldContentListImpl(String name, this._create) : super(name);
+  List<T> createList() => _List<T>();
+
+  CvFieldContentListImpl(
+      String name, T Function(Map contentValue)? createObjectFn)
+      : super(name) {
+    _create = createObjectFn;
+  }
 
   @override
-  T create(contentValue) => _create(contentValue);
+  Type get itemType => T;
 }
 
 class CvFieldContentImpl<T extends CvModel> extends CvFieldImpl<T>
+    with CvFieldContentCreatorMixin<T>
     implements CvFieldContent<T>, CvModelField<T> {
-  final T Function(dynamic contentValue) _create;
-  CvFieldContentImpl(String name, this._create) : super(name);
-
-  @override
-  T create(contentValue) => _create(contentValue);
+  CvFieldContentImpl(String name, T Function(Map contentValue)? createObjectFn)
+      : super(name) {
+    _create = createObjectFn;
+  }
 }
 
 class CvFieldImpl<T>
@@ -165,7 +213,7 @@ mixin CvFieldMixin<T> implements CvField<T> {
   }
 
   @override
-  set value(T? value) => v == value;
+  set value(T? value) => v = value;
 
   /// Clear value and flag
   @override
@@ -203,7 +251,6 @@ mixin CvFieldMixin<T> implements CvField<T> {
 
   /// Allow dynamic CvFields
   @override
-  @visibleForTesting
   void fromCvField(CvField cvField) {
     if (cvField.v is T?) {
       setValue(cvField.v as T?, presentIfNull: cvField.hasValue);
@@ -250,6 +297,9 @@ mixin CvFieldMixin<T> implements CvField<T> {
   void setNull() {
     setValue(null, presentIfNull: true);
   }
+
+  @override
+  CvField<T> withParent(String parent) => CvFieldWithParentImpl(this, parent);
 }
 
 CvField<int> intCvField(String name) => CvField<int>(name);

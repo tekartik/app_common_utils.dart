@@ -1,6 +1,7 @@
 import 'package:meta/meta.dart';
+import 'package:path/path.dart';
 import 'package:tekartik_app_cv/app_cv.dart';
-import 'package:tekartik_app_cv/src/content_values.dart'; // ignore: implementation_imports
+import 'package:tekartik_app_cv/src/content_values.dart';
 
 /// Add builder
 void cvFirestoreAddBuilder<T extends CvModel>(
@@ -9,7 +10,11 @@ void cvFirestoreAddBuilder<T extends CvModel>(
 }
 
 mixin _WithPath implements CvFirestoreDocument {
-  late String? _path;
+  String? _path;
+
+  /// Id
+  @override
+  String get id => url.basename(path);
 
   /// Set the path
   @override
@@ -33,6 +38,9 @@ mixin _WithPath implements CvFirestoreDocument {
 
 /// Only the content is compared on equals
 abstract class CvFirestoreDocument implements CvModel {
+  /// Id
+  String get id;
+
   /// Path
   String get path;
 
@@ -44,6 +52,15 @@ abstract class CvFirestoreDocument implements CvModel {
 
   @visibleForTesting
   set exists(bool exists);
+}
+
+/// common helper
+extension CvFirestoreDocumentExt on CvFirestoreDocument {
+  /// Id or null
+  String? get idOrNull => hasId ? id : null;
+
+  /// Path or null
+  String? get pathOrNull => hasId ? path : null;
 }
 
 /// Only the content is compared on equals

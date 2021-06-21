@@ -6,8 +6,10 @@ export 'src/builder.dart'
         CvFirestoreDocument,
         CvFirestoreDocumentBase,
         cvFirestoreAddBuilder,
-        CvFirestoreMapDocument;
-
+        CvFirestoreMapDocument,
+        CvFirestoreDocumentExt;
+export 'src/cv_collection_reference.dart' show CvCollectionReference;
+export 'src/cv_document_reference.dart' show CvDocumentReference;
 export 'src/firestore_extension.dart'
     show
         CvFirestoreDocumentSnapshotExt,
@@ -16,4 +18,6 @@ export 'src/firestore_extension.dart'
         CvFirestoreExt,
         CvFirestoreCollectionReferenceExt,
         CvFirestoreDocumentReferenceExt,
-        CvFirestoreQueryExt;
+        CvFirestoreQueryExt,
+        CvFirestoreWriteBatch,
+        CvFirestoreTransaction;

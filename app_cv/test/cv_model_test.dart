@@ -2,6 +2,9 @@ import 'package:tekartik_app_cv/app_cv.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
 import 'package:test/test.dart';
 
+CvFillOptions get testFillOptions =>
+    CvFillOptions(valueStart: 0, collectionSize: 1);
+
 class Note extends CvModelBase {
   final title = CvField<String>('title');
   final content = CvField<String>('content');
@@ -16,6 +19,36 @@ class IntContent extends CvModelBase {
 
   @override
   List<CvField> get fields => [value];
+}
+
+class Custom {
+  final String value;
+
+  Custom(this.value);
+
+  @override
+  String toString() => value;
+
+  @override
+  int get hashCode => value.hashCode;
+
+  @override
+  bool operator ==(Object other) {
+    return other is Custom && (other.value == value);
+  }
+}
+
+class CustomContent extends CvModelBase {
+  final custom1 = CvField<Custom>('custom1');
+  final custom2 = CvField<Custom>('custom2');
+  final text = CvField<String>('text');
+
+  @override
+  List<CvField> get fields => [
+        custom1,
+        custom2,
+        text,
+      ];
 }
 
 class StringContent extends CvModelBase {
@@ -199,6 +232,151 @@ void main() {
         ];
       _check();
     });
+
+    test('fillModel', () {
+      expect(
+          (CvModelField<IntContent>('int', (_) => IntContent())
+                ..fillModel(CvFillOptions(valueStart: 0)))
+              .v,
+          IntContent()..value.v = 1);
+    });
+
+    test('fillModelList', () {
+      expect(
+          (CvModelListField<IntContent>('int', (_) => IntContent())
+                ..fillList(CvFillOptions(collectionSize: 1, valueStart: 0)))
+              .v,
+          [IntContent()..value.v = 1]);
+    });
+
+    test('fillModel', () {
+      expect((IntContent()..fillModel()).toModel(), {'value': null});
+      expect((WithChildCvField()..fillModel()).toModel(), {
+        'child': {'sub': null}
+      });
+      expect(
+          (WithChildListCvField()..fillModel()).toModel(), {'children': null});
+      expect((AllTypes()..fillModel()).toModel(), {
+        'bool': null,
+        'int': null,
+        'num': null,
+        'string': null,
+        'children': null,
+        'intList': null,
+        'map': null,
+        'mapList': null
+      });
+    });
+    test('fillModel', () {
+      expect((IntContent()..fillModel(CvFillOptions(valueStart: 0))).toModel(),
+          {'value': 1});
+      expect(
+          (WithChildCvField()..fillModel(CvFillOptions(valueStart: 0)))
+              .toModel(),
+          {
+            'child': {'sub': 'text_1'}
+          });
+      expect(
+          (WithChildListCvField()
+                ..fillModel(CvFillOptions(valueStart: 0, collectionSize: 1)))
+              .toModel(),
+          {
+            'children': [
+              {'sub': 'text_1'}
+            ]
+          });
+      expect(
+          (AllTypes()
+                ..fillModel(CvFillOptions(valueStart: 0, collectionSize: 1)))
+              .toModel(),
+          {
+            'bool': false,
+            'int': 2,
+            'num': 3.5,
+            'string': 'text_4',
+            'children': [
+              {
+                'child': {'sub': 'text_5'}
+              }
+            ],
+            'intList': [6],
+            'map': null,
+            'mapList': [
+              {'field_0': 7}
+            ]
+          });
+      expect(
+          (CustomContent()
+                ..fillModel(CvFillOptions(
+                    valueStart: 0,
+                    collectionSize: 1,
+                    generate: (type, options) {
+                      if (type == Custom) {
+                        if (options.valueStart != null) {
+                          var value =
+                              options.valueStart = options.valueStart! + 1;
+                          return Custom('custom_$value');
+                        }
+                      }
+                      return null;
+                    })))
+              .toModel(),
+          {
+            'custom1': Custom('custom_1'),
+            'custom2': Custom('custom_2'),
+            'text': 'text_3'
+          });
+    });
+    test('custom', () {
+      expect((CustomContent()..custom1.v = Custom('test')).toModel(),
+          {'custom1': Custom('test')});
+    });
+    test('CvFieldWithParent', () {
+      var object = WithCvFieldWithParent();
+      expect(object.fields.map((e) => e.name), ['sub.value', 'sub.value2']);
+      expect((WithCvFieldWithParent()..value.v = 1).toModel(), {
+        'sub': {'value': 1}
+      });
+      expect(
+          (WithCvFieldWithParent()
+                ..value.v = 1
+                ..value2.v = 2)
+              .toModel(),
+          {
+            'sub': {'value': 1, 'value2': 2}
+          });
+      expect((WithCvFieldWithParent()..value.v = null).toModel(), {
+        'sub': {'value': null}
+      });
+      expect(WithCvFieldWithParent().toModel(), {});
+
+      var field = WithCvFieldWithParent()
+        ..fromModel({
+          'sub': {'value': 1}
+        });
+      expect(field.value.v, 1);
+      expect(field.toModel(), {
+        'sub': {'value': 1}
+      });
+
+      expect(
+          (WithCvFieldWithParent()
+                ..fillModel(CvFillOptions(valueStart: 0, collectionSize: 1)))
+              .toModel(),
+          {
+            'sub': {'value': 1, 'value2': 2}
+          });
+    });
+    test('auto children', () {
+      cvAddBuilder<ChildContent>((_) => ChildContent());
+
+      expect((WithAutoChildren()..fillModel(testFillOptions)).toModel(), {
+        'child': {'sub': 'text_1'},
+        'children': [
+          {'sub': 'text_2'}
+        ]
+      });
+    });
   });
 }
 
@@ -225,6 +403,14 @@ class WithChildListCvField extends CvModelBase {
   List<CvField> get fields => [children];
 }
 
+class WithCvFieldWithParent extends CvModelBase {
+  final value = CvField<int>('value').withParent('sub');
+  final value2 = CvField<int>('value2').withParent('sub');
+
+  @override
+  List<CvField> get fields => [value, value2];
+}
+
 class ChildContent extends CvModelBase {
   final sub = CvField<String>('sub');
 
@@ -233,6 +419,7 @@ class ChildContent extends CvModelBase {
 }
 
 class AllTypes extends CvModelBase {
+  final boolCvField = CvField<bool>('bool');
   final intCvField = CvField<int>('int');
   final numCvField = CvField<num>('num');
   final stringCvField = CvField<String>('string');
@@ -244,6 +431,7 @@ class AllTypes extends CvModelBase {
 
   @override
   List<CvField> get fields => [
+        boolCvField,
         intCvField,
         numCvField,
         stringCvField,
@@ -252,4 +440,12 @@ class AllTypes extends CvModelBase {
         mapCvField,
         mapListCvField
       ];
+}
+
+class WithAutoChildren extends CvModelBase {
+  final child = CvModelField<ChildContent>('child');
+  final children = CvModelListField<ChildContent>('children');
+
+  @override
+  List<CvField> get fields => [child, children];
 }

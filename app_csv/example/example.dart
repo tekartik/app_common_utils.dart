@@ -1,7 +1,6 @@
 import 'dart:typed_data';
 
 import 'package:tekartik_app_csv/app_csv.dart';
-import 'package:tekartik_app_csv/src/csv_to_map_list.dart';
 
 void main() {
   var list = [
