@@ -256,5 +256,25 @@ void main() {
               .first,
           [doc]);
     });
+
+    test('collection', () async {
+      var collection = CvCollectionReference<CvFsSingleString>('test');
+      var docRef = collection.doc('1');
+      expect(docRef.path, 'test/1');
+      expect(await collection.get(firestore), []);
+      var doc = docRef.cv()..text.v = 'value';
+      await firestore.cvSet(doc);
+      expect(await collection.get(firestore), [doc]);
+      //var doc = docRef.cv();
+    });
+
+    test('document', () async {
+      var docRef = CvDocumentReference<CvFsSingleString>('test/1');
+      expect(docRef.path, 'test/1');
+      var doc = docRef.cv();
+      doc.text.v = 'value';
+      await firestore.cvSet(doc);
+      expect(await docRef.get(firestore), doc);
+    });
   });
 }
