@@ -51,14 +51,6 @@ abstract class CvMapModel implements CvModel, Map<String, dynamic> {
 /// Model to access the data
 abstract class CvModel implements CvModelRead, CvModelWrite, CvModelCore {}
 
-abstract class CvModelListRead {
-  ModelList toModelList();
-}
-
-abstract class CvModelListWrite {
-  void fromModelList(List map);
-}
-
 /// Base content class
 abstract class CvModelBase with CvModelMixin {}
 

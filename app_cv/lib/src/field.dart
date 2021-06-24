@@ -123,6 +123,7 @@ class ListCvFieldImpl<T> extends CvFieldImpl<List<T>>
 mixin CvFieldContentCreatorMixin<T extends CvModel>
     implements CvModelFieldCreator<T> {
   T Function(Map contentValue)? _create;
+
   @override
   T create(Map contentValue) =>
       _create != null ? _create!(contentValue) : cvBuildModel<T>(contentValue);

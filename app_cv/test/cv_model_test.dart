@@ -1,4 +1,5 @@
 import 'package:tekartik_app_cv/app_cv.dart';
+import 'package:tekartik_app_cv/src/builder.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
 import 'package:test/test.dart';
 
@@ -20,6 +21,29 @@ class IntContent extends CvModelBase {
   @override
   List<CvField> get fields => [value];
 }
+
+/// Builder
+IntContent intContentBuilder(Map map) => IntContent();
+
+/// This builder is never added, except locally
+class NoBuilderIntContent extends CvModelBase {
+  final value = CvField<int>('value');
+
+  @override
+  List<CvField> get fields => [value];
+}
+
+void addNoBuilderIntContentBuilder() {
+  cvAddBuilder(noBuilderIntContentBuilder);
+}
+
+void removeNoBuilderIntContentBuilder() {
+  cvRemoveBuilder(NoBuilderIntContent);
+}
+
+/// Builder to add and remove
+NoBuilderIntContent noBuilderIntContentBuilder(Map map) =>
+    NoBuilderIntContent();
 
 class Custom {
   final String value;

@@ -22,3 +22,4 @@ export 'src/cv_field.dart'
         CvFillOptions;
 export 'src/cv_model.dart'
     show CvModel, CvMapModel, CvModelBase, CvModelUtilsExt;
+export 'src/cv_model_list.dart' show CvModelListExt;
