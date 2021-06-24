@@ -275,6 +275,10 @@ void main() {
       doc.text.v = 'value';
       await firestore.cvSet(doc);
       expect(await docRef.get(firestore), doc);
+
+      await firestore.cvRunTransaction((transaction) async {
+        expect(await transaction.refGet(docRef), doc);
+      });
     });
   });
 }

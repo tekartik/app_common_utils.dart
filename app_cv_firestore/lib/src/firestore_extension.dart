@@ -68,6 +68,12 @@ class CvFirestoreTransaction extends Transaction {
     return (await get(_firestore.doc(path))).cv();
   }
 
+  /// Returns non-null [Future] of the read data in a [DocumentSnapshot].
+  Future<T> refGet<T extends CvFirestoreDocument>(
+      CvDocumentReference<T> ref) async {
+    return await cvGet<T>(ref.path);
+  }
+
   /// Set
   void cvSet<T extends CvFirestoreDocument>(T document, [SetOptions? options]) {
     _ensurePathSet(document);
