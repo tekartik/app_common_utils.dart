@@ -22,7 +22,7 @@ dependencies:
       url: git://github.com/tekartik/firebase_firestore.dart
       path: firestore
       ref: null_safety
-    version: '>=0.8.4'
+    version: '>=0.8.9'
   # Always add for easy test setup
   tekartik_firebase_firestore_sembast:
     git:

@@ -10,6 +10,7 @@ export 'src/builder.dart'
         CvFirestoreDocumentExt;
 export 'src/cv_collection_reference.dart' show CvCollectionReference;
 export 'src/cv_document_reference.dart' show CvDocumentReference;
+export 'src/cv_query_reference.dart' show CvQueryReference;
 export 'src/firestore_extension.dart'
     show
         CvFirestoreDocumentSnapshotExt,

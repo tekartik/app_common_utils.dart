@@ -74,6 +74,10 @@ class CvFirestoreTransaction extends Transaction {
     return await cvGet<T>(ref.path);
   }
 
+  /// Returns non-null [Future] of the read data in a [DocumentSnapshot].
+  void refDelete<T extends CvFirestoreDocument>(CvDocumentReference<T> ref) =>
+      cvDelete(ref.path);
+
   /// Set
   void cvSet<T extends CvFirestoreDocument>(T document, [SetOptions? options]) {
     _ensurePathSet(document);

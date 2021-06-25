@@ -280,5 +280,20 @@ void main() {
         expect(await transaction.refGet(docRef), doc);
       });
     });
+
+    test('query', () async {
+      var collection = CvCollectionReference<CvFsSingleString>('test');
+      var query = collection.query().where('text', isEqualTo: 'value');
+      var docRef = collection.doc('1');
+      expect(docRef.path, 'test/1');
+      expect((await query.onSnapshot(firestore).first), isEmpty);
+      expect(await collection.get(firestore), []);
+      var doc = docRef.cv()..text.v = 'value';
+      await firestore.cvSet(doc);
+      expect((await query.onSnapshot(firestore).first), [doc]);
+      doc = docRef.cv()..text.v = 'value2';
+      await firestore.cvSet(doc);
+      expect((await query.onSnapshot(firestore).first), isEmpty);
+    });
   });
 }
