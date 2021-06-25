@@ -4,6 +4,7 @@ export 'src/builder.dart'
     show
         cvAddBuilder,
         cvBuildModel,
+        cvTypeBuildModel,
         cvModelField,
         cvModelListField,
         CvMapExt,

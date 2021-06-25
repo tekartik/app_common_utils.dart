@@ -59,5 +59,9 @@ void main() {
       });
       expect(parent.toModel().cv<ParentWithList>(), parent);
     });
+    test('cvBuildModel', () {
+      expect(cvBuildModel<Simple>({}), Simple());
+      expect(cvTypeBuildModel(Simple, {}), Simple());
+    });
   });
 }

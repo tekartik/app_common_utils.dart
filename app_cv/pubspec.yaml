@@ -1,7 +1,7 @@
 name: tekartik_app_cv
 description: App content values
 publish_to: none
-version: 0.4.0
+version: 0.4.1
 
 environment:
   sdk: '>=2.12.0 <3.0.0'

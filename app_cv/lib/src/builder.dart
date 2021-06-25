@@ -29,6 +29,20 @@ T cvBuildModel<T extends CvModel>(Map contextData,
   }
 }
 
+/// Build a model but does not import the data.
+T cvTypeBuildModel<T extends CvModel>(Type type, Map contextData,
+    {T Function(Map contextData)? builder}) {
+  if (builder == null) {
+    var foundBuilder = _builders[type];
+    if (foundBuilder == null) {
+      throw UnsupportedError('Missing builder for $type, call addBuilder');
+    }
+    return foundBuilder(contextData) as T;
+  } else {
+    return builder(contextData);
+  }
+}
+
 /// Auto field
 CvModelField<T> cvModelField<T extends CvModel>(String name) =>
     CvModelField<T>(name, (data) => cvBuildModel<T>(data as Map));
