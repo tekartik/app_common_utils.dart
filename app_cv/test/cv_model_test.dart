@@ -396,6 +396,18 @@ void main() {
       expect((WithCvFieldWithParent()..value.v = 1).hashCode,
           (WithCvFieldWithParent()..value.v = 1).hashCode);
     });
+    test('CvModelFieldWithParent', () {
+      var map = {
+        'sub': {
+          'value': {'value': 1}
+        }
+      };
+      var model = WithCvModelFieldWithParent()
+        ..value.v = (IntContent()..value.v = 1);
+      expect(model.toModel(), map);
+      model = WithCvModelFieldWithParent()..fromModel(map);
+      expect(model.toModel(), map);
+    });
     test('auto children', () {
       cvAddBuilder<ChildContent>((_) => ChildContent());
 
@@ -438,6 +450,14 @@ class WithCvFieldWithParent extends CvModelBase {
 
   @override
   List<CvField> get fields => [value, value2];
+}
+
+class WithCvModelFieldWithParent extends CvModelBase {
+  final value =
+      CvModelField<IntContent>('value', (_) => IntContent()).withParent('sub');
+
+  @override
+  List<CvField> get fields => [value];
 }
 
 class ChildContent extends CvModelBase {
