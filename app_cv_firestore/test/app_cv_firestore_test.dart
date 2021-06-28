@@ -266,6 +266,10 @@ void main() {
       await firestore.cvSet(doc);
       expect(await collection.get(firestore), [doc]);
       //var doc = docRef.cv();
+      expect(doc.id, '1');
+      // Create a new record
+      doc = await collection.add(firestore, doc);
+      expect(doc.id, isNot('1'));
     });
 
     test('document', () async {
