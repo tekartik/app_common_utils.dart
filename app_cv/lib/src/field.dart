@@ -123,6 +123,7 @@ class ListCvFieldImpl<T> extends CvFieldImpl<List<T>>
 mixin CvFieldContentCreatorMixin<T extends CvModel>
     implements CvModelFieldCreator<T> {
   T Function(Map contentValue)? _create;
+
   @override
   T create(Map contentValue) =>
       _create != null ? _create!(contentValue) : cvBuildModel<T>(contentValue);
@@ -273,7 +274,7 @@ mixin CvFieldMixin<T> implements CvField<T> {
   }
 
   @override
-  int get hashCode => super.hashCode + (v?.hashCode ?? 0);
+  int get hashCode => key.hashCode + (v?.hashCode ?? 0);
 
   @override
   bool operator ==(other) {

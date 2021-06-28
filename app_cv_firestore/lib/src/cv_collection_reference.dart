@@ -1,6 +1,7 @@
 import 'package:path/path.dart';
 import 'package:tekartik_app_cv_firestore/app_cv_firestore.dart';
 import 'package:tekartik_app_cv_firestore/src/cv_document_reference.dart';
+import 'package:tekartik_app_cv_firestore/src/cv_query_reference.dart';
 import 'package:tekartik_firebase_firestore/firestore.dart';
 
 /// Collection helper
@@ -20,4 +21,11 @@ class CvCollectionReference<T extends CvFirestoreDocument> {
   /// Document reference
   CvDocumentReference<T> doc(String path) =>
       CvDocumentReference<T>(url.join(this.path, path));
+
+  /// Create a query
+  CvQueryReference<T> query() => CvQueryReference(this);
+
+  /// Add a document, path in document is ignored
+  Future<T> add(Firestore firestore, T document) =>
+      firestore.collection(path).cvAdd(document);
 }

@@ -31,6 +31,18 @@ mixin CvModelMixin implements CvModel {
               var subField = parentField.field;
               if (subField is CvFieldWithParent) {
                 parentField = subField;
+              } else if (subField is CvFieldContent) {
+                var modelEntry = parentModel.getModelEntry(subField.name);
+                var modelEntryValue = modelEntry?.value;
+                if (modelEntryValue is Map) {
+                  entry = ModelEntry(
+                      modelEntry!.key.toString(),
+                      subField.create(modelEntryValue)
+                        ..fromModel(modelEntryValue));
+                }
+
+                break;
+                //subField.create(modelEntry)..fromModel(modelEntry)
               } else {
                 entry = parentModel.getModelEntry(subField.name);
                 break;

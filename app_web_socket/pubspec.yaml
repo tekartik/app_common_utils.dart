@@ -1,8 +1,6 @@
 name: tekartik_app_web_socket
 description: Web socket for flutter app
 version: 0.1.0
-author:
-homepage:
 publish_to: none
 
 environment:

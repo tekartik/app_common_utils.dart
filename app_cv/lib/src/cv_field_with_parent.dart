@@ -92,4 +92,29 @@ class CvFieldWithParentImpl<
   set value(T? value) {
     field.value = value;
   }
+
+  @override
+  String toString() {
+    return '$parent.$field';
+  }
+
+  @override
+  int get hashCode => key.hashCode + (v?.hashCode ?? 0);
+
+  @override
+  bool operator ==(other) {
+    if (other is CvField) {
+      if (other.key != key) {
+        return false;
+      }
+      if (other.hasValue != hasValue) {
+        return false;
+      }
+      if (!cvValuesAreEqual(other.v, v)) {
+        return false;
+      }
+      return true;
+    }
+    return false;
+  }
 }
