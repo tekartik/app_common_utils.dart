@@ -390,6 +390,11 @@ void main() {
           {
             'sub': {'value': 1, 'value2': 2}
           });
+
+      expect(WithCvFieldWithParent()..value.v = 1,
+          WithCvFieldWithParent()..value.v = 1);
+      expect((WithCvFieldWithParent()..value.v = 1).hashCode,
+          (WithCvFieldWithParent()..value.v = 1).hashCode);
     });
     test('auto children', () {
       cvAddBuilder<ChildContent>((_) => ChildContent());

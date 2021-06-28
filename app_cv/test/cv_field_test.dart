@@ -15,6 +15,11 @@ void main() {
       expect(cvValuesAreEqual([1], [2]), isFalse);
       expect(cvValuesAreEqual({'a': 'b'}, {'a': 'b'}), isTrue);
     });
+    test('hashCode', () {
+      expect(CvField('name').hashCode, CvField('name').hashCode);
+      expect((CvField('name').v = 'test').hashCode,
+          (CvField('name').v = 'test').hashCode);
+    });
     test('equals', () {
       expect(CvField('name'), CvField('name'));
       expect(CvField('name'), CvField('name', null));
@@ -86,6 +91,8 @@ void main() {
     test('withParent', () {
       var field = CvField('name').withParent('parent');
       expect(field.name, 'parent.name');
+      var field2 = CvField('name').withParent('parent');
+      expect(field, field2);
     });
     test('List<CvField>', () {
       var field1 = CvField<String>('name');
