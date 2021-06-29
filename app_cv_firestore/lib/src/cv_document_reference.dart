@@ -1,3 +1,4 @@
+import 'package:path/path.dart';
 import 'package:tekartik_app_cv/app_cv.dart';
 import 'package:tekartik_app_cv_firestore/app_cv_firestore.dart';
 import 'package:tekartik_firebase_firestore/firestore.dart';
@@ -23,4 +24,9 @@ class CvDocumentReference<T extends CvFirestoreDocument> {
 
   /// Delete
   Future<void> delete(Firestore firestore) => firestore.doc(path).delete();
+
+  /// Sub collection reference (different type!)
+  CvCollectionReference<U> collection<U extends CvFirestoreDocument>(
+          String path) =>
+      CvCollectionReference<U>(url.join(this.path, path));
 }

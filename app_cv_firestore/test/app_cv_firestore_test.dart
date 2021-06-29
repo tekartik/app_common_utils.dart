@@ -283,6 +283,8 @@ void main() {
       await firestore.cvRunTransaction((transaction) async {
         expect(await transaction.refGet(docRef), doc);
       });
+
+      expect(docRef.collection('sub').path, 'test/1/sub');
     });
 
     test('query', () async {
