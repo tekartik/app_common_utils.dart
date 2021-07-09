@@ -16,6 +16,8 @@ dependencies:
     version: '>=0.10.7'
   meta: '>=1.1.6'
   encrypt: '>=3.0.0'
+  # Temp web compile issue
+  pointycastle: '>=3.2.0-rc0'
 
 dev_dependencies:
   dev_test:

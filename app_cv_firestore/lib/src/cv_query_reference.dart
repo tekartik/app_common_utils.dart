@@ -40,7 +40,11 @@ class CvQueryReference<T extends CvFirestoreDocument> {
     return query.cvGet<T>();
   }
 
-  Stream<List<T>> onSnapshot(Firestore firestore) {
+  @Deprecated('User onSnapshots instead')
+  Stream<List<T>> onSnapshot(Firestore firestore) => onSnapshot(firestore);
+
+  /// query snapshots
+  Stream<List<T>> onSnapshots(Firestore firestore) {
     final lock = Lock();
     StreamSubscription? streamSubscription;
     var done = false;
