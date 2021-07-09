@@ -292,14 +292,14 @@ void main() {
       var query = collection.query().where('text', isEqualTo: 'value');
       var docRef = collection.doc('1');
       expect(docRef.path, 'test/1');
-      expect((await query.onSnapshot(firestore).first), isEmpty);
+      expect((await query.onSnapshots(firestore).first), isEmpty);
       expect(await collection.get(firestore), []);
       var doc = docRef.cv()..text.v = 'value';
       await firestore.cvSet(doc);
-      expect((await query.onSnapshot(firestore).first), [doc]);
+      expect((await query.onSnapshots(firestore).first), [doc]);
       doc = docRef.cv()..text.v = 'value2';
       await firestore.cvSet(doc);
-      expect((await query.onSnapshot(firestore).first), isEmpty);
+      expect((await query.onSnapshots(firestore).first), isEmpty);
     });
   });
 }
