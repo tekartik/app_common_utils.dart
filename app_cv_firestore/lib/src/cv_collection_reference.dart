@@ -28,4 +28,7 @@ class CvCollectionReference<T extends CvFirestoreDocument> {
   /// Add a document, path in document is ignored
   Future<T> add(Firestore firestore, T document) =>
       firestore.collection(path).cvAdd(document);
+
+  /// Raw document reference
+  CollectionReference raw(Firestore firestore) => firestore.collection(path);
 }

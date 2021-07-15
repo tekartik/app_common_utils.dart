@@ -29,4 +29,7 @@ class CvDocumentReference<T extends CvFirestoreDocument> {
   CvCollectionReference<U> collection<U extends CvFirestoreDocument>(
           String path) =>
       CvCollectionReference<U>(url.join(this.path, path));
+
+  /// Raw document reference
+  DocumentReference raw(Firestore firestore) => firestore.doc(path);
 }
