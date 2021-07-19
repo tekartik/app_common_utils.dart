@@ -1,6 +1,6 @@
 name: tekartik_app_csv
 description: CSV conversion utility
-version: 1.2.1
+version: 1.2.2
 homepage: https://github.com/tekartik/app_common_utils.dart
 
 publish_to: none

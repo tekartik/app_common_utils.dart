@@ -1,8 +1,12 @@
 import 'package:csv/csv.dart';
 
 /// Convert a map list to csv
+///
+/// if [columns] is set columns are set first and always present
 String mapListToCsv(List<Map<String, dynamic>> mapList,
-    {ListToCsvConverter? converter, Object? nullValue = ''}) {
+    {ListToCsvConverter? converter,
+    Object? nullValue = '',
+    List<String>? columns}) {
   converter ??= const ListToCsvConverter();
   var data = <List>[];
   var keys = <String>[];
@@ -17,6 +21,13 @@ String mapListToCsv(List<Map<String, dynamic>> mapList,
       dataRow.add(nullValue);
     }
     return index;
+  }
+
+  // Add columns first if specified
+  if (columns != null) {
+    columns.forEach((column) {
+      _addKey(column);
+    });
   }
 
   for (var map in mapList) {

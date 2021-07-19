@@ -77,7 +77,7 @@ null,test
 null,1
 ''');
       });
-      test('missing', () {
+      test('mapListToCsv missing', () {
         expectCsv(
             mapListToCsv([
               {'test1': 1},
@@ -97,6 +97,18 @@ test1,test2
 test1,test2
 1,null
 null,2
+''');
+      });
+      test('mapListToCsv columns', () {
+        expectCsv(
+            mapListToCsv([
+              {'test1': 1},
+            ], columns: [
+              'test2'
+            ]),
+            '''
+test2,test1
+,1
 ''');
       });
       test('mapListToCsv', () {
