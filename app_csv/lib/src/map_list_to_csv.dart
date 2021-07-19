@@ -14,14 +14,14 @@ String mapListToCsv(List<Map<String, dynamic>> mapList,
     keyIndexMap[key] = index;
     keys.add(key);
     for (var dataRow in data) {
-      dataRow.add(null);
+      dataRow.add(nullValue);
     }
     return index;
   }
 
   for (var map in mapList) {
     // This list might grow if a new key is found
-    var dataRow = []..length = keyIndexMap.length;
+    var dataRow = List.filled(keyIndexMap.length, nullValue);
     // Fix missing key
     map.forEach((key, value) {
       value ??= nullValue;

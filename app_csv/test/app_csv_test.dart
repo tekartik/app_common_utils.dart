@@ -77,6 +77,28 @@ null,test
 null,1
 ''');
       });
+      test('missing', () {
+        expectCsv(
+            mapListToCsv([
+              {'test1': 1},
+              {'test2': 2}
+            ]),
+            '''
+test1,test2
+1,
+,2
+''');
+        expectCsv(
+            mapListToCsv([
+              {'test1': 1},
+              {'test2': 2}
+            ], nullValue: null),
+            '''
+test1,test2
+1,null
+null,2
+''');
+      });
       test('mapListToCsv', () {
         // empty
         expect(mapListToCsv(<Map<String, dynamic>>[]), '');
@@ -91,17 +113,6 @@ test
 1
 ''');
 
-        // different keys
-        expectCsv(
-            mapListToCsv([
-              {'test': 1},
-              {'value': 2}
-            ]),
-            '''
-test,value
-1,null
-null,2
-''');
         // all types
         expectCsv(
             mapListToCsv([
