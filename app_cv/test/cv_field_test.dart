@@ -61,6 +61,13 @@ void main() {
           1.5);
     });
 
+    test('withName', () {
+      var field = CvField<int>('test', 1);
+      var newField = field.withName('newTest');
+      expect(newField.name, 'newTest');
+      expect(newField.value, 1);
+    });
+
     test('fillList', () {
       expect(
           (CvListField<int>('int')

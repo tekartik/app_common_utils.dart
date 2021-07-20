@@ -41,6 +41,7 @@ abstract class CvListField<T> implements CvField<List<T>> {
 
 /// Field utils.
 extension CvFieldUtilsExt<T> on CvField<T> {
+  /// For test
   void fillField([CvFillOptions? options]) {
     options ??= CvFillOptions();
     if (this is CvListField) {
@@ -57,6 +58,9 @@ extension CvFieldUtilsExt<T> on CvField<T> {
       v = null;
     }
   }
+
+  /// Create a new field with a new name
+  CvField<T> withName(String name) => CvField<T>(name, value);
 }
 
 /// Generate for bool, int, num, text
