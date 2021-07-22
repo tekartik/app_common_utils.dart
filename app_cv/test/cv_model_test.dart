@@ -418,6 +418,12 @@ void main() {
         ]
       });
     });
+    test('updated fields', () {
+      var model = WithUpdateFields()..test1.v = 1;
+      expect(model.toModel(), {'test1': 1});
+      model.test2 = CvField<int>('test2', 2);
+      expect(model.toModel(), {'test1': 1, 'test2': 2});
+    });
   });
 }
 
@@ -497,4 +503,11 @@ class WithAutoChildren extends CvModelBase {
 
   @override
   List<CvField> get fields => [child, children];
+}
+
+class WithUpdateFields extends CvModelBase {
+  final test1 = CvField<int>('test1');
+  CvField<int>? test2;
+  @override
+  List<CvField> get fields => [test1, if (test2 != null) test2!];
 }

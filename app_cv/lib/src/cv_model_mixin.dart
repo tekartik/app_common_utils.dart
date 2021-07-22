@@ -157,11 +157,17 @@ mixin CvModelMixin implements CvModel {
       }
     }
 
-    columns ??= fields.map((e) => e.name).toList();
     var model = Model();
-    for (var column in columns) {
-      var field = this.field(column)!;
-      _toModel(model, field);
+
+    if (columns == null) {
+      for (var field in fields) {
+        _toModel(model, field);
+      }
+    } else {
+      for (var column in columns) {
+        var field = this.field(column)!;
+        _toModel(model, field);
+      }
     }
     return model;
   }
@@ -180,6 +186,12 @@ mixin CvModelMixin implements CvModel {
 
   @override
   CvField<T>? field<T>(String name) {
+    // Invalidate if needed
+    if (_cvFieldMap != null) {
+      if (_cvFieldMap!.length != fields.length) {
+        _cvFieldMap = null;
+      }
+    }
     _cvFieldMap ??=
         Map.fromEntries(fields.map((field) => MapEntry(field.name, field)));
     return _cvFieldMap![name]?.cast<T>();
