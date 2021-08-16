@@ -10,6 +10,17 @@ void main() {
       model['test'] = 1;
     });
 
+    test('toMapList', () async {
+      expect([IntContent()].toMapList(), [{}]);
+
+      expect([(IntContent()..value.v = 1)].toMapList(), [
+        {'value': 1}
+      ]);
+      expect([(IntContent()..value.v = 1)].toMapList(columns: ['value']), [
+        {'value': 1}
+      ]);
+      expect([(IntContent()..value.v = 1)].toMapList(columns: ['other']), [{}]);
+    });
     test('toModelList', () async {
       expect([IntContent()].toModelList(), [{}]);
 

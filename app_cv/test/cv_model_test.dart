@@ -94,14 +94,13 @@ void main() {
       expect(IntContent(), isNot(IntContent()..value.v = 1));
       expect(IntContent()..value.v = 2, isNot(IntContent()..value.v = 1));
     });
-    test('toModel', () async {
-      expect(IntContent().toModel(), {});
-      expect(IntContent().toModel(includeMissingValue: true), {'value': null});
-      expect((IntContent()..value.v = 1).toModel(), {'value': 1});
+    test('toMap', () async {
+      expect(IntContent().toMap(), {});
+      expect(IntContent().toMap(includeMissingValue: true), {'value': null});
       expect((IntContent()..value.v = 1).toMap(), {'value': 1});
-      expect((IntContent()..value.v = 1).toModel(columns: <String>[]), {});
-      expect(
-          (IntContent()..value.v = 1).toModel(columns: [IntContent().value.k]),
+      expect((IntContent()..value.v = 1).toMap(columns: <String>[]), {});
+      expect((IntContent()..value.v = 1).toMap(columns: <String>['other']), {});
+      expect((IntContent()..value.v = 1).toMap(columns: [IntContent().value.k]),
           {'value': 1});
     });
     test('toModel', () async {
@@ -134,14 +133,16 @@ void main() {
       expect(stringContent.value.hasValue, true);
       expect(stringContent.value.v, '12');
     });
-    test('fromModel2', () async {
-      expect(IntContent()..fromModel({}), IntContent());
-      expect(IntContent()..fromModel({'value': 1}), IntContent()..value.v = 1);
+    test('fromMap', () async {
+      expect(IntContent()..fromMap({}), IntContent());
+      expect(IntContent()..fromMap({'value': 1}), IntContent()..value.v = 1);
       expect(
           IntContent()
-            ..fromModel({'value': 1}, columns: [IntContent().value.name]),
+            ..fromMap({'value': 1}, columns: [IntContent().value.name]),
           IntContent()..value.v = 1);
-      expect(IntContent()..fromModel({'value': 1}, columns: []), IntContent());
+      expect(IntContent()..fromMap({'value': 1}, columns: []), IntContent());
+      expect(IntContent()..fromMap({'value': 1}, columns: ['other']),
+          IntContent());
     });
     test('copyFrom', () {
       var cv = IntContent()..copyFrom(IntContent());

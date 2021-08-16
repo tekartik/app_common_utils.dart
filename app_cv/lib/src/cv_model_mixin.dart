@@ -12,6 +12,89 @@ var debugContent = false; // devWarning(true);
 mixin CvModelMixin implements CvModel {
   @override
   void fromModel(Map map, {List<String>? columns}) {
+    fromMap(map, columns: columns);
+  }
+
+  /// Copy content
+  @override
+  void copyFrom(CvModel model) {
+    _debugCheckCvFields();
+    for (var field in fields) {
+      var recordCvField = model.field(field.name);
+      if (recordCvField?.hasValue == true) {
+        // ignore: invalid_use_of_visible_for_testing_member
+        field.fromCvField(recordCvField!);
+      }
+    }
+  }
+
+  void _debugCheckCvFields() {
+    if (isDebug) {
+      var success = _debugCvFieldsCheckDone[runtimeType];
+
+      if (success == null) {
+        var _fieldNames = <String>{};
+        for (var field in fields) {
+          if (_fieldNames.contains(field.name)) {
+            _debugCvFieldsCheckDone[runtimeType] = false;
+            throw UnsupportedError(
+                'Duplicated CvField ${field.name} in $runtimeType${fields.map((f) => f.name)} - $this');
+          }
+          _fieldNames.add(field.name);
+        }
+        _debugCvFieldsCheckDone[runtimeType] = success = true;
+      } else if (!success) {
+        throw UnsupportedError(
+            'Duplicated CvFields in $runtimeType${fields.map((f) => f.name)} - $this');
+      }
+    }
+  }
+
+  @override
+  Model toModel({List<String>? columns, bool includeMissingValue = false}) {
+    return asModel(
+        toMap(columns: columns, includeMissingValue: includeMissingValue))!;
+  }
+
+  @override
+  String toString() {
+    try {
+      return logTruncate('${toModel()}');
+    } catch (e) {
+      return logTruncate('$fields $e');
+    }
+  }
+
+  // Only created if necessary
+  Map<String, CvField>? _cvFieldMap;
+
+  @override
+  CvField<T>? field<T>(String name) {
+    // Invalidate if needed
+    if (_cvFieldMap != null) {
+      if (_cvFieldMap!.length != fields.length) {
+        _cvFieldMap = null;
+      }
+    }
+    _cvFieldMap ??=
+        Map.fromEntries(fields.map((field) => MapEntry(field.name, field)));
+    return _cvFieldMap![name]?.cast<T>();
+  }
+
+  @override
+  int get hashCode => fields.first.hashCode;
+
+  @override
+  bool operator ==(other) {
+    if (other is CvModelRead) {
+      return cvModelAreEquals(this, other);
+    }
+    return false;
+  }
+
+  @override
+  @override
+  void fromMap(Map map, {List<String>? columns}) {
     _debugCheckCvFields();
     // assert(map != null, 'map cannot be null');
     columns ??= fields.map((e) => e.name).toList();
@@ -94,43 +177,9 @@ mixin CvModelMixin implements CvModel {
     }
   }
 
-  /// Copy content
   @override
-  void copyFrom(CvModel model) {
-    _debugCheckCvFields();
-    for (var field in fields) {
-      var recordCvField = model.field(field.name);
-      if (recordCvField?.hasValue == true) {
-        // ignore: invalid_use_of_visible_for_testing_member
-        field.fromCvField(recordCvField!);
-      }
-    }
-  }
-
-  void _debugCheckCvFields() {
-    if (isDebug) {
-      var success = _debugCvFieldsCheckDone[runtimeType];
-
-      if (success == null) {
-        var _fieldNames = <String>{};
-        for (var field in fields) {
-          if (_fieldNames.contains(field.name)) {
-            _debugCvFieldsCheckDone[runtimeType] = false;
-            throw UnsupportedError(
-                'Duplicated CvField ${field.name} in $runtimeType${fields.map((f) => f.name)} - $this');
-          }
-          _fieldNames.add(field.name);
-        }
-        _debugCvFieldsCheckDone[runtimeType] = success = true;
-      } else if (!success) {
-        throw UnsupportedError(
-            'Duplicated CvFields in $runtimeType${fields.map((f) => f.name)} - $this');
-      }
-    }
-  }
-
-  @override
-  Model toModel({List<String>? columns, bool includeMissingValue = false}) {
+  Map<String, Object?> toMap(
+      {List<String>? columns, bool includeMissingValue = false}) {
     _debugCheckCvFields();
 
     void _toModel(Model model, CvField field) {
@@ -165,54 +214,14 @@ mixin CvModelMixin implements CvModel {
       }
     } else {
       for (var column in columns) {
-        var field = this.field(column)!;
-        _toModel(model, field);
+        var field = this.field(column);
+        if (field != null) {
+          _toModel(model, field);
+        }
       }
     }
     return model;
   }
-
-  @override
-  String toString() {
-    try {
-      return logTruncate('${toModel()}');
-    } catch (e) {
-      return logTruncate('$fields $e');
-    }
-  }
-
-  // Only created if necessary
-  Map<String, CvField>? _cvFieldMap;
-
-  @override
-  CvField<T>? field<T>(String name) {
-    // Invalidate if needed
-    if (_cvFieldMap != null) {
-      if (_cvFieldMap!.length != fields.length) {
-        _cvFieldMap = null;
-      }
-    }
-    _cvFieldMap ??=
-        Map.fromEntries(fields.map((field) => MapEntry(field.name, field)));
-    return _cvFieldMap![name]?.cast<T>();
-  }
-
-  @override
-  int get hashCode => fields.first.hashCode;
-
-  @override
-  bool operator ==(other) {
-    if (other is CvModelRead) {
-      return cvModelAreEquals(this, other);
-    }
-    return false;
-  }
-
-  @override
-  void fromMap(Map map) => fromModel(map);
-
-  @override
-  Model toMap() => toModel();
 
   @override
   void clear() {

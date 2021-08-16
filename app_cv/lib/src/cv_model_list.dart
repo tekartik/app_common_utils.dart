@@ -8,4 +8,12 @@ extension CvModelListExt<T extends CvModel> on List<T> {
     return ModelList(map((e) =>
         e.toModel(columns: columns, includeMissingValue: includeMissingValue)));
   }
+
+  /// Convert to model list
+  List<Map<String, Object?>> toMapList(
+      {List<String>? columns, bool includeMissingValue = false}) {
+    return ModelList(map((e) => e.toModel(
+            columns: columns, includeMissingValue: includeMissingValue)))
+        .cast<Map<String, Object?>>();
+  }
 }
