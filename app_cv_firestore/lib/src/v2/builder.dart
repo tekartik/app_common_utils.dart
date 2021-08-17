@@ -1,4 +1,4 @@
-import 'package:cv/src/content_values.dart';
+import 'package:cv/src/content_values.dart'; // ignore: implementation_imports
 import 'package:meta/meta.dart';
 import 'package:path/path.dart';
 import 'package:tekartik_app_cv/app_cv_v2.dart';

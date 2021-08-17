@@ -25,9 +25,9 @@ String mapListToCsv(List<Map<String, dynamic>> mapList,
 
   // Add columns first if specified
   if (columns != null) {
-    columns.forEach((column) {
+    for (var column in columns) {
       _addKey(column);
-    });
+    }
   }
 
   for (var map in mapList) {

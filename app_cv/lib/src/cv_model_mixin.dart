@@ -193,7 +193,7 @@ mixin CvModelMixin implements CvModel {
         // Check sub model
         if (field.hasValue || includeMissingValue) {
           var subModel = model[field.parent] as Model?;
-          if (!(subModel is Model)) {
+          if (subModel is! Model) {
             subModel = Model();
             model.setValue(field.parent, subModel);
           }

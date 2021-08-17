@@ -35,7 +35,7 @@ void main() {
       if (declaration is VariableMirror) {
         print(declaration.type.reflectedType.toString());
         print(MirrorSystem.getName(declaration.simpleName));
-        declaration.metadata.forEach((InstanceMirror instanceMirror) {
+        for (var instanceMirror in declaration.metadata) {
           dynamic reflectee = instanceMirror.reflectee;
 
           if (reflectee is JsonKey) {
@@ -43,7 +43,7 @@ void main() {
             // print('meta: JsonKey(${reflectee.name})');
             //print(instanceMirror.reflectee.runtimeType);
           }
-        });
+        }
       }
     });
   });
@@ -80,7 +80,7 @@ void main() {
       if (declaration is VariableMirror) {
         print(declaration.type.reflectedType.toString());
         print(MirrorSystem.getName(declaration.simpleName));
-        declaration.metadata.forEach((InstanceMirror instanceMirror) {
+        for (var instanceMirror in declaration.metadata) {
           dynamic reflectee = instanceMirror.reflectee;
 
           if (reflectee is JsonKey) {
@@ -88,7 +88,7 @@ void main() {
             // print('meta: JsonKey(${reflectee.name})');
             //print(instanceMirror.reflectee.runtimeType);
           }
-        });
+        }
       }
     });
   });
