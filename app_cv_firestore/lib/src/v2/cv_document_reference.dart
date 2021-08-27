@@ -13,6 +13,14 @@ class CvDocumentReference<T extends CvFirestoreDocument> {
   /// Get a document
   Future<T> get(Firestore firestore) => firestore.doc(path).cvGet<T>();
 
+  /// Set a document. document path is ignored here.
+  Future<void> setMap(Firestore firestore, Model map, [SetOptions? options]) =>
+      firestore.doc(path).set(map, options);
+
+  /// Set a document. document path is ignored here.
+  Future<void> set(Firestore firestore, T document, [SetOptions? options]) =>
+      setMap(firestore, document.toMap(), options);
+
   /// Document changed
   Stream<T> onSnapshot(Firestore firestore) =>
       firestore.doc(path).cvOnSnapshot();

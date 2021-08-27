@@ -287,6 +287,15 @@ void main() {
       expect(docRef.collection('sub').path, 'test/1/sub');
     });
 
+    test('document.set', () async {
+      var docRef = CvDocumentReference<CvFsSingleString>('test/set');
+
+      var doc = docRef.cv();
+      doc.text.v = 'value';
+      await docRef.set(firestore, doc);
+      expect(await docRef.get(firestore), doc);
+    });
+
     test('query', () async {
       var collection = CvCollectionReference<CvFsSingleString>('test');
       var query = collection.query().where('text', isEqualTo: 'value');

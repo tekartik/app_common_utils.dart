@@ -1,6 +1,6 @@
 name: tekartik_app_cv_firestore
 description: Firestore content values helper
-version: 0.4.1
+version: 0.4.2
 publish_to: none
 environment:
   sdk: '>=2.13.0 <3.0.0'
