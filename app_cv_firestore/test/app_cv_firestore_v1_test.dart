@@ -1,6 +1,6 @@
 import 'package:path/path.dart';
-import 'package:tekartik_app_cv/app_cv_v2.dart';
-import 'package:tekartik_app_cv_firestore/app_cv_firestore_v2.dart';
+import 'package:tekartik_app_cv/app_cv.dart';
+import 'package:tekartik_app_cv_firestore/app_cv_firestore_v1.dart';
 import 'package:tekartik_firebase_firestore/firestore.dart';
 import 'package:tekartik_firebase_firestore_sembast/firestore_sembast.dart';
 import 'package:test/test.dart';
@@ -301,24 +301,5 @@ void main() {
       await firestore.cvSet(doc);
       expect((await query.onSnapshots(firestore).first), isEmpty);
     });
-
-    test('extension', () {
-      expect(
-          asModel({'test': 1, 'value': 2})..withDelete(CvField<String>('test')),
-          {'value': 2, 'test': FieldValue.delete});
-      expect(
-          asModel({'test': 1, 'value': 2})
-            ..withServerTimestamp(CvField<Timestamp>('test')),
-          {'value': 2, 'test': FieldValue.serverTimestamp});
-      expect((FsTestWithTimestamp()..value.v = 1).toMapWithServerTimestamp(),
-          {'value': 1, 'timestamp': FieldValue.serverTimestamp});
-    });
   });
-}
-
-class FsTestWithTimestamp extends CvFirestoreDocumentBase
-    with WithServerTimestampMixin {
-  final value = CvField<int>('value');
-  @override
-  List<CvField> get fields => [...timedMixinFields, value];
 }

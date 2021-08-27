@@ -1,17 +1,17 @@
 /// Firestore content values helper
-library tekartik_app_cv_firestore_v2;
+library tekartik_app_cv_firestore_v1;
 
-export 'src/v2/builder.dart'
+export 'src/builder.dart'
     show
         CvFirestoreDocument,
         CvFirestoreDocumentBase,
         cvFirestoreAddBuilder,
         CvFirestoreMapDocument,
         CvFirestoreDocumentExt;
-export 'src/v2/cv_collection_reference.dart' show CvCollectionReference;
-export 'src/v2/cv_document_reference.dart' show CvDocumentReference;
-export 'src/v2/cv_query_reference.dart' show CvQueryReference;
-export 'src/v2/firestore_extension.dart'
+export 'src/cv_collection_reference.dart' show CvCollectionReference;
+export 'src/cv_document_reference.dart' show CvDocumentReference;
+export 'src/cv_query_reference.dart' show CvQueryReference;
+export 'src/firestore_extension.dart'
     show
         CvFirestoreDocumentSnapshotExt,
         CvFirestoreDocumentSnapshotsExt,
@@ -22,5 +22,3 @@ export 'src/v2/firestore_extension.dart'
         CvFirestoreQueryExt,
         CvFirestoreWriteBatch,
         CvFirestoreTransaction;
-export 'src/v2/map_extension.dart'
-    show AppCvFirestoreFieldMapExt, WithServerTimestampMixin;
