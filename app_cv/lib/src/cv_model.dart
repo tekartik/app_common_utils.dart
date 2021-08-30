@@ -9,7 +9,8 @@ abstract class CvModelRead implements CvModelCore {
   Model toModel({List<String>? columns, bool includeMissingValue = false});
 
   /// Map alias
-  Model toMap();
+  Map<String, Object?> toMap(
+      {List<String>? columns, bool includeMissingValue = false});
 }
 
 /// Write helper
@@ -18,7 +19,7 @@ abstract class CvModelWrite implements CvModelCore {
   void fromModel(Map map, {List<String>? columns});
 
   /// Map alias
-  void fromMap(Map map);
+  void fromMap(Map map, {List<String>? columns});
 
   /// Clear content
   void clear();

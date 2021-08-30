@@ -1,4 +1,5 @@
-import 'package:tekartik_app_cv/app_cv.dart';
+//import 'package:tekartik_app_cv/app_cv.dart';
+import 'package:tekartik_app_cv/app_cv_v2.dart';
 import 'package:test/test.dart';
 
 import 'cv_model_test.dart';

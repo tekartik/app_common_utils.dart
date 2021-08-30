@@ -37,14 +37,14 @@ Future genSerializer({required String src, required Type type}) async {
       var variableSimpleName = MirrorSystem.getName(declaration.simpleName);
       String? keyName;
       bool? includeIfNull;
-      declaration.metadata.forEach((InstanceMirror instanceMirror) {
+      for (var instanceMirror in declaration.metadata) {
         dynamic reflectee = instanceMirror.reflectee;
 
         if (reflectee is JsonKey) {
           keyName = reflectee.name;
           includeIfNull = reflectee.includeIfNull;
         }
-      });
+      }
       keyName ??= variableSimpleName;
       includeIfNull ??= true;
 
@@ -52,13 +52,13 @@ Future genSerializer({required String src, required Type type}) async {
     $entityName.$variableSimpleName = map['$keyName'] as $variableTypeText?;
   ''');
 
-      if (!includeIfNull!) {
+      if (!includeIfNull) {
         sbTo.writeln('if ($entityName.$variableSimpleName != null) {');
       }
       sbTo.write('''
     map['$keyName'] = $entityName.$variableSimpleName;
   ''');
-      if (!includeIfNull!) {
+      if (!includeIfNull) {
         sbTo.writeln('}');
       }
     }
