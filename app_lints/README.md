@@ -1,6 +1,6 @@
-# tekartik_app_lints_flutter
+# tekartik_app_lints
 
-Tekartik flutter lints
+Tekartik common lints
 
 ## Getting Started
 
@@ -8,9 +8,9 @@ Tekartik flutter lints
 
 ```yaml
 dependencies:
-  tekartik_app_lints_flutter:
+  tekartik_app_lints:
     git:
-      url: git://github.com/tekartik/app_flutter_utils.dart
+      url: git://github.com/tekartik/app_common_utils.dart
       ref: null_safety
       path: app_lints
     version: '>=0.1.0'
@@ -21,6 +21,6 @@ dependencies:
 In `analysis_options.yaml`:
 
 ```yaml
-# tekartik flutter recommended lints (extension over google lints and pedantic)
-include: package:tekartik_app_lints_flutter/recommended.yaml
+# tekartik recommended lints (extension over google lints and pedantic)
+include: package:tekartik_app_lints/recommended.yaml
 ```
