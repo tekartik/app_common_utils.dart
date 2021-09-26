@@ -182,7 +182,7 @@ void main() {
       try {
         WithDuplicatedCvFields().toModel();
         fail('should fail');
-      } on UnsupportedError catch (e) {
+      } on CvBuilderException catch (e) {
         print(e);
       }
       /*
