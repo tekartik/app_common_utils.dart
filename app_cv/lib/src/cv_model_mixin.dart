@@ -147,9 +147,8 @@ mixin CvModelMixin implements CvModel {
             var entryValue = entry.value;
             var cvModel = field.create(entryValue as Map);
             field.v = cvModel;
-            if (entryValue is Map) {
-              cvModel.fromModel(entryValue);
-            }
+
+            cvModel.fromModel(entryValue);
           } else if (field is CvListField) {
             var list = field.v = field.createList();
             for (var rawItem in entry.value as List) {
