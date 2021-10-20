@@ -1,4 +1,5 @@
 import 'package:tekartik_app_crypto/encrypt.dart';
+import 'package:tekartik_app_crypto/src/generate_password.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -19,5 +20,10 @@ void main() {
     // Use accent
     password = r'éx*$TwbkJC-xK4KGC4zJF9j*Rh&WLgR';
     _roundTrip('é', password);
+  });
+
+  test('generatePassword', () {
+    expect(generatePassword().length, 32);
+    expect(generatePassword(length: 64).length, 64);
   });
 }
