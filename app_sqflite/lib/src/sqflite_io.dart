@@ -24,8 +24,12 @@ DatabaseFactory get _defaultDatabaseFactory => databaseFactoryFfi;
 DatabaseFactory get databaseFactory => _defaultDatabaseFactory;
 
 /// Use sqflite on any platform
-DatabaseFactory getDatabaseFactory({String? packageName, String? rootPath}) {
+DatabaseFactory getDatabaseFactory(
+    {String? packageName, String? rootPath, bool autoInit = true}) {
   var databaseFactory = databaseFactoryFfi;
+  if (autoInit) {
+    sqfliteWindowsFfiInit();
+  }
   // Should not return a future...or ignore
   databaseFactory.compatSetDatabasesPath(
       rootPath ?? buildDatabasesPath(packageName ?? '.'));

@@ -10,8 +10,12 @@ DatabaseFactory get databaseFactory => src.databaseFactory;
 /// Get the database factory for a given package (setting in home path)
 ///
 /// [packageName] or [rootPath] only used on linux and windows for now
-DatabaseFactory getDatabaseFactory({String? packageName, String? rootPath}) =>
-    src.getDatabaseFactory(packageName: packageName, rootPath: rootPath);
+///
+/// autoInit is sqflite_ffi on windows
+DatabaseFactory getDatabaseFactory(
+        {String? packageName, String? rootPath, bool autoInit = true}) =>
+    src.getDatabaseFactory(
+        packageName: packageName, rootPath: rootPath, autoInit: autoInit);
 
 /// Only needed on Windows during development to find the proper dll location
 void sqfliteWindowsFfiInit() => src.sqfliteWindowsFfiInit();
