@@ -10,8 +10,8 @@ In your `pubspec.yaml`:
 dependencies:
   tekartik_app_crypto:
     git:
-      url: git://github.com/tekartik/app_common_utils.dart
-      ref: null_safety
+      url: https://github.com/tekartik/app_common_utils.dart
+      ref: dart2_3
       path: app_crypto
     version: '>=0.1.0'
 ```

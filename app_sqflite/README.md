@@ -12,8 +12,8 @@ sqflite database factory for app (desktop VM/io & web)
 dependencies:
   tekartik_app_sqflite:
     git:
-      url: git://github.com/tekartik/app_common_utils.dart
-      ref: null_safety
+      url: https://github.com/tekartik/app_common_utils.dart
+      ref: dart2_3
       path: app_sqflite
     version: '>=0.2.0'
 ```

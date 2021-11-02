@@ -8,28 +8,28 @@ environment:
 dependencies:
   tekartik_common_utils:
     git:
-      url: git://github.com/tekartik/common_utils.dart
-      ref: null_safety
+      url: https://github.com/tekartik/common_utils.dart
+      ref: dart2_3
     version: '>=0.11.1'
   tekartik_app_cv:
     git:
-      url: git://github.com/tekartik/app_common_utils.dart
-      ref: null_safety
+      url: https://github.com/tekartik/app_common_utils.dart
+      ref: dart2_3
       path: app_cv
     version: '>=0.1.0'
   tekartik_firebase_firestore:
     git:
-      url: git://github.com/tekartik/firebase_firestore.dart
+      url: https://github.com/tekartik/firebase_firestore.dart
       path: firestore
-      ref: null_safety
+      ref: dart2_3
     version: '>=0.8.9'
   path:
   # Always add for easy test setup
   tekartik_firebase_firestore_sembast:
     git:
-      url: git://github.com/tekartik/firebase_firestore.dart
+      url: https://github.com/tekartik/firebase_firestore.dart
       path: firestore_sembast
-      ref: null_safety
+      ref: dart2_3
     version: '>=0.8.3'
 dev_dependencies:
 
