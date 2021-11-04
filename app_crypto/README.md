@@ -13,5 +13,5 @@ dependencies:
       url: https://github.com/tekartik/app_common_utils.dart
       ref: dart2_3
       path: app_crypto
-    version: '>=0.1.0'
+    version: '>=0.2.2'
 ```

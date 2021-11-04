@@ -26,3 +26,9 @@ String decrypt(String encoded, String password) {
   final encrypter = Encrypter(AES(key));
   return encrypter.decrypt(Encrypted.fromBase64(encoded), iv: iv);
 }
+
+/// Encrypt, decrypt helper
+abstract class StringEncrypter {
+  String encrypt(String input);
+  String decrypt(String encrypted);
+}
