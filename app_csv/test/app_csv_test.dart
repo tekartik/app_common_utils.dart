@@ -142,5 +142,12 @@ int,double,String,bool,Uint8List
 ''');
       });
     });
+    test('separator', () {
+      expect(
+          mapListToCsv([
+            {'test': 1}
+          ]),
+          'test\r\n1');
+    });
   });
 }
