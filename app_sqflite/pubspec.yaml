@@ -1,0 +1,25 @@
+name: tekartik_app_sqflite
+description: Sqflite common initialization for dart VM app
+version: 0.5.1
+publish_to: none
+
+environment:
+  sdk: '>=2.12.0-0 <3.0.0'
+
+dependencies:
+  sqflite_common_ffi: '>=2.0.0'
+  sqflite_common: '>=2.0.0+1'
+
+dev_dependencies:
+  test:
+  dev_test:
+  process_run:
+  tekartik_lints:
+    git:
+      url: https://github.com/tekartik/common.dart
+      ref: dart2_3
+      path: packages/lints
+    version: '>=0.1.0'
+
+dependency_overrides:
+

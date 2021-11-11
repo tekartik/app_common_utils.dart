@@ -10,8 +10,8 @@ Http client factory for app (web, io, flutter)
 dependencies:
   tekartik_app_http:
     git:
-      url: git://github.com/tekartik/app_common_utils.dart
-      ref: null_safety
+      url: https://github.com/tekartik/app_common_utils.dart
+      ref: dart2_3
       path: app_http
     version: '>=0.1.0'
 ```

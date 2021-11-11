@@ -1,6 +1,6 @@
 name: tekartik_app_crypto
 description: Crypto utilities
-version: 0.2.0
+version: 0.2.2
 homepage: https://www.example.com
 
 publish_to: none
@@ -11,11 +11,12 @@ environment:
 dependencies:
   tekartik_common_utils:
     git:
-      url: git://github.com/tekartik/common_utils.dart
-      ref: null_safety
+      url: https://github.com/tekartik/common_utils.dart
+      ref: dart2_3
     version: '>=0.10.7'
   meta: '>=1.1.6'
   encrypt: '>=3.0.0'
+  crypto:
   # Temp web compile issue
   pointycastle: '>=3.2.0-rc0'
 

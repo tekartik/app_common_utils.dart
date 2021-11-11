@@ -4,7 +4,9 @@ import 'package:encrypt/encrypt.dart';
 ///
 /// [password] must be ascii character of length 16, 24 or 32.
 ///
-/// returns a bast 64 encrypted string
+/// returns a bast 64 encrypted string.
+///
+/// Encryption used is AES.
 String encrypt(String decoded, String password) {
   final key = Key.fromUtf8(password);
   final iv = IV.fromLength(16);
@@ -16,9 +18,17 @@ String encrypt(String decoded, String password) {
 ///
 /// [encoded] is base 64 string got from the encrypt method using the same
 /// [password]
+///
+/// Encryption used is AES.
 String decrypt(String encoded, String password) {
   final key = Key.fromUtf8(password);
   final iv = IV.fromLength(16);
   final encrypter = Encrypter(AES(key));
   return encrypter.decrypt(Encrypted.fromBase64(encoded), iv: iv);
+}
+
+/// Encrypt, decrypt helper
+abstract class StringEncrypter {
+  String encrypt(String input);
+  String decrypt(String encrypted);
 }

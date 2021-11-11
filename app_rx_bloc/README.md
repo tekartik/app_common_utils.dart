@@ -10,8 +10,8 @@ In your `pubspec.yaml`:
 dependencies:
   tekartik_app_rx_bloc:
     git:
-      url: git://github.com/tekartik/app_common_utils.dart
-      ref: null_safety
+      url: https://github.com/tekartik/app_common_utils.dart
+      ref: dart2_3
       path: app_rx_bloc
     version: '>=0.1.0'
 ```
