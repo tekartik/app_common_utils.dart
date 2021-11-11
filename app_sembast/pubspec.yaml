@@ -18,6 +18,7 @@ dependencies:
   sembast_web: '>=2.0.0'
   sembast_sqflite: '>=2.0.0'
   path:
+  cv:
   tekartik_lints:
     git:
       url: https://github.com/tekartik/common.dart
