@@ -331,9 +331,9 @@ void main() {
               }
             ],
             'intList': [6],
-            'map': null,
+            'map': {'field_1': 7},
             'mapList': [
-              {'field_0': 7}
+              {'field_1': 8}
             ]
           });
       expect(
