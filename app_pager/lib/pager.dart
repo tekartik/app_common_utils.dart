@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:pedantic/pedantic.dart';
 import 'package:pool/pool.dart';
 import 'package:quiver/collection.dart';
 import 'package:tekartik_app_emit/emit.dart';
