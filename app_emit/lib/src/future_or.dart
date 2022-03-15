@@ -36,6 +36,7 @@ class EmitFutureOr<T> {
     // if completed send right await
     if (_controller._hasValue) {
       if (onValue != null) {
+        // ignore: null_check_on_nullable_type_parameter
         onValue(_controller._value!);
       }
     } else {

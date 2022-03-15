@@ -33,14 +33,14 @@ mixin CvModelMixin implements CvModel {
       var success = _debugCvFieldsCheckDone[runtimeType];
 
       if (success == null) {
-        var _fieldNames = <String>{};
+        var fieldNames = <String>{};
         for (var field in fields) {
-          if (_fieldNames.contains(field.name)) {
+          if (fieldNames.contains(field.name)) {
             _debugCvFieldsCheckDone[runtimeType] = false;
             throw UnsupportedError(
                 'Duplicated CvField ${field.name} in $runtimeType${fields.map((f) => f.name)} - $this');
           }
-          _fieldNames.add(field.name);
+          fieldNames.add(field.name);
         }
         _debugCvFieldsCheckDone[runtimeType] = success = true;
       } else if (!success) {

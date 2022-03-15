@@ -17,6 +17,7 @@ dependencies:
   meta:
   dart_style:
   json_annotation:
+  path:
 
 dev_dependencies:
   dev_test:
