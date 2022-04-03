@@ -13,6 +13,17 @@ dependencies:
       path: http_browser
       ref: dart2_3
     version: '>=0.0.1'
+  tekartik_common_utils:
+    git:
+      url: https://github.com/tekartik/common_utils.dart
+      ref: dart2_3
+    version: '>=0.0.1'
+  tekartik_http:
+    git:
+      url: https://github.com/tekartik/http.dart
+      path: http
+      ref: dart2_3
+    version: '>=0.0.1'
   tekartik_http_io:
     git:
       url: https://github.com/tekartik/http.dart

@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:pedantic/pedantic.dart';
+
 import 'package:tekartik_app_emit/emit.dart';
 import 'package:test/test.dart';
 

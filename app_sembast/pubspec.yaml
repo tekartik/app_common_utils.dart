@@ -17,6 +17,7 @@ dependencies:
   sembast: '>=3.0.0+2'
   sembast_web: '>=2.0.0'
   sembast_sqflite: '>=2.0.0'
+  sqflite_common_ffi:
   path:
   cv:
   tekartik_lints:
