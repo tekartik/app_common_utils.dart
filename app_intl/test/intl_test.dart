@@ -1,4 +1,4 @@
-import 'package:tekartik_app_common_utils/intl/intl.dart';
+import 'package:tekartik_app_intl/intl.dart';
 import 'package:test/test.dart';
 
 void main() {
