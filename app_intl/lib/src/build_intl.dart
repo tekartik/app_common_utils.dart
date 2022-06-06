@@ -92,23 +92,26 @@ class LocalizationProject {
   }
 
   // Default to
-  Future intlFixAndGenerate() async {
+  Future intlFixAndGenerate({bool noEnUs =false}) async {
     var localeList = await intlGetLocales();
-    if (!localeList.contains(enUsTextLocale)) {
-      return;
+    if (!noEnUs) {
+      if (!localeList.contains(enUsTextLocale)) {
+        return;
+      }
     }
-    await intlGenerateFile();
+    await intlGenerateFile(noEnUs: noEnUs);
     await intlFixJson(localeList: localeList);
   }
 
   // Default to
-  Future intlGenerateFile({String? file}) async {
+  Future intlGenerateFile({String? file, bool noEnUs =false}) async {
     var localeList = await intlGetLocales();
-    if (!localeList.contains(enUsTextLocale)) {
+    if (!noEnUs && !localeList.contains(enUsTextLocale)) {
       return;
     }
 
-    var map = intlFixMap(await intlLoadLocaleMap(enUsTextLocale));
+    var textLocale = noEnUs ? localeList.first : enUsTextLocale;
+    var map = intlFixMap(await intlLoadLocaleMap(textLocale));
 
     var sb = StringBuffer();
     sb.writeln('mixin AppLocalizationsMixinGen {');
