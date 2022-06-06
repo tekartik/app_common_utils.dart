@@ -92,7 +92,7 @@ class LocalizationProject {
   }
 
   // Default to
-  Future intlFixAndGenerate({bool noEnUs =false}) async {
+  Future intlFixAndGenerate({bool noEnUs = false}) async {
     var localeList = await intlGetLocales();
     if (!noEnUs) {
       if (!localeList.contains(enUsTextLocale)) {
@@ -104,7 +104,7 @@ class LocalizationProject {
   }
 
   // Default to
-  Future intlGenerateFile({String? file, bool noEnUs =false}) async {
+  Future intlGenerateFile({String? file, bool noEnUs = false}) async {
     var localeList = await intlGetLocales();
     if (!noEnUs && !localeList.contains(enUsTextLocale)) {
       return;
