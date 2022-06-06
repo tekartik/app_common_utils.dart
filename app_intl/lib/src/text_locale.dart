@@ -10,7 +10,7 @@ const frFrLocaleName = '${frLanguageName}_$frCountryCode';
 class TextLocale {
   final String name;
 
-  TextLocale(this.name);
+  const TextLocale(this.name);
 
   @override
   String toString() => 'TL($name)';
@@ -27,5 +27,5 @@ class TextLocale {
   }
 }
 
-var enUsTextLocale = TextLocale(enUsLocaleName);
-var frFrTextLocale = TextLocale(frFrLocaleName);
+const enUsTextLocale = TextLocale(enUsLocaleName);
+const frFrTextLocale = TextLocale(frFrLocaleName);
