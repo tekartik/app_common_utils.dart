@@ -1,7 +1,7 @@
 import 'package:sembast/sembast.dart';
 import 'package:sembast/sembast_memory.dart';
-
 import 'package:tekartik_app_cv_sembast/app_cv_sembast.dart';
+import 'package:tekartik_common_utils/common_utils_import.dart';
 import 'package:test/test.dart';
 
 class DbTest extends DbIntRecordBase {
@@ -23,6 +23,7 @@ bool contentAndKeyEquals(DbRecord? record1, DbRecord? record2) {
 }
 
 void main() {
+  disableSembastCooperator();
   group('store', () {
     late Database db;
     setUpAll(() {
@@ -86,6 +87,52 @@ void main() {
       expect(await cvRecord.update(db), true);
       expect(await cvRecord.delete(db), true);
       expect(await cvRecord.delete(db), false);
+    });
+
+    test('onRecord', () async {
+      var cvStore = cvIntRecordFactory.store<DbTest>('test');
+      var cvRecordRef = cvStore.record(1); //
+      Future done() async {
+        await cvRecordRef
+            .onRecord(db)
+            .firstWhere((record) => (record?.value.v ?? 0) > 2);
+      }
+
+      Future<void> doneWithTimeOut() async {
+        await done().timeout(Duration(milliseconds: 10));
+      }
+
+      try {
+        await doneWithTimeOut();
+        fail('should fail');
+      } on TimeoutException catch (_) {
+        print(_);
+      }
+
+      await (cvRecordRef.cv()..value.v = 1).put(db);
+      try {
+        await doneWithTimeOut();
+        fail('should fail');
+      } on TimeoutException catch (_) {
+        print(_);
+      }
+
+      await (cvRecordRef.cv()..value.v = 3).put(db);
+      await done();
+
+      await (cvRecordRef.cv()..value.v = 1).put(db);
+      try {
+        await doneWithTimeOut();
+        fail('should fail');
+      } on TimeoutException catch (_) {
+        print(_);
+      }
+
+      var doneFuture = done();
+      Future.delayed(Duration(milliseconds: 2)).then((_) async {
+        await (cvRecordRef.cv()..value.v = 3).put(db);
+      }).unawait();
+      await doneFuture;
     });
   });
 }

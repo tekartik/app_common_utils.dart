@@ -3,10 +3,10 @@
 pubspect.yaml:
 
 ```yaml
-  tekartik_app_cv_firestore:
+  tekartik_app_cv_sembast:
     git:
       url: https://github.com/tekartik/app_common_utils.dart
       ref: dart2_3
-      path: app_cv_firestore
-    version: '>=0.1.0'
+      path: app_cv_sembast
+    version: '>=0.5.0'
 ```

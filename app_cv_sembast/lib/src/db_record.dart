@@ -199,11 +199,8 @@ class CvRecordRef<K, V extends DbRecord<K>> {
       (await rawRef.getSnapshot(db))?.cv<V>();
 
   /// Track changes
-  Stream<V?> onRecord(Database db) async* {
-    await for (var snapshot in rawRef.onSnapshot(db)) {
-      yield snapshot?.cv<V>();
-    }
-  }
+  Stream<V?> onRecord(Database db) =>
+      rawRef.onSnapshot(db).map((event) => event?.cv<V>());
 
   Future<void> delete(DatabaseClient client) async {
     await rawRef.delete(client);
