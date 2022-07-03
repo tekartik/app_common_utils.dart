@@ -231,7 +231,7 @@ void main() {
     });
     test('all types', () {
       AllTypes? allTypes;
-      void _check() {
+      void check() {
         var export = allTypes!.toModel();
         var import = AllTypes()..fromModel(export);
         expect(import, allTypes);
@@ -242,7 +242,7 @@ void main() {
       }
 
       allTypes = AllTypes();
-      _check();
+      check();
       allTypes
         ..intCvField.v = 1
         ..numCvField.v = 2.5
@@ -255,7 +255,7 @@ void main() {
         ..children.v = [
           WithChildCvField()..child.v = (ChildContent()..sub.v = 'sub_value')
         ];
-      _check();
+      check();
     });
 
     test('fillModel', () {

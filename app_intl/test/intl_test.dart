@@ -1,4 +1,4 @@
-import 'package:tekartik_app_common_utils/intl/intl.dart';
+import 'package:tekartik_app_intl/intl.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -12,6 +12,10 @@ void main() {
       expect(intlRender('count'), 'count');
       expect(intlRender('count', data: {'count': '2'}), 'count');
       expect(intlRender('count: {{count}}', data: {'count': '2'}), 'count: 2');
+      expect(
+          intlRender('2 params: {{p1}} and {{p2}}',
+              data: {'p1': '1', 'p2': '2'}),
+          '2 params: 1 and 2');
     });
 
     test('intlSafeLocalizationMap', () {

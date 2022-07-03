@@ -2,10 +2,11 @@ import 'dart:math';
 
 /// Generate a password for encrypt/decrypt function (32 bytes), avoiding confusing characters.
 String generatePassword({int length = 32}) {
-  String _toString(int codeUnit) => String.fromCharCodes([codeUnit]);
+  String codeUnitToString(int codeUnit) => String.fromCharCodes([codeUnit]);
   Iterable<String> generate(String startCharacter, int count) {
     var codeUnit = startCharacter.codeUnits.first;
-    return List<String>.generate(count, (index) => _toString(codeUnit + index));
+    return List<String>.generate(
+        count, (index) => codeUnitToString(codeUnit + index));
   }
 
   var digits = generate('0', 10);

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 String intlSafeKey(String key) {
   var paramIndex = key.indexOf('{{');
   if (paramIndex != -1) {
@@ -30,4 +32,10 @@ String intlRender(String template, {Map<String, String?>? data}) {
     text = text.replaceAll('{{$key}}', value!);
   });
   return text;
+}
+
+/// Load localization map from an asset
+Map<String, String> intlDecodeLocalizationMap(String json) {
+  var src = jsonDecode(json) as Map;
+  return intlSafeLocalizationMap(src);
 }

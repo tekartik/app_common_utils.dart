@@ -128,7 +128,7 @@ void main() {
     });
 
     test('single string', () async {
-      void _check(CvFsSingleString doc) {
+      void check(CvFsSingleString doc) {
         expect(doc.exists, isTrue);
         expect(doc.path, 'test/single_string');
         expect(doc.toModel(), {'text': 'value'});
@@ -148,24 +148,24 @@ void main() {
       expect(doc.toModel(), {'text': 'value'});
       await firestore.cvSet(doc);
       var readDoc = await firestore.cvGet<CvFsSingleString>(doc.path);
-      _check(readDoc);
+      check(readDoc);
 
       readDoc = await firestore.doc(doc.path).cvGet<CvFsSingleString>();
-      _check(readDoc);
+      check(readDoc);
 
       var snapshots =
           await firestore.collection('test').cvGet<CvFsSingleString>();
       expect(snapshots, [doc]);
-      _check(snapshots.first);
+      check(snapshots.first);
 
       snapshots =
           await firestore.collection('test').limit(1).cvGet<CvFsSingleString>();
       expect(snapshots, [doc]);
-      _check(snapshots.first);
+      check(snapshots.first);
 
       await firestore.cvRunTransaction((transaction) async {
         readDoc = await transaction.cvGet(doc.path);
-        _check(readDoc);
+        check(readDoc);
 
         transaction.cvDelete(doc.path);
       });
