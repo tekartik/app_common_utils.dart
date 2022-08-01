@@ -90,7 +90,7 @@ abstract class DatabaseClientIndexRecord<K, PK> {
   /// if [merge] is true and the field exists, data is merged
   ///
   /// Returns the updated value.
-  Future<V> put(Model value, {bool? merge});
+  Future<Model> put(Model value, {bool? merge});
 
   /// Update a record.
   ///
@@ -98,7 +98,7 @@ abstract class DatabaseClientIndexRecord<K, PK> {
   /// refer to a path in the map, unless the key is specifically escaped
   ///
   /// Returns the updated value.
-  Future<V?> update(Model value);
+  Future<Model?> update(Model value);
 
   /// Delete the record.
   Future delete();
@@ -139,7 +139,7 @@ class _SembastDatabaseIndexRecord<K, PK>
   ///
   /// Returns the updated value.
   @override
-  Future<V> put(Model value, {bool? merge}) =>
+  Future<Model> put(Model value, {bool? merge}) =>
       _index._clientPut(client, key, value, merge: merge);
 
   /// Update a record.
@@ -149,8 +149,8 @@ class _SembastDatabaseIndexRecord<K, PK>
   ///
   /// Returns the updated value.
   @override
-  Future<V?> update(Model value) async =>
-      _index._clientUpdate(client, key, value);
+  Future<Model?> update(Model value) async =>
+      (await _index._clientUpdate(client, key, value));
 
   /// Delete the record.
   @override
@@ -285,10 +285,10 @@ class _SembastDatabaseUniqueIndex<K, PK> implements DatabaseIndex<K, PK> {
   /// if [merge] is true and the field exists, data is merged
   ///
   /// Returns the updated value.
-  Future<V> _clientPut(DatabaseClient databaseClient, K key, Model value,
+  Future<Model> _clientPut(DatabaseClient databaseClient, K key, Model value,
           {bool? merge}) async =>
       (await (await _storeRecord(key))
-          ?.put(databaseClient, value, merge: merge));
+          ?.put(databaseClient, value, merge: merge)) as Model;
 
   /// Update a record.
   ///
@@ -296,7 +296,7 @@ class _SembastDatabaseUniqueIndex<K, PK> implements DatabaseIndex<K, PK> {
   /// refer to a path in the map, unless the key is specifically escaped
   ///
   /// Returns the updated value.
-  Future<V?> _clientUpdate(
+  Future<Model?> _clientUpdate(
           DatabaseClient databaseClient, K key, Model value) async =>
       (await (await _storeRecord(key))?.update(databaseClient, value));
 
