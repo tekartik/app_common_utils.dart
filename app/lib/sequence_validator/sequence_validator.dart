@@ -245,5 +245,4 @@ class SequenceValidator {
     return false;
     // Are we done
   } // inclusive for large
-
 }
