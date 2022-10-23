@@ -85,7 +85,6 @@ class Pager<T> {
               data!.items = await _provider.getData(
                   _getPageProviderOffset(page), _pageSize);
               // Complete if needed too
-
             }
           });
         }

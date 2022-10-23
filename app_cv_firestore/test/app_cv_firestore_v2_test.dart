@@ -69,6 +69,18 @@ void main() {
       await firestore.cvSet(cvFsEmpty);
     });
 
+    test('delete', () async {
+      var cvFsEmpty = CvFsEmpty()..path = 'test/1';
+      await firestore.cvSet(cvFsEmpty);
+      cvFsEmpty = await firestore.cvGet<CvFsEmpty>('test/1');
+      expect(cvFsEmpty.exists, true);
+      expect(cvFsEmpty.toModel(), {});
+
+      await firestore.docDelete(cvFsEmpty);
+      cvFsEmpty = await firestore.cvGet<CvFsEmpty>('test/1');
+      expect(cvFsEmpty.exists, false);
+    });
+
     test('missing path', () async {
       // No path set
       var cvFsEmpty = CvFsEmpty();
@@ -167,7 +179,8 @@ void main() {
         readDoc = await transaction.cvGet(doc.path);
         check(readDoc);
 
-        transaction.cvDelete(doc.path);
+        //transaction.pathDelete(doc.path);
+        transaction.docDelete(readDoc);
       });
       doc = CvFsSingleString()
         ..path = 'test/single_string'
@@ -328,6 +341,7 @@ void main() {
 class FsTestWithTimestamp extends CvFirestoreDocumentBase
     with WithServerTimestampMixin {
   final value = CvField<int>('value');
+
   @override
   List<CvField> get fields => [...timedMixinFields, value];
 }

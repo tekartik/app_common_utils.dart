@@ -21,15 +21,36 @@ extension CvFirestoreExt on Firestore {
   }
 
   /// Update a document
-  Future<void> cvUpdate<T extends CvFirestoreDocument>(T document) async {
+  Future<void> cvUpdate<T extends CvFirestoreDocument>(T document) =>
+      docUpdate(document);
+
+  /// Update a document
+  Future<void> docUpdate<T extends CvFirestoreDocument>(T document) async {
     _ensurePathSet(document);
     await doc(document.path).update(document.toModel());
+  }
+
+  /// Update a document
+  Future<void> docDelete<T extends CvFirestoreDocument>(T document) async {
+    _ensurePathSet(document);
+    await pathDelete(document.path);
   }
 
   /// Add a document to collection, [document.path] is ignored.
   Future<T> cvAdd<T extends CvFirestoreDocument>(
       String path, T document) async {
     return await collection(path).cvAdd(document);
+  }
+
+  /// Returns non-null [Future] of the read data in a [DocumentSnapshot].
+  void refDelete<T extends CvFirestoreDocument>(
+      CvDocumentReference<T> ref) async {
+    await pathDelete(ref.path);
+  }
+
+  /// Delete
+  Future<void> pathDelete(String path) async {
+    await doc(path).delete();
   }
 
   /// Add a document
@@ -59,6 +80,8 @@ class CvFirestoreTransaction extends Transaction {
   CvFirestoreTransaction(this._firestore, this._transaction);
 
   /// Delete
+  /// TODO bad naming
+  @Deprecated('use path delete')
   void cvDelete(String path) {
     delete(_firestore.doc(path));
   }
@@ -76,7 +99,7 @@ class CvFirestoreTransaction extends Transaction {
 
   /// Returns non-null [Future] of the read data in a [DocumentSnapshot].
   void refDelete<T extends CvFirestoreDocument>(CvDocumentReference<T> ref) =>
-      cvDelete(ref.path);
+      pathDelete(ref.path);
 
   /// Set
   void cvSet<T extends CvFirestoreDocument>(T document, [SetOptions? options]) {
@@ -93,6 +116,15 @@ class CvFirestoreTransaction extends Transaction {
   @override
   void delete(DocumentReference documentRef) {
     _transaction.delete(documentRef);
+  }
+
+  void pathDelete(String path) {
+    _transaction.delete(_firestore.doc(path));
+  }
+
+  /// Doc deletion
+  void docDelete<T extends CvFirestoreDocument>(T document) {
+    pathDelete(document.path);
   }
 
   @override

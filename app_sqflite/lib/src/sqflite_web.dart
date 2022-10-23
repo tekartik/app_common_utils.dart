@@ -1,6 +1,7 @@
 import 'package:sqflite_common/sqlite_api.dart';
+import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
 
-DatabaseFactory get databaseFactory => _stub('databaseFactory');
+DatabaseFactory get databaseFactory => databaseFactoryFfiWeb;
 
 DatabaseFactory getDatabaseFactory(
         {String? packageName, String? rootPath, bool autoInit = true}) =>

@@ -30,7 +30,6 @@ class LocalizationProject {
   LocalizationProject(
     // posix pat ok
     String path, {
-
     /// Default to empty
     String? i18nPath,
   }) {
