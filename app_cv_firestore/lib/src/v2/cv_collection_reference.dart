@@ -13,6 +13,9 @@ class CvCollectionReference<T extends CvFirestoreDocument> {
       firestore.collection(path).cvGet();
 
   /// Get a list of document
+  Future<int> count(Firestore firestore) => firestore.collection(path).count();
+
+  /// Get a list of document
   Stream<List<T>> onSnapshots(Firestore firestore) =>
       firestore.collection(path).cvOnSnapshots();
 

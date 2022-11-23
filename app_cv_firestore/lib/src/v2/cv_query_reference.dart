@@ -4,7 +4,7 @@ import 'package:tekartik_firebase_firestore/firestore.dart';
 import 'package:tekartik_firebase_firestore/src/common/query_mixin.dart'; // ignore: implementation_imports
 import 'package:tekartik_firebase_firestore/src/firestore_common.dart'; // ignore: implementation_imports
 
-class QueryImpl with QueryMixin {
+class QueryImpl with QueryMixin, FirestoreQueryExecutorMixin {
   @override
   QueryMixin clone() => QueryImpl()..queryInfo = queryInfo.clone();
 
@@ -38,6 +38,12 @@ class CvQueryReference<T extends CvFirestoreDocument> {
     var query =
         await applyQueryInfo(firestore, _collectionReference.path, _queryInfo);
     return query.cvGet<T>();
+  }
+
+  Future<int> count(Firestore firestore) async {
+    var query =
+        await applyQueryInfo(firestore, _collectionReference.path, _queryInfo);
+    return query.count();
   }
 
   @Deprecated('User onSnapshots instead')
