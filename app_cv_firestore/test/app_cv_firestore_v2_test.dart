@@ -316,12 +316,15 @@ void main() {
       expect(docRef.path, 'test/1');
       expect((await query.onSnapshots(firestore).first), isEmpty);
       expect(await collection.get(firestore), []);
+      expect(await collection.count(firestore), 0);
       var doc = docRef.cv()..text.v = 'value';
       await firestore.cvSet(doc);
       expect((await query.onSnapshots(firestore).first), [doc]);
+      expect(await query.count(firestore), 1);
       doc = docRef.cv()..text.v = 'value2';
       await firestore.cvSet(doc);
       expect((await query.onSnapshots(firestore).first), isEmpty);
+      expect(await query.count(firestore), 0);
     });
 
     test('extension', () {
