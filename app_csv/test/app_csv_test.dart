@@ -113,7 +113,7 @@ test2,test1
       });
       test('mapListToCsv', () {
         // empty
-        expect(mapListToCsv(<Map<String, dynamic>>[]), '');
+        expect(mapListToCsv(<Map<String, Object?>>[]), '');
 
         // simple
         expectCsv(

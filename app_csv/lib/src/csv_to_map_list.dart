@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:csv/csv.dart';
 
 /// Convert a csv (with an header row) to csv
-List<Map<String, dynamic>> csvToMapList(String csv,
+List<Map<String, Object?>> csvToMapList(String csv,
     {CsvToListConverter? converter}) {
   if (converter == null) {
     /// Use the default eol
