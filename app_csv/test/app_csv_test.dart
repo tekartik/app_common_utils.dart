@@ -24,7 +24,7 @@ null,test\r
       test('empty', () {
         expect(csvToMapList('''
 test
-'''), []);
+'''), isEmpty);
       });
       test('simple', () {
         expect(csvToMapList('''
