@@ -164,5 +164,18 @@ int,double,String,bool,Uint8List
           ]),
           'test\r\n1');
     });
+    test('gsheet', () {
+      var csv = 'one_column_with_line_feed\r\n'
+          '"Hello\n'
+          'World"';
+      expect(csvToMapList(csv), [
+        {'one_column_with_line_feed': 'Hello\nWorld'}
+      ]);
+      // bad
+      csv = 'one_column_with_line_feed\n'
+          '"Hello\n'
+          'World"';
+      expect(csvToMapList(csv), isEmpty);
+    });
   });
 }
