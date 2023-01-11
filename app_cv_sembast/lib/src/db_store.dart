@@ -3,7 +3,7 @@ import 'package:sembast/sembast.dart';
 import 'db_record.dart';
 
 /// Store factory mixin.
-mixin CvStoreFactoryMixin<K extends Object> implements CvStoreFactory<K> {
+mixin CvStoreFactoryMixin<K> implements CvStoreFactory<K> {
   @override
   CvStoreRef<K, V> store<V extends DbRecord<K>>([String? name]) {
     if (name == null) {
@@ -17,7 +17,7 @@ mixin CvStoreFactoryMixin<K extends Object> implements CvStoreFactory<K> {
 var _mainStore = intMapStoreFactory.store().name;
 
 /// Store helper
-class CvStoreRef<K extends Object, V extends DbRecord<K>> {
+class CvStoreRef<K, V extends DbRecord<K>> {
   final StoreRef<K, Map<String, Object?>> rawRef;
 
   CvStoreRef(String name) : rawRef = StoreRef<K, Map<String, Object?>>(name);
@@ -51,7 +51,7 @@ class CvStoreRef<K extends Object, V extends DbRecord<K>> {
   }
 }
 
-class CvQueryRef<K extends Object, V extends DbRecord<K>> {
+class CvQueryRef<K, V extends DbRecord<K>> {
   final QueryRef<K, Map<String, Object?>> rawRef;
 
   CvQueryRef(this.rawRef);
@@ -74,7 +74,7 @@ class CvQueryRef<K extends Object, V extends DbRecord<K>> {
 }
 
 /// Store factory interface
-abstract class CvStoreFactory<K extends Object> {
+abstract class CvStoreFactory<K> {
   /// Creates a reference to a store.
   CvStoreRef<K, V> store<V extends DbRecord<K>>([String? name]);
 }
@@ -91,7 +91,7 @@ class CvIntStoreFactory extends CvStoreFactoryBase<int> {}
 
 class CvStringStoreFactory extends CvStoreFactoryBase<String> {}
 
-class CvStoreFactoryBase<K extends Object> with CvStoreFactoryMixin<K> {
+class CvStoreFactoryBase<K> with CvStoreFactoryMixin<K> {
   /*
   CvStoreRef<K, V> _store<V extends DbRecord<K>>([String? name]) {
     if (name == null) {
