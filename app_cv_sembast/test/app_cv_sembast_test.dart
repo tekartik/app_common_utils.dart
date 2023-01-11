@@ -129,7 +129,7 @@ void main() {
       }
 
       var doneFuture = done();
-      Future.delayed(Duration(milliseconds: 2)).then((_) async {
+      Future<void>.delayed(Duration(milliseconds: 2)).then((_) async {
         await (cvRecordRef.cv()..value.v = 3).put(db);
       }).unawait();
       await doneFuture;

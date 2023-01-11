@@ -3,7 +3,7 @@ import 'package:sembast/sembast.dart';
 
 import 'db_store.dart';
 
-mixin _WithRef<K> {
+mixin _WithRef<K extends Object> {
   RecordRef<K, Map<String, Object?>> get rawRef => _ref!;
 
   //@deprecated
@@ -21,7 +21,7 @@ mixin _WithRef<K> {
   set id(K id) => rawRef = rawRef.store.record(id);
 }
 
-abstract class DbRecord<K> extends CvModelBase with _WithRef<K> {
+abstract class DbRecord<K extends Object> extends CvModelBase with _WithRef<K> {
   Future<void> put(DatabaseClient db, {bool merge});
 
   Future<bool> update(DatabaseClient db);
@@ -31,12 +31,12 @@ abstract class DbRecord<K> extends CvModelBase with _WithRef<K> {
   Future<bool> delete(DatabaseClient db);
 }
 
-extension DbRecord2Ext<K> on DbRecord<K> {
+extension DbRecord2Ext<K extends Object> on DbRecord<K> {
   CvRecordRef<K, DbRecord<K>> get ref =>
       CvStoreRef<K, DbRecord<K>>(rawRef.store.name).record(rawRef.key);
 }
 
-abstract class DbRecordBase<K> extends CvModelBase
+abstract class DbRecordBase<K extends Object> extends CvModelBase
     with _WithRef<K>
     implements DbRecord<K> {
   @override
@@ -98,7 +98,7 @@ abstract class DbStringRecord extends DbRecord<String> {}
 abstract class DbIntRecord extends DbRecord<int> {}
 
 /// Generic map
-class DbRecordMap<K> extends DbRecordBase<K> {
+class DbRecordMap<K extends Object> extends DbRecordBase<K> {
   late CvMapModel _mapModel;
 
   @override
@@ -110,7 +110,7 @@ class DbRecordMap<K> extends DbRecordBase<K> {
 }
 
 /// Easy extension
-extension CvSembastRecordSnapshotExt<K>
+extension CvSembastRecordSnapshotExt<K extends Object>
     on RecordSnapshot<K, Map<String, Object?>> {
   /// Create a DbRecord from a snapshot
   T cv<T extends DbRecord<K>>() {
@@ -119,7 +119,7 @@ extension CvSembastRecordSnapshotExt<K>
 }
 
 /// Easy extension
-extension CvSembastRecordSnapshotsExt<K>
+extension CvSembastRecordSnapshotsExt<K extends Object>
     on List<RecordSnapshot<K, Map<String, Object?>>> {
   /// Create a list of DbRecords from a snapshot
   List<T> cv<T extends DbRecord<K>>() =>
@@ -127,7 +127,7 @@ extension CvSembastRecordSnapshotsExt<K>
 }
 
 /// Easy extension
-extension DbRecordExt<K, V> on DbRecord<K> {
+extension DbRecordExt<K extends Object, V> on DbRecord<K> {
   Future<void> put(DatabaseClient db, {bool merge = false}) async {
     var data = await rawRef.put(db, toMap(), merge: merge);
     fromMap(data);
@@ -157,7 +157,8 @@ extension DatabaseClientSembastExt on DatabaseClient {
 }
 
 /// Easy extension
-extension DbRecordListExt<K, V> on List<DbRecord<K>> {
+extension DbRecordListExt<K extends Object, V extends Object>
+    on List<DbRecord<K>> {
   Future<void> put(DatabaseClient db, {bool merge = false}) async {
     await db.transaction((txn) async {
       for (var record in this) {
@@ -185,7 +186,7 @@ extension DbRecordListExt<K, V> on List<DbRecord<K>> {
   }*/
 }
 
-class CvRecordRef<K, V extends DbRecord<K>> {
+class CvRecordRef<K extends Object, V extends DbRecord<K>> {
   final CvStoreRef<K, V> store;
   final RecordRef<K, Map<String, Object?>> rawRef;
 
