@@ -1,2 +1,7 @@
 # tekartik analysis_options extension to pedantic
 include: package:tekartik_lints/recommended.yaml
+
+analyzer:
+  language:
+    strict-casts: true
+    strict-inference: true

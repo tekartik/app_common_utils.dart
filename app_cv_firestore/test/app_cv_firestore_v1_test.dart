@@ -57,14 +57,14 @@ void main() {
       expect(cvFsEmpty, CvFsEmpty()..path = 'test/1');
       expect(cvFsEmpty.path, 'test/1');
       expect(cvFsEmpty.exists, false);
-      expect(cvFsEmpty.toModel(), {});
+      expect(cvFsEmpty.toModel(), isEmpty);
 
       await firestore.cvSet(cvFsEmpty);
       cvFsEmpty = await firestore.cvGet<CvFsEmpty>('test/1');
       expect(cvFsEmpty, CvFsEmpty()..path = 'test/1');
       expect(cvFsEmpty.path, 'test/1');
       expect(cvFsEmpty.exists, true);
-      expect(cvFsEmpty.toModel(), {});
+      expect(cvFsEmpty.toModel(), isEmpty);
 
       await firestore.cvSet(cvFsEmpty);
     });
@@ -261,7 +261,7 @@ void main() {
       var collection = CvCollectionReference<CvFsSingleString>('test');
       var docRef = collection.doc('1');
       expect(docRef.path, 'test/1');
-      expect(await collection.get(firestore), []);
+      expect(await collection.get(firestore), isEmpty);
       var doc = docRef.cv()..text.v = 'value';
       await firestore.cvSet(doc);
       expect(await collection.get(firestore), [doc]);
@@ -293,7 +293,7 @@ void main() {
       var docRef = collection.doc('1');
       expect(docRef.path, 'test/1');
       expect((await query.onSnapshots(firestore).first), isEmpty);
-      expect(await collection.get(firestore), []);
+      expect(await collection.get(firestore), isEmpty);
       var doc = docRef.cv()..text.v = 'value';
       await firestore.cvSet(doc);
       expect((await query.onSnapshots(firestore).first), [doc]);
