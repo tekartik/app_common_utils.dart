@@ -6,7 +6,7 @@ homepage: https://github.com/tekartik/app_common_utils.dart
 publish_to: none
 
 environment:
-  sdk: '>=2.18.0-0 <3.0.0'
+  sdk: '>=2.18.0 <3.0.0'
 
 dependencies:
   csv: '>=5.0.0-0'
