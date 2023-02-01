@@ -17,7 +17,6 @@ dependencies:
     version: '>=0.10.7'
 dev_dependencies:
   path:
-  pedantic: ^1.8.0
   dev_test:
   test: ^1.6.0
   process_run:

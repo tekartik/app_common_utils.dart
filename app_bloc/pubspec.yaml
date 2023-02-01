@@ -15,7 +15,6 @@ dependencies:
   meta:
 
 dev_dependencies:
-  pedantic:
   dev_test:
   test:
   build_runner: '>=1.2.7'

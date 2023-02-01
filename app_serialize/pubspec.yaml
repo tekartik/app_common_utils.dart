@@ -21,7 +21,6 @@ dependencies:
 
 dev_dependencies:
   dev_test:
-  pedantic: ^1.0.0
   test: ^1.0.0
   process_run:
 
