@@ -1,5 +1,6 @@
 import 'package:path/path.dart';
 import 'package:tekartik_app_cv/app_cv.dart';
+// ignore: deprecated_member_use_from_same_package
 import 'package:tekartik_app_cv_firestore/app_cv_firestore_v1.dart';
 import 'package:tekartik_firebase_firestore/firestore.dart';
 import 'package:tekartik_firebase_firestore_sembast/firestore_sembast.dart';

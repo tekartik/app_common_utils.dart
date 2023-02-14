@@ -17,13 +17,6 @@ class CvFsSingleString extends CvFirestoreDocumentBase {
   List<CvField> get fields => [text];
 }
 
-class CvFsAllFields extends CvFirestoreDocumentBase {
-  final intValue = CvField<int>('intValue');
-
-  @override
-  List<CvField> get fields => [intValue];
-}
-
 void initBuilders() {
   cvFirestoreAddBuilder<CvFsEmpty>((_) => CvFsEmpty());
   cvFirestoreAddBuilder<CvFsSingleString>((_) => CvFsSingleString());
@@ -338,7 +331,50 @@ void main() {
       expect((FsTestWithTimestamp()..value.v = 1).toMapWithServerTimestamp(),
           {'value': 1, 'timestamp': FieldValue.serverTimestamp});
     });
+
+    test('fillModel', () async {
+      var allFields = CvFsAllFields()..fillModel(cvFirestoreFillOptions1);
+      expect(allFields.toMap(), {
+        'int': 1,
+        'double': 2.5,
+        'bool': 3.5,
+        'string': 4.5,
+        'timestamp': Timestamp.parse('1970-01-01T00:00:05.000Z'),
+        'intList': [6],
+        'model': {'text': 'text_7'},
+        'modelList': {'text': 'text_8'},
+        'map': {'value': 9},
+        'blob': Blob.fromList([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+      });
+    });
   });
+}
+
+class CvFsAllFields extends CvFirestoreDocumentBase {
+  final intValue = CvField<int>('int');
+  final doubleValue = CvField<double>('double');
+  final boolValue = CvField<double>('bool');
+  final stringValue = CvField<double>('string');
+  final timestampValue = CvField<Timestamp>('timestamp');
+  final intListValue = CvListField<int>('intList');
+  final model = CvModelField<CvFsSingleString>('model');
+  final modelList = CvModelField<CvFsSingleString>('modelList');
+  final map = CvField<Model>('map');
+  final blob = CvField<Blob>('blob');
+
+  @override
+  List<CvField> get fields => [
+        intValue,
+        doubleValue,
+        boolValue,
+        stringValue,
+        timestampValue,
+        intListValue,
+        model,
+        modelList,
+        map,
+        blob
+      ];
 }
 
 class FsTestWithTimestamp extends CvFirestoreDocumentBase

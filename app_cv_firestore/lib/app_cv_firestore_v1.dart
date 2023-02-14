@@ -1,4 +1,5 @@
 /// Firestore content values helper
+@Deprecated('use app_cv_firestore_v2')
 library tekartik_app_cv_firestore_v1;
 
 export 'src/builder.dart'

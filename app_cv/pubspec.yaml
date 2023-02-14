@@ -18,7 +18,7 @@ dependencies:
       url: https://github.com/tekartik/common_utils.dart
       ref: dart2_3
     version: '>=0.1.0'
-  cv: '>=0.2.9-1'
+  cv: '>=0.2.10-1'
   meta:
   collection:
 dev_dependencies:

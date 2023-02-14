@@ -95,7 +95,6 @@ mixin CvModelMixin implements CvModel {
   }
 
   @override
-  @override
   void fromMap(Map map, {List<String>? columns}) {
     _debugCheckCvFields();
     // assert(map != null, 'map cannot be null');
