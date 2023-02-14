@@ -20,6 +20,13 @@ class DbStringTest extends DbStringRecordBase {
   List<CvField> get fields => [value];
 }
 
+class DbString2Test extends DbStringRecordBase {
+  final value2 = CvField<int>('value2');
+
+  @override
+  List<CvField> get fields => [value2];
+}
+
 bool contentAndKeyEquals(DbRecord? record1, DbRecord? record2) {
   return record1?.rawRef == record2?.rawRef && record1 == record2;
 }
@@ -31,6 +38,7 @@ void main() {
     setUpAll(() {
       cvAddBuilder<DbTest>((_) => DbTest());
       cvAddBuilder<DbStringTest>((_) => DbStringTest());
+      cvAddConstructor(DbString2Test.new);
     });
     setUp(() async {
       db = await newDatabaseFactoryMemory().openDatabase('test');
@@ -59,6 +67,17 @@ void main() {
       expect(store1, isNot(store2));
       record2 = store2.record(1);
       expect(record1, isNot(record2));
+    });
+    test('cast', () async {
+      var store = cvIntRecordFactory
+          .store<DbTest>('test')
+          .cast<String, DbStringTest>()
+          .castV<DbStringTest>();
+      var record = store.record('test').cv()..value.v = 1;
+      expect(record.toMap(), {'value': 1});
+      var record2 = store.record('test').castV<DbString2Test>().cv()
+        ..value2.v = 2;
+      expect(record2.toMap(), {'value2': 2});
     });
     test('int store', () async {
       var store = intMapStoreFactory.store('test');
@@ -134,7 +153,7 @@ void main() {
         await doneWithTimeOut();
         fail('should fail');
       } on TimeoutException catch (_) {
-        print(_);
+        // print(_);
       }
 
       await (cvRecordRef.cv()..value.v = 1).put(db);
@@ -142,7 +161,7 @@ void main() {
         await doneWithTimeOut();
         fail('should fail');
       } on TimeoutException catch (_) {
-        print(_);
+        // print(_);
       }
 
       await (cvRecordRef.cv()..value.v = 3).put(db);
@@ -153,7 +172,7 @@ void main() {
         await doneWithTimeOut();
         fail('should fail');
       } on TimeoutException catch (_) {
-        print(_);
+        // print(_);
       }
 
       var doneFuture = done();

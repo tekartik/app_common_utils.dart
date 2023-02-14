@@ -68,6 +68,19 @@ class CvStoreRef<K, V extends DbRecord<K>> {
   }
 }
 
+/// Helper extension.
+extension CvStoreRefExt<K, V extends DbRecord<K>> on CvStoreRef<K, V>{
+  /// Cast if needed
+  CvStoreRef<RK, RV> cast<RK, RV extends DbRecord<RK>>() {
+    if (this is CvStoreRef<RK, RV>) {
+      return this as CvStoreRef<RK, RV>;
+    }
+    return CvStoreRef<RK, RV>(name);
+  }
+  /// Cast if needed
+  CvStoreRef<K, RV> castV<RV extends DbRecord<K>>() => cast<K, RV>();
+}
+
 class CvQueryRef<K, V extends DbRecord<K>> {
   final QueryRef<K, Map<String, Object?>> rawRef;
 
@@ -109,16 +122,6 @@ class CvIntStoreFactory extends CvStoreFactoryBase<int> {}
 class CvStringStoreFactory extends CvStoreFactoryBase<String> {}
 
 class CvStoreFactoryBase<K> with CvStoreFactoryMixin<K> {
-  /*
-  CvStoreRef<K, V> _store<V extends DbRecord<K>>([String? name]) {
-    if (name == null) {
-      return CvStoreRef<K, V>.main();
-    } else {
-      return CvStoreRef<K, V>(name);
-    }
-  }*/
 }
-/*
-/// common `<String, Map<String, Object?>>` factory
-final stringMapStoreFactory = CvStoreFactoryBase<String>();
-*/
+
+
