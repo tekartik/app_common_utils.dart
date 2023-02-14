@@ -1,5 +1,7 @@
+import 'package:sembast/blob.dart';
 import 'package:sembast/sembast.dart';
 import 'package:sembast/sembast_memory.dart';
+import 'package:sembast/timestamp.dart';
 import 'package:tekartik_app_cv_sembast/app_cv_sembast.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
 import 'package:test/test.dart';
@@ -36,21 +38,46 @@ void main() {
     tearDown(() {
       db.close();
     });
+    test('api', () {
+      // ignore: unnecessary_statements
+      CvStoreRef;
+      // ignore: unnecessary_statements
+      CvRecordRef;
+      // ignore: unnecessary_statements
+      CvQueryRef;
+    });
+    test('ref', () async {
+      var store1 = cvIntRecordFactory.store('test');
+      var store2 = cvIntRecordFactory.store('test');
+      expect(store1, store2);
+      var record1 = store1.record(1);
+      var record2 = store2.record(1);
+      expect(record1, record2);
+      record2 = store1.record(2);
+      expect(record1, isNot(record2));
+      store2 = cvIntRecordFactory.store('tes2');
+      expect(store1, isNot(store2));
+      record2 = store2.record(1);
+      expect(record1, isNot(record2));
+    });
     test('int store', () async {
       var store = intMapStoreFactory.store('test');
       var cvStore = cvIntRecordFactory.store<DbTest>('test');
+
       var dbTest = DbTest()..value.v = 1;
       expect(dbTest.hasId, false);
       var recordRef = store.record(1);
       var cvRecordRef = cvStore.record(1);
+      expect(cvRecordRef.key, 1);
       await store.record(1).put(db, {'value': 1});
       expect(await recordRef.get(db), {'value': 1});
-      var readDbTest = await cvRecordRef.get(db);
+      var readDbTest = (await cvRecordRef.get(db))!;
       expect(readDbTest, dbTest);
-      expect(readDbTest!.rawRef.key, 1);
+      expect(readDbTest.rawRef.key, 1);
+      expect(readDbTest.ref.key, 1);
       var writeDbTest = cvRecordRef.cv()..value.v = 2;
       await writeDbTest.put(db);
-      readDbTest = await cvRecordRef.get(db);
+      readDbTest = (await cvRecordRef.get(db))!;
       expect(readDbTest, writeDbTest);
       //expect(contentAndKeyEquals(await store.findFirst(db)), writeDbTest);
 
@@ -69,6 +96,7 @@ void main() {
       expect(readDbTest, dbTest);
       expect(readDbTest!.rawRef.key, '1');
       var writeDbTest = cvRecordRef.cv()..value.v = 2;
+      expect(writeDbTest.ref, cvRecordRef);
       await writeDbTest.put(db);
       readDbTest = await cvRecordRef.get(db);
       expect(readDbTest, writeDbTest);
@@ -134,5 +162,48 @@ void main() {
       }).unawait();
       await doneFuture;
     });
+
+    test('fillModel', () async {
+      var allFields = CvDbAllFields()..fillModel(cvSembastFillOptions1);
+      expect(allFields.toMap(), {
+        'int': 1,
+        'double': 2.5,
+        'bool': 3.5,
+        'string': 4.5,
+        'timestamp': Timestamp.parse('1970-01-01T00:00:05.000Z'),
+        'intList': [6],
+        'model': {'value': 7},
+        'modelList': {'value': 8},
+        'map': {'value': 9},
+        'blob': Blob.fromList([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+      });
+    });
   });
+}
+
+class CvDbAllFields extends DbIntRecordBase {
+  final intValue = CvField<int>('int');
+  final doubleValue = CvField<double>('double');
+  final boolValue = CvField<double>('bool');
+  final stringValue = CvField<double>('string');
+  final timestampValue = CvField<Timestamp>('timestamp');
+  final intListValue = CvListField<int>('intList');
+  final model = CvModelField<DbStringTest>('model');
+  final modelList = CvModelField<DbStringTest>('modelList');
+  final map = CvField<Model>('map');
+  final blob = CvField<Blob>('blob');
+
+  @override
+  List<CvField> get fields => [
+        intValue,
+        doubleValue,
+        boolValue,
+        stringValue,
+        timestampValue,
+        intListValue,
+        model,
+        modelList,
+        map,
+        blob
+      ];
 }

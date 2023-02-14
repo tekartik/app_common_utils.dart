@@ -49,6 +49,23 @@ class CvStoreRef<K, V extends DbRecord<K>> {
     var count = await rawRef.delete(db, finder: finder);
     return count;
   }
+
+  @override
+  String toString() => 'CvStoreRef($name)';
+
+  @override
+  int get hashCode => name.hashCode;
+
+  @override
+  bool operator ==(Object other) {
+    if (other is CvStoreRef) {
+      if (other.name != name) {
+        return false;
+      }
+      return true;
+    }
+    return false;
+  }
 }
 
 class CvQueryRef<K, V extends DbRecord<K>> {
