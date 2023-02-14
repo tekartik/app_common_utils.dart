@@ -30,8 +30,8 @@ dependencies:
       path: http_io
       ref: dart2_3
     version: '>=0.0.1'
-
 dev_dependencies:
+  http:
   dev_test:
   process_run:
   test:
