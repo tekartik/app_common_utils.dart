@@ -2,7 +2,7 @@ import 'package:meta/meta.dart';
 import 'package:tekartik_app_cv/app_cv.dart';
 
 /// Global builder map
-var _builders = <Type, Function(Map data)>{};
+var _builders = <Type, Object Function(Map data)>{};
 
 /// Add builder
 void cvAddBuilder<T extends CvModel>(T Function(Map contextData) builder) {

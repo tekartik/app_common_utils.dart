@@ -2,6 +2,8 @@
 
 Helper for content values
 
+***Obsolete, use cv***
+
 # Setup
 
 In `pubspec.yaml`

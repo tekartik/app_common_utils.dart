@@ -45,10 +45,10 @@ void main() {
     });
     group('controller', () {
       test('direct_cancel', () async {
-        var controller = EmitFutureOrController();
+        var controller = EmitFutureOrController<void>();
         // This is needed to prevent a crash in unit test
         var subscription =
-            controller.futureOr.listen((_) => null, onError: (e) {
+            controller.futureOr.listen((_) => null, onError: (Object e) {
           expect(e, const TypeMatcher<EmitCancelException>());
         });
         controller.cancel();
@@ -76,7 +76,7 @@ void main() {
       });
 
       test('complete', () async {
-        var completer = EmitFutureOrController();
+        var completer = EmitFutureOrController<int>();
 
         expect(completer.isCancelled, isFalse);
         expect(completer.isCompleted, isFalse);
@@ -101,14 +101,15 @@ void main() {
       });
 
       test('complete_error', () async {
-        var controller = EmitFutureOrController();
+        var controller = EmitFutureOrController<int?>();
 
         expect(controller.isCancelled, isFalse);
         expect(controller.isCompleted, isFalse);
         var completed = false;
-        unawaited(controller.futureOr.toFuture().catchError((e) {
+        unawaited(controller.futureOr.toFuture().catchError((Object e) {
           expect(e, const TypeMatcher<TestException>());
           completed = true;
+          return null;
         }));
         controller.completeError(TestException());
         // Main difference between sync and async here
@@ -130,13 +131,14 @@ void main() {
         } on StateError catch (_) {}
       });
       test('cancel', () async {
-        var controller = EmitFutureOrController();
+        var controller = EmitFutureOrController<Object?>();
         expect(controller.isCancelled, isFalse);
         expect(controller.isCompleted, isFalse);
         var cancelled = false;
-        unawaited(controller.futureOr.toFuture().catchError((e) {
+        unawaited(controller.futureOr.toFuture().catchError((Object e) {
           expect(e, const TypeMatcher<EmitCancelException>());
           cancelled = true;
+          return null;
         }));
         controller.cancel();
         // Main difference between sync and async here

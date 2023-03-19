@@ -22,7 +22,7 @@ void main() {
       var cv = CvMapModel()..copyFrom(src);
       expect(cv.toModel(), {'test': 1});
       cv = CvMapModel()..copyFrom(IntContent());
-      expect(cv.toModel(), {});
+      expect(cv.toModel(), isEmpty);
       cv = CvMapModel()..copyFrom(IntContent()..value.v = null);
       expect(cv.toModel(), {'value': null});
       cv = CvMapModel()..copyFrom(IntContent()..value.v = 1);
@@ -32,7 +32,7 @@ void main() {
       var cv = CvMapModel();
       cv['test'] = 1;
       expect(cv.toModel(columns: ['test']), {'test': 1});
-      expect(cv.toModel(columns: []), {});
+      expect(cv.toModel(columns: []), isEmpty);
     });
     test('child content toModel', () {
       var cv = CvMapModel();
@@ -40,7 +40,7 @@ void main() {
       expect(cv.toModel(columns: ['test']), {
         'test': {'sub': 'sub_v'}
       });
-      expect(cv.toModel(columns: []), {});
+      expect(cv.toModel(columns: []), isEmpty);
     });
     test('child content list toModel', () {
       var cv = CvMapModel();
@@ -50,7 +50,7 @@ void main() {
           {'sub': 'sub_v'}
         ]
       });
-      expect(cv.toModel(columns: []), {});
+      expect(cv.toModel(columns: []), isEmpty);
     });
     test('withFields', () {
       var cv = CvMapModel.withFields([CvField('test', 1)]);
@@ -63,7 +63,7 @@ void main() {
     });
     test('map', () {
       var cv = CvMapModel();
-      expect(cv.fields, []);
+      expect(cv.fields, isEmpty);
       cv['test'] = 1;
       expect(cv.fields, [CvField('test', 1)]);
       cv['test'] = null;
@@ -73,14 +73,14 @@ void main() {
       expect(cv.fields, [CvField('test', 2)]);
       expect(cv.toModel(), {'test': 2});
       cv.field('test')!.clear();
-      expect(cv.fields, []);
-      expect(cv.toModel(), {});
+      expect(cv.fields, isEmpty);
+      expect(cv.toModel(), isEmpty);
 
       cv = CvMapModel();
       cv['test'] = 1;
       expect(cv.fields, [CvField('test', 1)]);
       cv.clear();
-      expect(cv.fields, []);
+      expect(cv.fields, isEmpty);
     });
   });
 }

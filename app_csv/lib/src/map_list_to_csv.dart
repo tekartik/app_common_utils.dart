@@ -3,7 +3,7 @@ import 'package:csv/csv.dart';
 /// Convert a map list to csv
 ///
 /// if [columns] is set columns are set first and always present
-String mapListToCsv(List<Map<String, dynamic>> mapList,
+String mapListToCsv(List<Map> mapList,
     {ListToCsvConverter? converter,
     Object? nullValue = '',
     List<String>? columns}) {
@@ -40,7 +40,7 @@ String mapListToCsv(List<Map<String, dynamic>> mapList,
       if (keyIndex == null) {
         // New key is found
         // Add it and fix previous data
-        keyIndex = addKey(key);
+        keyIndex = addKey(key.toString());
         // grow our list
         dataRow = List.from(dataRow, growable: true)..add(value);
       } else {

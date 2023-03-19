@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:csv/csv.dart';
 import 'package:tekartik_app_csv/app_csv.dart';
 import 'package:test/test.dart';
 
@@ -14,8 +15,8 @@ void main() {
     group('csvToMapList', () {
       test('null', () {
         expect(csvToMapList('''
-null,test
-,1
+null,test\r
+,1\r
 '''), [
           {'null': '', 'test': 1}
         ]);
@@ -23,11 +24,11 @@ null,test
       test('empty', () {
         expect(csvToMapList('''
 test
-'''), []);
+'''), isEmpty);
       });
       test('simple', () {
         expect(csvToMapList('''
-test
+test\r
 1
 '''), [
           {'test': 1}
@@ -35,8 +36,8 @@ test
       });
       test('2 lines', () {
         expect(csvToMapList('''
-test
-1
+test\r
+1\r
 2
 '''), [
           {'test': 1},
@@ -45,8 +46,8 @@ test
       });
       test('all', () {
         expect(csvToMapList('''
-int,double,String,bool,Uint8List
-1,2.1,text,true,"[1, 2, 3]"
+int,double,String,bool,Uint8List\r
+1,2.1,text,true,"[1, 2, 3]"\r
 '''), [
           {
             'int': 1,
@@ -56,6 +57,20 @@ int,double,String,bool,Uint8List
             'Uint8List': '[1, 2, 3]'
           }
         ]);
+      });
+      test('line feed', () {
+        var csv = 'one_column_with_line_feed\r\n"Hello\nWorld"';
+        expect(
+            csvToMapList(csv,
+                converter: CsvToListConverter(fieldDelimiter: ',')),
+            [
+              {'one_column_with_line_feed': 'Hello\nWorld'}
+            ]);
+        var mapList = csvToMapList(csv);
+        expect(mapList, [
+          {'one_column_with_line_feed': 'Hello\nWorld'}
+        ]);
+        expect(mapListToCsv(mapList), csv);
       });
     });
     group('mapListToCsv', () {
@@ -113,7 +128,7 @@ test2,test1
       });
       test('mapListToCsv', () {
         // empty
-        expect(mapListToCsv(<Map<String, dynamic>>[]), '');
+        expect(mapListToCsv(<Map<String, Object?>>[]), '');
 
         // simple
         expectCsv(
@@ -148,6 +163,19 @@ int,double,String,bool,Uint8List
             {'test': 1}
           ]),
           'test\r\n1');
+    });
+    test('gsheet', () {
+      var csv = 'one_column_with_line_feed\r\n'
+          '"Hello\n'
+          'World"';
+      expect(csvToMapList(csv), [
+        {'one_column_with_line_feed': 'Hello\nWorld'}
+      ]);
+      // bad
+      csv = 'one_column_with_line_feed\n'
+          '"Hello\n'
+          'World"';
+      expect(csvToMapList(csv), isEmpty);
     });
   });
 }

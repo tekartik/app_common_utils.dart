@@ -231,7 +231,8 @@ class SequenceValidator {
     if (_lastInSequence) {
       if (_lastSequence) {
         var completer = _endValidator = Completer<bool>();
-        Future.delayed(const Duration(milliseconds: _smallDiff)).then((_) {
+        Future<void>.delayed(const Duration(milliseconds: _smallDiff))
+            .then((_) {
           if (completer.isCompleted == false) {
             completer.complete(true);
           }

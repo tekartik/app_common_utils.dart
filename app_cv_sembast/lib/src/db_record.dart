@@ -31,7 +31,8 @@ abstract class DbRecord<K> extends CvModelBase with _WithRef<K> {
   Future<bool> delete(DatabaseClient db);
 }
 
-extension DbRecord2Ext<K> on DbRecord<K> {
+/// Access to ref.
+extension DbRecordToRefExt<K> on DbRecord<K> {
   CvRecordRef<K, DbRecord<K>> get ref =>
       CvStoreRef<K, DbRecord<K>>(rawRef.store.name).record(rawRef.key);
 }
@@ -189,6 +190,8 @@ class CvRecordRef<K, V extends DbRecord<K>> {
   final CvStoreRef<K, V> store;
   final RecordRef<K, Map<String, Object?>> rawRef;
 
+  K get key => rawRef.key;
+
   CvRecordRef(this.store, K key) : rawRef = store.rawRef.record(key);
 
   /// To build for write
@@ -205,4 +208,38 @@ class CvRecordRef<K, V extends DbRecord<K>> {
   Future<void> delete(DatabaseClient client) async {
     await rawRef.delete(client);
   }
+
+  @override
+  int get hashCode => key.hashCode;
+
+  @override
+  String toString() => 'CvRecordRef(${store.name}, $key)';
+
+  @override
+  bool operator ==(Object other) {
+    if (other is CvRecordRef) {
+      if (other.store != store) {
+        return false;
+      }
+      if (other.key != key) {
+        return false;
+      }
+      return true;
+    }
+    return false;
+  }
+}
+
+/// Helper extension.
+extension CvRecordRefExt<K, V extends DbRecord<K>> on CvRecordRef<K, V> {
+  /// Cast if needed
+  CvRecordRef<RK, RV> cast<RK, RV extends DbRecord<RK>>() {
+    if (this is CvRecordRef<RK, RV>) {
+      return this as CvRecordRef<RK, RV>;
+    }
+    return store.cast<RK, RV>().record(key as RK);
+  }
+
+  /// Cast if needed
+  CvRecordRef<K, RV> castV<RV extends DbRecord<K>>() => cast<K, RV>();
 }

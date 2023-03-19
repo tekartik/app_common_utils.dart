@@ -27,10 +27,10 @@ class LocalizationProject {
   late final String i18nPath;
   late final shell = Shell(workingDirectory: getAbsolutePath());
 
+  /// [u18nPath] default to assets/i18n
+  /// posix [path] ok
   LocalizationProject(
-    // posix pat ok
     String path, {
-    /// Default to empty
     String? i18nPath,
   }) {
     this.path = toNativePath(path);

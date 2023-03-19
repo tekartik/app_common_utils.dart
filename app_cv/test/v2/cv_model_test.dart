@@ -1,3 +1,5 @@
+// ignore_for_file: inference_failure_on_collection_literal
+
 /*
 import 'package:tekartik_app_cv/app_cv.dart';
 import 'package:tekartik_app_cv/src/builder.dart';

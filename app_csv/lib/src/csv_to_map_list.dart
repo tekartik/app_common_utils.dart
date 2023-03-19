@@ -1,13 +1,12 @@
-import 'dart:convert';
-
 import 'package:csv/csv.dart';
 
 /// Convert a csv (with an header row) to csv
-List<Map<String, dynamic>> csvToMapList(String csv,
+List<Map<String, Object?>> csvToMapList(String csv,
     {CsvToListConverter? converter}) {
+  // ignore: prefer_conditional_assignment
   if (converter == null) {
     /// Use the default eol
-    csv = LineSplitter.split(csv).join(defaultEol);
+    // csv = LineSplitter.split(csv).join(defaultEol);
     converter = const CsvToListConverter();
   }
   var rawList = converter.convert(csv);

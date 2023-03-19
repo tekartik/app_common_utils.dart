@@ -118,7 +118,7 @@ void main() {
         } on EmitCancelException catch (_) {}
       }();
       await Future.wait([future1, future2]);
-      expect(provider.actions.map((action) => action.text), []);
+      expect(provider.actions.map((action) => action.text), isEmpty);
     });
 
     test('cancel 1/2 getItem', () async {
@@ -130,7 +130,7 @@ void main() {
 // onError needed to prevent unit test failure
       var subscription1 = item1.listen(null, onError: (_) => null);
       subscription1.cancel();
-      expect(provider.actions.map((action) => action.text), []);
+      expect(provider.actions.map((action) => action.text), isEmpty);
       try {
         expect(await item1.toFuture(), isNull);
         fail('should fail');

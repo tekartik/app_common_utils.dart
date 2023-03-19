@@ -1,3 +1,5 @@
+// ignore_for_file: inference_failure_on_function_invocation
+
 import 'package:tekartik_app_cv/app_cv.dart';
 import 'package:tekartik_app_cv/src/cv_field_with_parent.dart';
 import 'package:tekartik_app_cv/src/cv_model.dart';
@@ -92,7 +94,6 @@ mixin CvModelMixin implements CvModel {
     return false;
   }
 
-  @override
   @override
   void fromMap(Map map, {List<String>? columns}) {
     _debugCheckCvFields();
