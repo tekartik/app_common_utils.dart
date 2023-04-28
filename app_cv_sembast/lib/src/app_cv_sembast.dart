@@ -15,7 +15,8 @@ export 'db_record.dart'
         DbRecordMap,
         CvSembastRecordSnapshotExt,
         CvSembastRecordSnapshotsExt,
-        CvRecordRef, CvRecordRefExt;
+        CvRecordRef,
+        CvRecordRefExt;
 
 export 'db_store.dart'
     show
@@ -25,5 +26,6 @@ export 'db_store.dart'
         cvStringRecordFactory,
         CvStoreFactory,
         CvIntStoreFactory,
-        CvStringStoreFactory, CvStoreRefExt;
+        CvStringStoreFactory,
+        CvStoreRefExt;
 export 'fill_options.dart' show cvSembastFillOptions1;

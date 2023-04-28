@@ -1,8 +1,7 @@
 import 'dart:io';
 
 import 'package:path/path.dart';
-import 'package:process_run/shell.dart';
-import 'package:sqflite_common/sqlite_api.dart';
+import 'package:process_run/process_run.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 String buildDatabasesPath(String packageName) {
