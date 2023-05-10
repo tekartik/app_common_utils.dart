@@ -14,7 +14,7 @@ class QueryImpl with QueryMixin, FirestoreQueryExecutorMixin {
   }
 
   @override
-  Stream<QuerySnapshot> onSnapshot() {
+  Stream<QuerySnapshot> onSnapshot({bool includeMetadataChanges = false}) {
     throw UnimplementedError();
   }
 }
