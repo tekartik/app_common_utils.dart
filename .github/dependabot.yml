@@ -1,0 +1,115 @@
+# Dependabot configuration file.
+# See https://docs.github.com/en/code-security/dependabot/dependabot-version-updates
+version: 2
+
+enable-beta-ecosystems: true
+updates:
+  - package-ecosystem: "pub"
+    directory: "app"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "pub"
+    directory: "app_bloc"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "pub"
+    directory: "app_crypto"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "pub"
+    directory: "app_csv"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "pub"
+    directory: "app_cv"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "pub"
+    directory: "app_cv_firestore"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "pub"
+    directory: "app_cv_sembast"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "pub"
+    directory: "app_emit"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "pub"
+    directory: "app_http"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "pub"
+    directory: "app_intl"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "pub"
+    directory: "app_lints"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "pub"
+    directory: "app_mirrors"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "pub"
+    directory: "app_pager"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "pub"
+    directory: "app_prefs"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "pub"
+    directory: "app_rx_bloc"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "pub"
+    directory: "app_sembast"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "pub"
+    directory: "app_sembast_secure"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "pub"
+    directory: "app_serialize"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "pub"
+    directory: "app_sqflite"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "pub"
+    directory: "app_web_socket"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "pub"
+    directory: "repo_support"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
