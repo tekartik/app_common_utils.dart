@@ -17,5 +17,5 @@ dependencies:
   fs_shim:
   process_run:
 dev_dependencies:
-  lints: ^1.0.0
+  lints:
   test: ^1.16.0

@@ -13,7 +13,7 @@ dependencies:
       ref: dart2_3
       path: app_sqflite
     version: '>=0.2.0'
-
+  synchronized:
   sembast: '>=3.0.0+2'
   sembast_web: '>=2.0.0'
   sembast_sqflite: '>=2.0.0'

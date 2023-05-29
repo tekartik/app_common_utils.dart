@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cv/cv.dart';
 import 'package:sembast/sembast.dart';
+import 'package:synchronized/synchronized.dart';
 
 /// A pointer to an Index definition
 abstract class IndexRef<K, PK> {
@@ -158,6 +159,7 @@ class _SembastDatabaseIndexRecord<K, PK>
 }
 
 class _SembastDatabaseUniqueIndex<K, PK> implements DatabaseIndex<K, PK> {
+  final indexLock = Lock();
   final Database database;
   StoreRef<PK, Model> get store => indexRef.store;
   final IndexRef<K, PK> indexRef;
@@ -218,26 +220,28 @@ class _SembastDatabaseUniqueIndex<K, PK> implements DatabaseIndex<K, PK> {
   }
 
   FutureOr<void> _onChange(
-      Transaction transaction, List<RecordChange<PK, Model>> changes) {
-    // Change in map
-    for (var change in changes) {
-      var pk = change.ref.key;
+      Transaction transaction, List<RecordChange<PK, Model>> changes) async {
+    await indexLock.synchronized(() {
+      // Change in map
+      for (var change in changes) {
+        var pk = change.ref.key;
 
-      if (change.isDelete) {
-        var indexKey = key(change.oldSnapshot!);
-        _removeKey(indexKey, pk);
-      } else if (change.isAdd) {
-        var indexKey = key(change.newSnapshot!);
-        _addNewKey(indexKey, pk, change.newSnapshot!);
-      } else {
-        var oldIndexKey = key(change.oldSnapshot!);
-        var newIndexKey = key(change.newSnapshot!);
-        if (oldIndexKey != newIndexKey) {
-          _removeKey(oldIndexKey, pk);
-          _addNewKey(newIndexKey, pk, change.newSnapshot!);
+        if (change.isDelete) {
+          var indexKey = key(change.oldSnapshot!);
+          _removeKey(indexKey, pk);
+        } else if (change.isAdd) {
+          var indexKey = key(change.newSnapshot!);
+          _addNewKey(indexKey, pk, change.newSnapshot!);
+        } else {
+          var oldIndexKey = key(change.oldSnapshot!);
+          var newIndexKey = key(change.newSnapshot!);
+          if (oldIndexKey != newIndexKey) {
+            _removeKey(oldIndexKey, pk);
+            _addNewKey(newIndexKey, pk, change.newSnapshot!);
+          }
         }
       }
-    }
+    });
   }
 
   /// Fill the index right away
@@ -245,8 +249,11 @@ class _SembastDatabaseUniqueIndex<K, PK> implements DatabaseIndex<K, PK> {
   /// The first should never be called in a transaction. so the constructor
   /// should not be defined in a transaction
   late final Future<void> _ready = () {
-    return store.find(database).then((snapshots) {
-      store.addOnChangesListener(database, _onChange);
+    // Register for changes right away
+    store.addOnChangesListener(database, _onChange);
+    return indexLock.synchronized(() async {
+      // Fill the index
+      var snapshots = await store.find(database);
       for (var snapshot in snapshots) {
         var indexKey = key(snapshot);
         if (indexKey != null) {
