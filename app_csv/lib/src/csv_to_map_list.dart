@@ -1,4 +1,14 @@
 import 'package:csv/csv.dart';
+import 'package:csv/csv_settings_autodetection.dart';
+
+final csvToMapListDefaultCsvSettingsDetector =
+    FirstOccurrenceSettingsDetector(eols: [
+  '\r\n',
+  '\n'
+], textDelimiters: [
+  '"',
+  "'",
+]);
 
 /// Convert a csv (with an header row) to csv
 List<Map<String, Object?>> csvToMapList(String csv,
@@ -6,8 +16,10 @@ List<Map<String, Object?>> csvToMapList(String csv,
   // ignore: prefer_conditional_assignment
   if (converter == null) {
     /// Use the default eol
-    // csv = LineSplitter.split(csv).join(defaultEol);
-    converter = const CsvToListConverter();
+    // converter = const CsvToListConverter();
+    /// New use detector:
+    converter = CsvToListConverter(
+        csvSettingsDetector: csvToMapListDefaultCsvSettingsDetector);
   }
   var rawList = converter.convert(csv);
   if (rawList.isEmpty) {
