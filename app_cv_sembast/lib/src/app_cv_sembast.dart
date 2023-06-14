@@ -15,8 +15,12 @@ export 'db_record.dart'
         DbRecordMap,
         CvSembastRecordSnapshotExt,
         CvSembastRecordSnapshotsExt,
+        CvSembastRecordSnapshotsOrNullExt,
         CvRecordRef,
-        CvRecordRefExt;
+        CvRecordsRef,
+        CvRecordRefExt,
+        CvRecordRefListExt,
+        CvRecordsRefExt;
 
 export 'db_store.dart'
     show

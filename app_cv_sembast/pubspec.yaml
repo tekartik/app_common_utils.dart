@@ -1,20 +1,21 @@
 name: tekartik_app_cv_sembast
 description: Sembast content values helper
-version: 0.5.3
+version: 0.5.4
 publish_to: none
 environment:
   sdk: '>=2.18.0 <4.0.0'
 
 dependencies:
   meta:
+  async:
   cv: '>=0.2.9-1'
   tekartik_common_utils:
     git:
       url: https://github.com/tekartik/common_utils.dart
       ref: dart2_3
     version: '>=0.11.1'
-  # sembast: '>=3.4.0-3'
-  sembast:
+  sembast: '>=3.4.8-1'
+  # sembast:
 dev_dependencies:
   test: ^1.14.4
   dev_test:
