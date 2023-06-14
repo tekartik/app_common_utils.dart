@@ -1,9 +1,15 @@
-import 'package:async/async.dart';
 import 'package:cv/cv.dart';
 import 'package:sembast/sembast.dart';
+import 'package:stream_transform/stream_transform.dart';
 import 'package:tekartik_app_cv_sembast/src/logger_utils.dart';
 
 import 'db_store.dart';
+
+Stream<List<V>> combineLatestStreams<V>(Iterable<Stream<V>> streams) {
+  final first = streams.first;
+  final others = <Stream<V>>[...streams.skip(1)];
+  return first.combineLatestAll(others);
+}
 
 mixin _WithRef<K> {
   RecordRef<K, Map<String, Object?>> get rawRef => _ref!;
@@ -275,7 +281,7 @@ class CvRecordsRef<K, V extends DbRecord<K>> {
 
   /// Track changes
   Stream<List<V?>> onRecords(Database db) =>
-      StreamZip(refs.map((ref) => ref.onRecord(db)));
+      combineLatestStreams(refs.map((ref) => ref.onRecord(db)));
 
   Future<void> delete(DatabaseClient client) async {
     await rawRef.delete(client);
