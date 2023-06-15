@@ -16,6 +16,7 @@ export 'db_record.dart'
         CvSembastRecordSnapshotExt,
         CvSembastRecordSnapshotsExt,
         CvSembastRecordSnapshotsOrNullExt,
+        CvSembastRecordSnapshotStreamExt,
         CvRecordRef,
         CvRecordsRef,
         CvRecordRefExt,

@@ -1,15 +1,8 @@
 import 'package:cv/cv.dart';
 import 'package:sembast/sembast.dart';
-import 'package:stream_transform/stream_transform.dart';
 import 'package:tekartik_app_cv_sembast/src/logger_utils.dart';
 
 import 'db_store.dart';
-
-Stream<List<V>> combineLatestStreams<V>(Iterable<Stream<V>> streams) {
-  final first = streams.first;
-  final others = <Stream<V>>[...streams.skip(1)];
-  return first.combineLatestAll(others);
-}
 
 mixin _WithRef<K> {
   RecordRef<K, Map<String, Object?>> get rawRef => _ref!;
@@ -139,6 +132,14 @@ extension CvSembastRecordSnapshotsOrNullExt<K>
   /// Create a list of DbRecords from a snapshot
   List<T?> cvOrNull<T extends DbRecord<K>>() =>
       map((snapshot) => snapshot?.cv<T>()).toList();
+}
+
+/// Allow Stream with null values.
+extension CvSembastRecordSnapshotStreamExt<K>
+    on Stream<List<RecordSnapshot<K, Model>?>> {
+  /// Create a list of DbRecords from a snapshot
+  Stream<List<T?>> cvOrNull<T extends DbRecord<K>>() =>
+      map((snapshot) => snapshot.cvOrNull<T>());
 }
 
 /// Easy extension
@@ -281,7 +282,7 @@ class CvRecordsRef<K, V extends DbRecord<K>> {
 
   /// Track changes
   Stream<List<V?>> onRecords(Database db) =>
-      combineLatestStreams(refs.map((ref) => ref.onRecord(db)));
+      rawRef.onSnapshots(db).map((event) => event.cvOrNull<V>());
 
   Future<void> delete(DatabaseClient client) async {
     await rawRef.delete(client);
