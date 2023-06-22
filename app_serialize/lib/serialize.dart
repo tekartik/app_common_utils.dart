@@ -1,9 +1,16 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:dart_style/dart_style.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:path/path.dart';
 import 'package:tekartik_app_mirrors/mirrors.dart';
+
+String _fixLinesStringForIoGit(String json) {
+  var lines = LineSplitter.split(json);
+  var separator = Platform.isWindows ? '\r\n' : '\n';
+  return '${lines.join(separator)}$separator';
+}
 
 Future genSerializer({required String src, required Type type}) async {
   var classMirror = reflectClass(type);
@@ -82,5 +89,5 @@ Future genSerializer({required String src, required Type type}) async {
   var formatted = formatter.format(sb.toString(), uri: Uri.file(src));
   // print(formatted);
   await File(join(dirname(src), '${basenameWithoutExtension(src)}.g.dart'))
-      .writeAsString(formatted);
+      .writeAsString(_fixLinesStringForIoGit(formatted));
 }
