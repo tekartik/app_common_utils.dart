@@ -1,5 +1,6 @@
 import 'package:cv/cv.dart';
 import 'package:sembast/sembast.dart';
+import 'package:tekartik_app_cv_sembast/src/logger_utils.dart';
 
 import 'db_store.dart';
 
@@ -111,8 +112,7 @@ class DbRecordMap<K> extends DbRecordBase<K> {
 }
 
 /// Easy extension
-extension CvSembastRecordSnapshotExt<K>
-    on RecordSnapshot<K, Map<String, Object?>> {
+extension CvSembastRecordSnapshotExt<K> on RecordSnapshot<K, Model> {
   /// Create a DbRecord from a snapshot
   T cv<T extends DbRecord<K>>() {
     return (cvBuildModel<T>(value)..rawRef = ref)..fromMap(value);
@@ -120,11 +120,26 @@ extension CvSembastRecordSnapshotExt<K>
 }
 
 /// Easy extension
-extension CvSembastRecordSnapshotsExt<K>
-    on List<RecordSnapshot<K, Map<String, Object?>>> {
+extension CvSembastRecordSnapshotsExt<K> on List<RecordSnapshot<K, Model>> {
   /// Create a list of DbRecords from a snapshot
   List<T> cv<T extends DbRecord<K>>() =>
       map((snapshot) => snapshot.cv<T>()).toList();
+}
+
+/// Allow list with null values.
+extension CvSembastRecordSnapshotsOrNullExt<K>
+    on List<RecordSnapshot<K, Model>?> {
+  /// Create a list of DbRecords from a snapshot
+  List<T?> cvOrNull<T extends DbRecord<K>>() =>
+      map((snapshot) => snapshot?.cv<T>()).toList();
+}
+
+/// Allow Stream with null values.
+extension CvSembastRecordSnapshotStreamExt<K>
+    on Stream<List<RecordSnapshot<K, Model>?>> {
+  /// Create a list of DbRecords from a snapshot
+  Stream<List<T?>> cvOrNull<T extends DbRecord<K>>() =>
+      map((snapshot) => snapshot.cvOrNull<T>());
 }
 
 /// Easy extension
@@ -201,6 +216,9 @@ class CvRecordRef<K, V extends DbRecord<K>> {
   Future<V?> get(DatabaseClient db) async =>
       (await rawRef.getSnapshot(db))?.cv<V>();
 
+  /// Get synchronously
+  V? getSync(DatabaseClient db) => rawRef.getSnapshotSync(db)?.cv<V>();
+
   /// Track changes
   Stream<V?> onRecord(Database db) =>
       rawRef.onSnapshot(db).map((event) => event?.cv<V>());
@@ -208,6 +226,14 @@ class CvRecordRef<K, V extends DbRecord<K>> {
   Future<void> delete(DatabaseClient client) async {
     await rawRef.delete(client);
   }
+
+  /// Check if exists.
+  Future<void> exists(DatabaseClient client) async {
+    await rawRef.exists(client);
+  }
+
+  /// Check if exists synchronously.
+  bool existsSync(DatabaseClient client) => rawRef.existsSync(client);
 
   @override
   int get hashCode => key.hashCode;
@@ -230,6 +256,61 @@ class CvRecordRef<K, V extends DbRecord<K>> {
   }
 }
 
+/// Records helpers
+class CvRecordsRef<K, V extends DbRecord<K>> {
+  final CvStoreRef<K, V> store;
+  final RecordsRef<K, Model> rawRef;
+
+  List<K> get keys => rawRef.keys;
+
+  List<CvRecordRef<K, V>> get refs =>
+      keys.map((key) => store.record(key)).toList();
+
+  /// Direct access to a record ref.
+  CvRecordRef<K, V> operator [](int i) => store.record(keys[i]);
+
+  CvRecordsRef(this.store, Iterable<K> keys)
+      : rawRef = store.rawRef.records(keys);
+
+  /// Get
+  Future<List<V?>> get(DatabaseClient db) async =>
+      (await rawRef.getSnapshots(db)).cvOrNull<V>();
+
+  /// Get synchronously
+  List<V?> getSync(DatabaseClient db) =>
+      rawRef.getSnapshotsSync(db).cvOrNull<V>();
+
+  /// Track changes
+  Stream<List<V?>> onRecords(Database db) =>
+      rawRef.onSnapshots(db).map((event) => event.cvOrNull<V>());
+
+  Future<void> delete(DatabaseClient client) async {
+    await rawRef.delete(client);
+  }
+
+  @override
+  int get hashCode => keys.length;
+
+  @override
+  String toString() => 'CvRecordsRef(${store.name}, ${logTruncateAny(keys)})';
+
+  @override
+  bool operator ==(Object other) {
+    if (other is List<CvRecordRef>) {
+      for (var i = 0; i < keys.length; i++) {
+        if (other[i].store != store) {
+          return false;
+        }
+        if (other[i].key != keys[i]) {
+          return false;
+        }
+      }
+      return true;
+    }
+    return false;
+  }
+}
+
 /// Helper extension.
 extension CvRecordRefExt<K, V extends DbRecord<K>> on CvRecordRef<K, V> {
   /// Cast if needed
@@ -242,4 +323,17 @@ extension CvRecordRefExt<K, V extends DbRecord<K>> on CvRecordRef<K, V> {
 
   /// Cast if needed
   CvRecordRef<K, RV> castV<RV extends DbRecord<K>>() => cast<K, RV>();
+}
+
+/// Helper extension.
+extension CvRecordRefListExt<K, V extends DbRecord<K>>
+    on List<CvRecordRef<K, V>> {
+  /// Create new objects.
+  List<V> cv() => map((ref) => ref.cv()).toList();
+}
+
+/// Helper extension.
+extension CvRecordsRefExt<K, V extends DbRecord<K>> on CvRecordsRef<K, V> {
+  /// Create new objects.
+  List<V> cv() => refs.map((ref) => ref.cv()).toList();
 }

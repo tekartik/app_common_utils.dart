@@ -2,6 +2,7 @@ import 'package:tekartik_app_sqflite/sqflite.dart';
 import 'package:test/test.dart';
 
 void main() {
+  sqfliteWindowsFfiInit();
   DatabaseFactory factory;
   setUpAll(() async {});
 

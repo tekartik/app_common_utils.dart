@@ -9,6 +9,12 @@ import 'text_locale.dart';
 
 final _i18nPath = join('assets', 'i18n');
 
+String _fixLinesStringForIoGit(String json) {
+  var lines = LineSplitter.split(json);
+  var separator = Platform.isWindows ? '\r\n' : '\n';
+  return '${lines.join(separator)}$separator';
+}
+
 /// Sort it
 Map<String, String?> intlFixMap(Map<String, String> map) {
   var newMap = <String, String?>{};
@@ -87,7 +93,7 @@ class LocalizationProject {
 
   Future<void> writeJson(TextLocale locale, Map<String, String> map) async {
     await File(intlGetAbsoluteAssetFilePath(locale))
-        .writeAsString(jsonPretty(intlFixMap(map))!);
+        .writeAsString(_fixLinesStringForIoGit(jsonPretty(intlFixMap(map))!));
   }
 
   // Default to
@@ -139,7 +145,7 @@ class LocalizationProject {
     sb.writeln('  String t(String key, [Map<String, String>? data]);');
     sb.writeln('}');
     var filePath = file ?? join('lib', 'src', 'text', 'localization_gen.dart');
-    await writeFile(filePath, sb.toString());
+    await writeFile(filePath, _fixLinesStringForIoGit(sb.toString()));
     await shell.run('dart format  ${shellArgument(filePath)}');
   }
 

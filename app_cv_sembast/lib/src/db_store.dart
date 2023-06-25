@@ -29,6 +29,10 @@ class CvStoreRef<K, V extends DbRecord<K>> {
 
   CvRecordRef<K, V> record(K key) => CvRecordRef<K, V>(this, key);
 
+  /// Records
+  CvRecordsRef<K, V> records(Iterable<K> keys) =>
+      CvRecordsRef<K, V>(this, keys);
+
   /// Query
   CvQueryRef<K, V> query({Finder? finder}) =>
       CvQueryRef<K, V>(rawRef.query(finder: finder));

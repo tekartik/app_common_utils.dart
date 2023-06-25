@@ -157,6 +157,27 @@ int,double,String,bool,Uint8List
 ''');
       });
     });
+    test('test_eol', () async {
+      var csv = 'a,b\r\n1,2';
+      expect(csvToMapList(csv), [
+        {'a': 1, 'b': 2}
+      ]);
+      csv = 'a,b\r\n1,2\r\n';
+      expect(csvToMapList(csv), [
+        {'a': 1, 'b': 2}
+      ]);
+      expect(csvToMapList(csv), [
+        {'a': 1, 'b': 2}
+      ]);
+      csv = 'a,b\n1,2';
+      expect(csvToMapList(csv, converter: CsvToListConverter()), isEmpty);
+      expect(csvToMapList(csv), [
+        {'a': 1, 'b': 2}
+      ]);
+      expect(csvToMapList(csv, converter: CsvToListConverter(eol: '\n')), [
+        {'a': 1, 'b': 2}
+      ]);
+    });
     test('separator', () {
       expect(
           mapListToCsv([
@@ -175,7 +196,13 @@ int,double,String,bool,Uint8List
       csv = 'one_column_with_line_feed\n'
           '"Hello\n'
           'World"';
-      expect(csvToMapList(csv), isEmpty);
+      expect(csvToMapList(csv, converter: CsvToListConverter()), isEmpty);
+      expect(csvToMapList(csv), [
+        {
+          'one_column_with_line_feed': 'Hello\n'
+              'World'
+        }
+      ]);
     });
   });
 }
