@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:tekartik_app_cv/app_cv_v2.dart';
+import 'package:cv/cv.dart';
 import 'package:tekartik_app_cv_firestore/app_cv_firestore_v2.dart';
 import 'package:tekartik_common_utils/list_utils.dart';
 import 'package:tekartik_firebase_firestore/firestore.dart';
@@ -17,7 +17,7 @@ extension CvFirestoreExt on Firestore {
   Future<void> cvSet<T extends CvFirestoreDocument>(T document,
       [SetOptions? options]) async {
     _ensurePathSet(document);
-    await doc(document.path).set(document.toModel(), options);
+    await doc(document.path).set(document.toMap(), options);
   }
 
   /// Update a document
@@ -27,7 +27,7 @@ extension CvFirestoreExt on Firestore {
   /// Update a document
   Future<void> docUpdate<T extends CvFirestoreDocument>(T document) async {
     _ensurePathSet(document);
-    await doc(document.path).update(document.toModel());
+    await doc(document.path).update(document.toMap());
   }
 
   /// Update a document
@@ -104,13 +104,13 @@ class CvFirestoreTransaction extends Transaction {
   /// Set
   void cvSet<T extends CvFirestoreDocument>(T document, [SetOptions? options]) {
     _ensurePathSet(document);
-    set(_firestore.doc(document.path), document.toModel(), options);
+    set(_firestore.doc(document.path), document.toMap(), options);
   }
 
   /// update
   void cvUpdate<T extends CvFirestoreDocument>(T document) {
     _ensurePathSet(document);
-    update(_firestore.doc(document.path), document.toModel());
+    update(_firestore.doc(document.path), document.toMap());
   }
 
   @override
@@ -148,7 +148,7 @@ class CvFirestoreTransaction extends Transaction {
 extension CvFirestoreCollectionReferenceExt on CollectionReference {
   /// [document.path] is ignored and update in the response
   Future<T> cvAdd<T extends CvFirestoreDocument>(T document) async {
-    document.path = (await add(document.toModel())).path;
+    document.path = (await add(document.toMap())).path;
     return document;
   }
 }
@@ -181,7 +181,7 @@ extension CvFirestoreDocumentSnapshotExt on DocumentSnapshot {
     } else {
       var data = this.data;
       return (cvBuildModel<T>(data)..path = path)
-        ..fromModel(data)
+        ..fromMap(data)
         // ignore: invalid_use_of_visible_for_testing_member
         ..exists = exists;
     }
@@ -240,12 +240,12 @@ class CvFirestoreWriteBatch extends WriteBatch {
   /// set document
   void cvSet(CvFirestoreDocument document, [SetOptions? options]) {
     _ensurePathSet(document);
-    set(_firestore.doc(document.path), document.toModel(), options);
+    set(_firestore.doc(document.path), document.toMap(), options);
   }
 
   void cvUpdate(CvFirestoreDocument document) {
     _ensurePathSet(document);
-    update(_firestore.doc(document.path), document.toModel());
+    update(_firestore.doc(document.path), document.toMap());
   }
 
   void cvDelete(String path) => delete(_firestore.doc(path));
