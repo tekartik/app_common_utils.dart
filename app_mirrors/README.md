@@ -11,7 +11,7 @@ dependencies:
   tekartik_app_mirrors:
     git:
       url: https://github.com/tekartik/app_common_utils.dart
-      ref: dart2_3
+      ref: dart3a
       path: app_mirrors
     version: '>=0.1.0'
 ```

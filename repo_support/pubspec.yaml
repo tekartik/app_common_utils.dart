@@ -4,19 +4,10 @@ publish_to: none
 deploy_to: none
 
 environment:
-  sdk: '>=2.18.0 <4.0.0'
+  sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
   path:
-  tekartik_build_utils:
-    git:
-      url: https://github.com/tekartik/build_utils.dart
-      ref: dart2_3
-    version: '>=0.7.8'
-  chrome_travis:
-    git:
-      url: https://github.com/tekartik/chrome_travis.dart
-      ref: dart2_3
   process_run: '>=0.10.0'
 
 dev_dependencies:

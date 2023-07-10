@@ -11,7 +11,7 @@ dependencies:
   tekartik_app_http:
     git:
       url: https://github.com/tekartik/app_common_utils.dart
-      ref: dart2_3
+      ref: dart3a
       path: app_http
     version: '>=0.1.0'
 ```

@@ -4,19 +4,19 @@ publish_to: none
 version: 0.5.3
 
 environment:
-  sdk: '>=2.18.0 <4.0.0'
+  sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
   tekartik_app_common_utils:
     git:
       url: https://github.com/tekartik/app_common_utils.dart
-      ref: dart2_3
+      ref: dart3a
       path: app
     version: '>=0.1.0'
   tekartik_common_utils:
     git:
       url: https://github.com/tekartik/common_utils.dart
-      ref: dart2_3
+      ref: dart3a
     version: '>=0.1.0'
   cv: '>=0.2.10-1'
   meta:
@@ -24,3 +24,7 @@ dependencies:
 dev_dependencies:
   test: ^1.14.4
   dev_test:
+
+dependency_overrides:
+  tekartik_app_common_utils:
+    path: ../app

@@ -12,7 +12,7 @@ In `pubspec.yaml`
 tekartik_app_cv:
   git:
     url: https://github.com/tekartik/app_common_utils.dart
-    ref: dart2_3
+    ref: dart3a
     path: app_cv
   version: '>=0.1.0'
 ```
