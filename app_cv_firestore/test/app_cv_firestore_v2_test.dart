@@ -317,6 +317,23 @@ void main() {
       expect(await docRef.get(firestore), doc);
     });
 
+    test('document.update', () async {
+      var docRef = CvDocumentReference<CvFsSingleString>('test/update');
+
+      var doc = docRef.cv();
+      doc.text.v = 'value';
+      try {
+        await docRef.update(firestore, doc);
+        fail('should fail');
+      } catch (e) {
+        expect(e, isNot(isA<TestFailure>()));
+      }
+
+      doc.text.v = 'value2';
+      await docRef.set(firestore, doc);
+      expect(await docRef.get(firestore), doc);
+    });
+
     test('query', () async {
       var collection = CvCollectionReference<CvFsSingleString>('test');
       var query = collection.query().where('text', isEqualTo: 'value');
