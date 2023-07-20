@@ -277,6 +277,21 @@ void main() {
       doc = await collection.add(firestore, doc);
       expect(doc.id, isNot('1'));
     });
+    test('collection.cast', () async {
+      var collectionOther = CvCollectionReference<CvFsEmpty>('test');
+      var collection = collectionOther.cast<CvFsSingleString>();
+      var docRef = collection.doc('1');
+      expect(docRef.path, 'test/1');
+      expect(await collection.get(firestore), isEmpty);
+      var doc = docRef.cv()..text.v = 'value';
+      await firestore.cvSet(doc);
+      expect(await collection.get(firestore), [doc]);
+      //var doc = docRef.cv();
+      expect(doc.id, '1');
+      // Create a new record
+      doc = await collection.add(firestore, doc);
+      expect(doc.id, isNot('1'));
+    });
 
     test('document', () async {
       var docRef = CvDocumentReference<CvFsSingleString>('test/1');

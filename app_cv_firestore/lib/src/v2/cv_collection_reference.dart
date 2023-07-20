@@ -32,4 +32,8 @@ class CvCollectionReference<T extends CvFirestoreDocument> {
 
   /// Raw document reference
   CollectionReference raw(Firestore firestore) => firestore.collection(path);
+
+  /// Cast to a different type
+  CvCollectionReference<TT> cast<TT extends CvFirestoreDocument>() =>
+      CvCollectionReference<TT>(path);
 }
