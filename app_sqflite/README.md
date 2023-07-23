@@ -13,7 +13,7 @@ dependencies:
   tekartik_app_sqflite:
     git:
       url: https://github.com/tekartik/app_common_utils.dart
-      ref: dart2_3
+      ref: dart3a
       path: app_sqflite
     version: '>=0.2.0'
 ```

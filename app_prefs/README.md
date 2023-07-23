@@ -12,7 +12,7 @@ dependencies:
   tekartik_app_common_prefs:
     git:
       url: https://github.com/tekartik/app_common_utils.dart
-      ref: dart2_3
+      ref: dart3a
       path: app_prefs
     version: '>=0.1.0'
 ```

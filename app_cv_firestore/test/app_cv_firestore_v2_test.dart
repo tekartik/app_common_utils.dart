@@ -1,5 +1,5 @@
+import 'package:cv/cv.dart';
 import 'package:path/path.dart';
-import 'package:tekartik_app_cv/app_cv_v2.dart';
 import 'package:tekartik_app_cv_firestore/app_cv_firestore_v2.dart';
 import 'package:tekartik_firebase_firestore/firestore.dart';
 import 'package:tekartik_firebase_firestore_sembast/firestore_sembast.dart';
@@ -50,14 +50,14 @@ void main() {
       expect(cvFsEmpty, CvFsEmpty()..path = 'test/1');
       expect(cvFsEmpty.path, 'test/1');
       expect(cvFsEmpty.exists, false);
-      expect(cvFsEmpty.toModel(), isEmpty);
+      expect(cvFsEmpty.toMap(), isEmpty);
 
       await firestore.cvSet(cvFsEmpty);
       cvFsEmpty = await firestore.cvGet<CvFsEmpty>('test/1');
       expect(cvFsEmpty, CvFsEmpty()..path = 'test/1');
       expect(cvFsEmpty.path, 'test/1');
       expect(cvFsEmpty.exists, true);
-      expect(cvFsEmpty.toModel(), isEmpty);
+      expect(cvFsEmpty.toMap(), isEmpty);
 
       await firestore.cvSet(cvFsEmpty);
     });
@@ -67,7 +67,7 @@ void main() {
       await firestore.cvSet(cvFsEmpty);
       cvFsEmpty = await firestore.cvGet<CvFsEmpty>('test/1');
       expect(cvFsEmpty.exists, true);
-      expect(cvFsEmpty.toModel(), isEmpty);
+      expect(cvFsEmpty.toMap(), isEmpty);
 
       await firestore.docDelete(cvFsEmpty);
       cvFsEmpty = await firestore.cvGet<CvFsEmpty>('test/1');
@@ -136,7 +136,7 @@ void main() {
       void check(CvFsSingleString doc) {
         expect(doc.exists, isTrue);
         expect(doc.path, 'test/single_string');
-        expect(doc.toModel(), {'text': 'value'});
+        expect(doc.toMap(), {'text': 'value'});
       }
 
       var doc = CvFsSingleString()
@@ -150,7 +150,7 @@ void main() {
         expect(e, isNot(const TypeMatcher<TestFailure>()));
       }
       expect(doc.path, 'test/single_string');
-      expect(doc.toModel(), {'text': 'value'});
+      expect(doc.toMap(), {'text': 'value'});
       await firestore.cvSet(doc);
       var readDoc = await firestore.cvGet<CvFsSingleString>(doc.path);
       check(readDoc);
@@ -277,6 +277,21 @@ void main() {
       doc = await collection.add(firestore, doc);
       expect(doc.id, isNot('1'));
     });
+    test('collection.cast', () async {
+      var collectionOther = CvCollectionReference<CvFsEmpty>('test');
+      var collection = collectionOther.cast<CvFsSingleString>();
+      var docRef = collection.doc('1');
+      expect(docRef.path, 'test/1');
+      expect(await collection.get(firestore), isEmpty);
+      var doc = docRef.cv()..text.v = 'value';
+      await firestore.cvSet(doc);
+      expect(await collection.get(firestore), [doc]);
+      //var doc = docRef.cv();
+      expect(doc.id, '1');
+      // Create a new record
+      doc = await collection.add(firestore, doc);
+      expect(doc.id, isNot('1'));
+    });
 
     test('document', () async {
       var docRef = CvDocumentReference<CvFsSingleString>('test/1');
@@ -298,6 +313,23 @@ void main() {
 
       var doc = docRef.cv();
       doc.text.v = 'value';
+      await docRef.set(firestore, doc);
+      expect(await docRef.get(firestore), doc);
+    });
+
+    test('document.update', () async {
+      var docRef = CvDocumentReference<CvFsSingleString>('test/update');
+
+      var doc = docRef.cv();
+      doc.text.v = 'value';
+      try {
+        await docRef.update(firestore, doc);
+        fail('should fail');
+      } catch (e) {
+        expect(e, isNot(isA<TestFailure>()));
+      }
+
+      doc.text.v = 'value2';
       await docRef.set(firestore, doc);
       expect(await docRef.get(firestore), doc);
     });

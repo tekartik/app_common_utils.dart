@@ -16,7 +16,7 @@ Uint8List _generateEncryptPassword(String password) {
   return blob;
 }
 
-/// Salsa 20 encrypted using any password (use MD5)
+/// Salsa 20 encrypted using any password (use MD5), random data prepended
 StringEncrypter salsa20EncrypterFromPassword(String password) {
   final key = Key(_generateEncryptPassword(password));
   return _Salsa20StringEncrypter(Encrypter(Salsa20(key)));

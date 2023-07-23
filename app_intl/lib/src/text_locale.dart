@@ -1,11 +1,20 @@
-const enLanguageName = 'en';
-const frLanguageName = 'fr';
+// To deprecate
+const enLanguageName = englishLanguageCode;
+// To deprecate
+const frLanguageName = frenchLanguageCode;
 
-const usCountryCode = 'US';
-const frCountryCode = 'FR';
+const englishLanguageCode = 'en';
+const frenchLanguageCode = 'fr';
 
-const enUsLocaleName = '${enLanguageName}_$usCountryCode';
-const frFrLocaleName = '${frLanguageName}_$frCountryCode';
+// To deprecate
+const usCountryCode = usaCountryCode;
+// To deprecate
+const frCountryCode = franceCountryCode;
+
+const usaCountryCode = 'US';
+const franceCountryCode = 'FR';
+const enUsLocaleName = '${englishLanguageCode}_$usaCountryCode';
+const frFrLocaleName = '${frenchLanguageCode}_$franceCountryCode';
 
 class TextLocale {
   final String name;

@@ -4,13 +4,13 @@ version: 0.1.0
 publish_to: none
 
 environment:
-  sdk: '>=2.18.0 <4.0.0'
+  sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
   tekartik_app_sembast:
     git:
       url: https://github.com/tekartik/app_common_utils.dart
-      ref: dart2_3
+      ref: dart3a
       path: app_sembast
     version: '>=0.1.0'
   sembast:
@@ -22,3 +22,9 @@ dependencies:
 dev_dependencies:
   lints:
   test: ^1.16.0
+
+dependency_overrides:
+  tekartik_app_sembast:
+    path: ../app_sembast
+  tekartik_app_sqflite:
+    path: ../app_sqflite

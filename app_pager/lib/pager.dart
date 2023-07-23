@@ -1,10 +1,10 @@
 import 'dart:async';
 
+import 'package:cv/cv.dart';
 import 'package:pool/pool.dart';
 import 'package:quiver/collection.dart';
 import 'package:tekartik_app_emit/emit.dart';
 import 'package:tekartik_app_pager/src/data.dart';
-import 'package:tekartik_common_utils/model/model.dart';
 
 /// Provider to implement.
 abstract class PagerDataProvider<T> {
@@ -101,7 +101,7 @@ class Pager<T> {
 
   @override
   String toString() {
-    var model = Model();
+    var model = newModel();
     model['pageSize'] = _pageSize;
     return model.toString();
   }

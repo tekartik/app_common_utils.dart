@@ -1,7 +1,7 @@
 import 'dart:async';
 
+import 'package:cv/cv.dart';
 import 'package:tekartik_app_emit/src/exception.dart';
-import 'package:tekartik_common_utils/model/model.dart';
 
 class EmitFutureOrSubscription<T> {
   final EmitFutureOr<T> _emitFutureOr;
@@ -134,7 +134,7 @@ class EmitFutureOrController<T> {
   }
 
   Model toDebugModel() {
-    var model = Model();
+    var model = newModel();
     model['completer'] = identityHashCode(_completer);
     model.setValue('error', _error);
     model.setValue('completed', isCompleted);

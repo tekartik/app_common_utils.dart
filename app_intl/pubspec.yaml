@@ -1,17 +1,17 @@
 name: tekartik_app_intl
 description: locatization common package
-version: 0.2.2
+version: 0.2.3
 publish_to: none
 
 environment:
-  sdk: '>=2.18.0 <4.0.0'
+  sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
   args:
   tekartik_common_utils:
     git:
       url: https://github.com/tekartik/common_utils.dart
-      ref: dart2_3
+      ref: dart3a
     version: '>=0.10.7'
   path:
   fs_shim:

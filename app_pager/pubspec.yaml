@@ -6,18 +6,19 @@ homepage: https://www.example.com
 publish_to: none
 
 environment:
-  sdk: '>=2.18.0 <4.0.0'
+  sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
+  cv:
   tekartik_common_utils:
     git:
       url: https://github.com/tekartik/common_utils.dart
-      ref: dart2_3
+      ref: dart3a
     version: '>=0.10.7'
   tekartik_app_emit:
     git:
       url: https://github.com/tekartik/app_common_utils.dart
-      ref: dart2_3
+      ref: dart3a
       path: app_emit
     version: '>=0.1.3'
   pool:

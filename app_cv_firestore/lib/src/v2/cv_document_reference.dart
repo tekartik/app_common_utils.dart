@@ -1,5 +1,5 @@
+import 'package:cv/cv.dart';
 import 'package:path/path.dart';
-import 'package:tekartik_app_cv/app_cv_v2.dart';
 import 'package:tekartik_app_cv_firestore/app_cv_firestore_v2.dart';
 import 'package:tekartik_firebase_firestore/firestore.dart';
 
@@ -13,13 +13,21 @@ class CvDocumentReference<T extends CvFirestoreDocument> {
   /// Get a document
   Future<T> get(Firestore firestore) => firestore.doc(path).cvGet<T>();
 
-  /// Set a document. document path is ignored here.
+  /// Set a document.
   Future<void> setMap(Firestore firestore, Model map, [SetOptions? options]) =>
       firestore.doc(path).set(map, options);
 
   /// Set a document. document path is ignored here.
   Future<void> set(Firestore firestore, T document, [SetOptions? options]) =>
       setMap(firestore, document.toMap(), options);
+
+  /// Update a document.
+  Future<void> updateMap(Firestore firestore, Model map) =>
+      firestore.doc(path).update(map);
+
+  /// Update a document. document path is ignored here.
+  Future<void> update(Firestore firestore, T document) =>
+      updateMap(firestore, document.toMap());
 
   /// Document changed
   Stream<T> onSnapshot(Firestore firestore) =>
