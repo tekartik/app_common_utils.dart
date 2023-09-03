@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:csv/csv.dart';
+import 'package:csv/csv_settings_autodetection.dart';
 import 'package:tekartik_app_csv/app_csv.dart';
 import 'package:test/test.dart';
 
@@ -176,6 +177,24 @@ int,double,String,bool,Uint8List
       ]);
       expect(csvToMapList(csv, converter: CsvToListConverter(eol: '\n')), [
         {'a': 1, 'b': 2}
+      ]);
+    });
+    test('test_quotes', () async {
+      var csv =
+          '''Id question,Question FR,Question EN,Resp.A. FR,Resp.A. EN,Resp.B. FR,Resp.B. EN,Resp.C. FR,Resp.C EN,Bonne réponse
+2,Quel joueur détient le record du nombre d'essais marqués en Coupe du monde de rugby ?,Which player holds the record for the most tries scored in the Rugby World Cup?,Bryan Habana,Bryan Habana,Jonah Lomu,Jonah Lomu,Jonny Wilkinson,Jonny Wilkinson,B
+4,Dans quel pays se déroule traditionnellement le tournoi des Tri-Nations ?,In which country is the Tri-Nations tournament traditionally held?,"Australie, Nouvelle-Zélande, Afrique du Sud","Australia, New Zealand, South Africa","Angleterre, Ecosse, Pays de Galles","England, Scotland, Wales","Irlande, France, Italie","Ireland, France, Italy",A
+5,Quel est le poste d’Antoine Dupont en équipe de France ?,What is Antoine Dupont’s position in the French team?,Centre,Center,Troisième ligne aile,Third line wing,Demi de mêlée,Scrum-half,C
+''';
+      var converter = CsvToListConverter(
+          csvSettingsDetector: FirstOccurrenceSettingsDetector(eols: [
+        '\r\n',
+        '\n'
+      ], textDelimiters: [
+        '"',
+      ]));
+      expect(csvToMapList(csv, converter: converter), [
+        {'a': 1, 'b': '2,3'}
       ]);
     });
     test('separator', () {
