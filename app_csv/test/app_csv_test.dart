@@ -180,11 +180,10 @@ int,double,String,bool,Uint8List
       ]);
     });
     test('test_quotes', () async {
-      var csv =
-          '''Id question,Question FR,Question EN,Resp.A. FR,Resp.A. EN,Resp.B. FR,Resp.B. EN,Resp.C. FR,Resp.C EN,Bonne réponse
-2,Quel joueur détient le record du nombre d'essais marqués en Coupe du monde de rugby ?,Which player holds the record for the most tries scored in the Rugby World Cup?,Bryan Habana,Bryan Habana,Jonah Lomu,Jonah Lomu,Jonny Wilkinson,Jonny Wilkinson,B
-4,Dans quel pays se déroule traditionnellement le tournoi des Tri-Nations ?,In which country is the Tri-Nations tournament traditionally held?,"Australie, Nouvelle-Zélande, Afrique du Sud","Australia, New Zealand, South Africa","Angleterre, Ecosse, Pays de Galles","England, Scotland, Wales","Irlande, France, Italie","Ireland, France, Italy",A
-5,Quel est le poste d’Antoine Dupont en équipe de France ?,What is Antoine Dupont’s position in the French team?,Centre,Center,Troisième ligne aile,Third line wing,Demi de mêlée,Scrum-half,C
+      var csv = '''I,Qf,Ae,Raf,Rae,Rbf,Rbe,Rcf,Rce,B
+2,d'e,t,B,B,J,J,J,J,B
+4,p,c,"A","A","A","E","I","I",A
+5,d’A,t’s,C,C,T,T,D,S,C
 ''';
       var converter = CsvToListConverter(
           csvSettingsDetector: FirstOccurrenceSettingsDetector(eols: [
@@ -194,7 +193,42 @@ int,double,String,bool,Uint8List
         '"',
       ]));
       expect(csvToMapList(csv, converter: converter), [
-        {'a': 1, 'b': '2,3'}
+        {
+          'I': 2,
+          'Qf': 'd\'e',
+          'Ae': 't',
+          'Raf': 'B',
+          'Rae': 'B',
+          'Rbf': 'J',
+          'Rbe': 'J',
+          'Rcf': 'J',
+          'Rce': 'J',
+          'B': 'B'
+        },
+        {
+          'I': 4,
+          'Qf': 'p',
+          'Ae': 'c',
+          'Raf': 'A',
+          'Rae': 'A',
+          'Rbf': 'A',
+          'Rbe': 'E',
+          'Rcf': 'I',
+          'Rce': 'I',
+          'B': 'A'
+        },
+        {
+          'I': 5,
+          'Qf': 'd’A',
+          'Ae': 't’s',
+          'Raf': 'C',
+          'Rae': 'C',
+          'Rbf': 'T',
+          'Rbe': 'T',
+          'Rcf': 'D',
+          'Rce': 'S',
+          'B': 'C'
+        }
       ]);
     });
     test('separator', () {
