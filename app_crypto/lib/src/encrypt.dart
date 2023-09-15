@@ -31,7 +31,7 @@ String _decrypt(String encoded, String password) {
 ///
 /// [password] must be ascii character of length 16, 24 or 32.
 ///
-/// returns a bast 64 encrypted string.
+/// returns a base 64 encrypted string.
 ///
 /// Encryption used is AES.
 String encrypt(String decoded, String password) => _encrypt(decoded, password);
