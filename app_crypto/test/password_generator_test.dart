@@ -5,5 +5,7 @@ void main() {
   test('generatePassword', () {
     expect(generatePassword().length, 32);
     expect(generatePassword(length: 10).length, 10);
+
+    expect(generatePassword(length: 64).length, 64);
   });
 }

@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:encrypt/encrypt.dart';
 
 /// encrypt the [decoded] text using [password].
@@ -9,7 +11,7 @@ import 'package:encrypt/encrypt.dart';
 /// Encryption used is AES.
 String _encrypt(String decoded, String password) {
   final key = Key.fromUtf8(password);
-  final iv = IV.fromLength(16);
+  final iv = IV(Uint8List(16));
   final encrypter = Encrypter(AES(key));
   return encrypter.encrypt(decoded, iv: iv).base64;
 }
@@ -22,7 +24,7 @@ String _encrypt(String decoded, String password) {
 /// Encryption used is AES.
 String _decrypt(String encoded, String password) {
   final key = Key.fromUtf8(password);
-  final iv = IV.fromLength(16);
+  final iv = IV(Uint8List(16));
   final encrypter = Encrypter(AES(key));
   return encrypter.decrypt(Encrypted.fromBase64(encoded), iv: iv);
 }
