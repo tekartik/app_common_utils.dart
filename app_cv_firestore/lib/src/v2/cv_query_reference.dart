@@ -17,6 +17,9 @@ class QueryImpl with QueryMixin, FirestoreQueryExecutorMixin {
   Stream<QuerySnapshot> onSnapshot({bool includeMetadataChanges = false}) {
     throw UnimplementedError();
   }
+
+  @override
+  Firestore get firestore => throw UnimplementedError();
 }
 
 /// Query reference strong type helper
