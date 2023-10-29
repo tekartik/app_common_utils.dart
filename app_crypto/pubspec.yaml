@@ -15,7 +15,7 @@ dependencies:
       ref: dart3a
     version: '>=0.10.7'
   meta: '>=1.1.6'
-  encrypt: '>=3.0.0' # <=5.0.3'
+  encrypt: '>=5.0.3' # <=5.0.3'
   # Temp aes issue limited to 5.0.1
   # encrypt: '<=5.0.3'
   crypto:
