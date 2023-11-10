@@ -1,0 +1,22 @@
+name: tekartik_app_sembast_firestore_type_adapters
+description: Sembast Cloud firestore type adapters
+version: 0.1.0
+
+publish_to: none
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  sembast: '>=3.5.0'
+  tekartik_firebase_firestore:
+    git:
+      url: https://github.com/tekartik/firebase_firestore.dart
+      path: firestore
+      ref: dart3a
+    version: '>=1.1.2'
+
+dev_dependencies:
+  dev_test:
+  test:
+  process_run: '>=0.10.1'
