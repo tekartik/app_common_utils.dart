@@ -227,6 +227,10 @@ class CvRecordRef<K, V extends DbRecord<K>> {
     await rawRef.delete(client);
   }
 
+  /// Get
+  Future<V> put(DatabaseClient db, V value, {bool? merge}) async =>
+      (await rawRef.put(db, value.toMap(), merge: merge)).cv<V>();
+
   /// Check if exists.
   Future<void> exists(DatabaseClient client) async {
     await rawRef.exists(client);

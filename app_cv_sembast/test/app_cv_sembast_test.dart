@@ -135,6 +135,17 @@ void main() {
       expect(await cvRecord.delete(db), true);
       expect(await cvRecord.delete(db), false);
     });
+    test('document.put', () async {
+      var cvStore = cvStringRecordFactory.store<DbStringTest>('test');
+      var record = DbStringTest()..value.v = 1;
+      var docRef = cvStore.record('test');
+      await docRef.put(db, record);
+      var doc = docRef.cv();
+      expect(await docRef.get(db), record);
+      doc.value.v = 2;
+      await docRef.put(db, doc);
+      expect(await docRef.get(db), doc);
+    });
 
     test('onRecord', () async {
       var cvStore = cvIntRecordFactory.store<DbTest>('test');
