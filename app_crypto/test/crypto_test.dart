@@ -45,12 +45,12 @@ void main() {
     var password = generatePassword();
 
     var sw = Stopwatch()..start();
-    var count = 1000;
+    var count = 100;
 
     for (var i = 0; i < count; i++) {
       decrypt(encrypt(textWithLength(count * 10), password), password);
     }
-    print('encrypt: ${sw.elapsedMilliseconds} ms');
+    print('encrypt/decrypt: ${sw.elapsedMilliseconds} ms');
 
     var encrypteds = List.generate(count, (index) => '');
     sw = Stopwatch()..start();

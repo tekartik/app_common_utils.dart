@@ -71,7 +71,7 @@ void main() {
     var password = generatePassword();
     aes = aesEncrypterFromPassword(password);
     var sw = Stopwatch()..start();
-    var count = 1000;
+    var count = 100;
     for (var i = 0; i < count; i++) {
       aes.decrypt(aes.encrypt(textWithLength(count * 10)));
     }
