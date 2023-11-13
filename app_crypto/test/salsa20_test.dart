@@ -32,7 +32,7 @@ void main() {
     var password = generatePassword();
     salsa = salsa20EncrypterFromPassword(password);
     var sw = Stopwatch()..start();
-    var count = 1000;
+    var count = 100;
     for (var i = 0; i < count; i++) {
       salsa.decrypt(salsa.encrypt(textWithLength(count * 10)));
     }
