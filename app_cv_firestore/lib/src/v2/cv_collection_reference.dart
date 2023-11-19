@@ -36,4 +36,7 @@ class CvCollectionReference<T extends CvFirestoreDocument> {
   /// Cast to a different type
   CvCollectionReference<TT> cast<TT extends CvFirestoreDocument>() =>
       CvCollectionReference<TT>(path);
+
+  @override
+  String toString() => 'CvCollectionReference<$T>($path)';
 }

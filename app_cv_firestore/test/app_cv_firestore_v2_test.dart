@@ -265,6 +265,8 @@ void main() {
 
     test('collection', () async {
       var collection = CvCollectionReference<CvFsSingleString>('test');
+      expect(collection.toString(),
+          'CvCollectionReference<CvFsSingleString>(test)');
       var docRef = collection.doc('1');
       expect(docRef.path, 'test/1');
       expect(await collection.get(firestore), isEmpty);
@@ -295,6 +297,8 @@ void main() {
 
     test('document', () async {
       var docRef = CvDocumentReference<CvFsSingleString>('test/1');
+      expect(
+          docRef.toString(), 'CvDocumentReference<CvFsSingleString>(test/1)');
       expect(docRef.path, 'test/1');
       var doc = docRef.cv();
       doc.text.v = 'value';
@@ -337,6 +341,7 @@ void main() {
     test('query', () async {
       var collection = CvCollectionReference<CvFsSingleString>('test');
       var query = collection.query().where('text', isEqualTo: 'value');
+      expect(query.toString(), 'CvQueryReference<CvFsSingleString>(test)');
       var docRef = collection.doc('1');
       expect(docRef.path, 'test/1');
       expect((await query.onSnapshots(firestore).first), isEmpty);

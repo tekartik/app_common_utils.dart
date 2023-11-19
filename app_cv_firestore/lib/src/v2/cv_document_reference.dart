@@ -48,4 +48,7 @@ class CvDocumentReference<T extends CvFirestoreDocument> {
 
   /// Raw document reference
   DocumentReference raw(Firestore firestore) => firestore.doc(path);
+
+  @override
+  String toString() => 'CvDocumentReference<$T>($path)';
 }

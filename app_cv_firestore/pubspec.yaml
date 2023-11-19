@@ -1,13 +1,13 @@
 name: tekartik_app_cv_firestore
 description: Firestore content values helper
-version: 0.10.3
+version: 0.10.4
 publish_to: none
 environment:
   sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
   meta:
-  cv: '>=0.2.9-1'
+  cv: '>=0.2.16+2'
   tekartik_common_utils:
     git:
       url: https://github.com/tekartik/common_utils.dart

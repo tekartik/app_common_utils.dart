@@ -139,4 +139,7 @@ class CvQueryReference<T extends CvFirestoreDocument> {
   /// Raw query reference, async since it might require a read first
   Future<Query> rawASync(Firestore firestore) async =>
       await applyQueryInfo(firestore, _collectionReference.path, _queryInfo);
+
+  @override
+  String toString() => 'CvQueryReference<$T>(${_collectionReference.path})';
 }
