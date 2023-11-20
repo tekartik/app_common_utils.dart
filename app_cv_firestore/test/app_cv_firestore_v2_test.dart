@@ -43,6 +43,7 @@ void main() {
       }
       var snapshot = await firestore.doc('test/1').get();
       expect(snapshot.cv<CvFsEmpty>(), CvFsEmpty()..path = 'test/1');
+      expect(snapshot.cvType(CvFsEmpty), CvFsEmpty()..path = 'test/1');
       expect(snapshot.ref.path, 'test/1');
       expect(snapshot.cv<CvFsEmpty>().exists, false);
 

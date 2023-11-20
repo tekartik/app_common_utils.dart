@@ -186,6 +186,23 @@ extension CvFirestoreDocumentSnapshotExt on DocumentSnapshot {
         ..exists = exists;
     }
   }
+
+  T cvType<T extends CvFirestoreDocument>(Type type) {
+    var path = ref.path;
+
+    if (!exists) {
+      return cvTypeBuildModel<T>(type, {})
+        ..path = path
+        // ignore: invalid_use_of_visible_for_testing_member
+        ..exists = false;
+    } else {
+      var data = this.data;
+      return (cvTypeBuildModel<T>(type, data)..path = path)
+        ..fromMap(data)
+        // ignore: invalid_use_of_visible_for_testing_member
+        ..exists = exists;
+    }
+  }
 }
 
 /// Easy extension
