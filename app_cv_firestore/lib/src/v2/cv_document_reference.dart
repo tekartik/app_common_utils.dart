@@ -1,11 +1,14 @@
 import 'package:cv/cv.dart';
 import 'package:path/path.dart';
 import 'package:tekartik_app_cv_firestore/app_cv_firestore_v2.dart';
+import 'package:tekartik_app_cv_firestore/src/v2/cv_path.dart';
 import 'package:tekartik_firebase_firestore/firestore.dart';
 
 /// Document helper
-class CvDocumentReference<T extends CvFirestoreDocument> {
+class CvDocumentReference<T extends CvFirestoreDocument>
+    with CvPathReferenceMixin {
   /// Document path
+  @override
   final String path;
 
   CvDocumentReference(this.path);
@@ -51,4 +54,11 @@ class CvDocumentReference<T extends CvFirestoreDocument> {
 
   @override
   String toString() => 'CvDocumentReference<$T>($path)';
+}
+
+/// Document reference helpers.
+extension DocumentReferenceCvExtension on DocumentReference {
+  /// Convert from raw reference.
+  CvDocumentReference<T> cv<T extends CvFirestoreDocument>() =>
+      CvDocumentReference<T>(path);
 }

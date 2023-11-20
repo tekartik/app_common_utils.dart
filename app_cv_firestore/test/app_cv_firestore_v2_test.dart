@@ -263,6 +263,12 @@ void main() {
           [doc]);
     });
 
+    test('Collection reference', () {
+      var callRef = CvCollectionReference<CvFsSingleString>('test');
+      var rawRef = callRef.raw(firestore);
+      expect(rawRef.path, 'test');
+      expect(rawRef.cv(), callRef);
+    });
     test('collection', () async {
       var collection = CvCollectionReference<CvFsSingleString>('test');
       expect(collection.toString(),
@@ -295,6 +301,12 @@ void main() {
       expect(doc.id, isNot('1'));
     });
 
+    test('Document reference', () {
+      var docRef = CvDocumentReference<CvFsSingleString>('test/1');
+      var rawRef = docRef.raw(firestore);
+      expect(rawRef.path, 'test/1');
+      expect(rawRef.cv(), docRef);
+    });
     test('document', () async {
       var docRef = CvDocumentReference<CvFsSingleString>('test/1');
       expect(
