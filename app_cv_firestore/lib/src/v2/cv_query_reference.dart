@@ -37,6 +37,9 @@ class CvQueryReference<T extends CvFirestoreDocument> {
 
   CvQueryReference._(this._collectionReference, Query impl) : _impl = impl;
 
+  /// Runtime type of result.
+  Type get type => T;
+
   Future<List<T>> get(Firestore firestore) async {
     var query =
         await applyQueryInfo(firestore, _collectionReference.path, _queryInfo);

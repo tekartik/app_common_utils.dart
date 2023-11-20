@@ -13,6 +13,8 @@ class CvDocumentReference<T extends CvFirestoreDocument>
 
   CvDocumentReference(this.path);
 
+  Type get type => T;
+
   /// Get a document
   Future<T> get(Firestore firestore) => firestore.doc(path).cvGet<T>();
 

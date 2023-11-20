@@ -108,6 +108,10 @@ void main() {
       } on ArgumentError catch (_) {}
     });
 
+    test('build', () {
+      expect(cvTypeBuildModel(CvFsSingleString, newModel()),
+          isA<CvFsSingleString>());
+    });
     test('model', () async {
       var doc = CvFsSingleString();
       expect(doc.idOrNull, null);
@@ -271,6 +275,7 @@ void main() {
     });
     test('collection', () async {
       var collection = CvCollectionReference<CvFsSingleString>('test');
+      expect(collection.type, CvFsSingleString);
       expect(collection.toString(),
           'CvCollectionReference<CvFsSingleString>(test)');
       var docRef = collection.doc('1');
@@ -309,6 +314,7 @@ void main() {
     });
     test('document', () async {
       var docRef = CvDocumentReference<CvFsSingleString>('test/1');
+      expect(docRef.type, CvFsSingleString);
       expect(
           docRef.toString(), 'CvDocumentReference<CvFsSingleString>(test/1)');
       expect(docRef.path, 'test/1');
@@ -353,6 +359,7 @@ void main() {
     test('query', () async {
       var collection = CvCollectionReference<CvFsSingleString>('test');
       var query = collection.query().where('text', isEqualTo: 'value');
+      expect(query.type, CvFsSingleString);
       expect(query.toString(), 'CvQueryReference<CvFsSingleString>(test)');
       var docRef = collection.doc('1');
       expect(docRef.path, 'test/1');
