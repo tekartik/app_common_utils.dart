@@ -26,29 +26,29 @@ class QueryImpl with QueryMixin, FirestoreQueryExecutorMixin {
 class CvQueryReference<T extends CvFirestoreDocument> {
   ///
   final Query _impl;
-  final CvCollectionReference<T> _collectionReference;
+  final CvCollectionReference<T> collectionReference;
 
   QueryInfo get _queryInfo => (_impl as QueryImpl).queryInfo;
 
   /// New query reference
   @internal
-  CvQueryReference(this._collectionReference)
+  CvQueryReference(this.collectionReference)
       : _impl = QueryImpl()..queryInfo = QueryInfo();
 
-  CvQueryReference._(this._collectionReference, Query impl) : _impl = impl;
+  CvQueryReference._(this.collectionReference, Query impl) : _impl = impl;
 
   /// Runtime type of result.
   Type get type => T;
 
   Future<List<T>> get(Firestore firestore) async {
     var query =
-        await applyQueryInfo(firestore, _collectionReference.path, _queryInfo);
+        await applyQueryInfo(firestore, collectionReference.path, _queryInfo);
     return query.cvGet<T>();
   }
 
   Future<int> count(Firestore firestore) async {
     var query =
-        await applyQueryInfo(firestore, _collectionReference.path, _queryInfo);
+        await applyQueryInfo(firestore, collectionReference.path, _queryInfo);
     return query.count();
   }
 
@@ -64,7 +64,7 @@ class CvQueryReference<T extends CvFirestoreDocument> {
     ctlr = StreamController<List<T>>(onListen: () {
       lock.synchronized(() async {
         var query = await applyQueryInfo(
-            firestore, _collectionReference.path, _queryInfo);
+            firestore, collectionReference.path, _queryInfo);
         streamSubscription = query.cvOnSnapshots<T>().listen((event) {
           if (!done) {
             ctlr.add(event);
@@ -81,35 +81,35 @@ class CvQueryReference<T extends CvFirestoreDocument> {
   }
 
   CvQueryReference<T> limit(int limit) =>
-      CvQueryReference._(_collectionReference, _impl.limit(limit));
+      CvQueryReference._(collectionReference, _impl.limit(limit));
 
   CvQueryReference<T> orderBy(String key, {bool? descending}) =>
       CvQueryReference._(
-          _collectionReference, _impl.orderBy(key, descending: descending));
+          collectionReference, _impl.orderBy(key, descending: descending));
 
   CvQueryReference<T> select(List<String> keyPaths) =>
-      CvQueryReference._(_collectionReference, _impl.select(keyPaths));
+      CvQueryReference._(collectionReference, _impl.select(keyPaths));
 
   // CvQueryReference<T>  offset(int offset);
 
   CvQueryReference<T> startAt(
           {DocumentSnapshot? snapshot, List<Object?>? values}) =>
-      CvQueryReference._(_collectionReference,
+      CvQueryReference._(collectionReference,
           _impl.startAt(snapshot: snapshot, values: values));
 
   CvQueryReference<T> startAfter(
           {DocumentSnapshot? snapshot, List<Object?>? values}) =>
-      CvQueryReference._(_collectionReference,
+      CvQueryReference._(collectionReference,
           _impl.startAfter(snapshot: snapshot, values: values));
 
   CvQueryReference<T> endAt(
           {DocumentSnapshot? snapshot, List<Object?>? values}) =>
-      CvQueryReference._(_collectionReference,
-          _impl.endAt(snapshot: snapshot, values: values));
+      CvQueryReference._(
+          collectionReference, _impl.endAt(snapshot: snapshot, values: values));
 
   CvQueryReference<T> endBefore(
           {DocumentSnapshot? snapshot, List<Object?>? values}) =>
-      CvQueryReference._(_collectionReference,
+      CvQueryReference._(collectionReference,
           _impl.endBefore(snapshot: snapshot, values: values));
 
   CvQueryReference<T> where(
@@ -125,7 +125,7 @@ class CvQueryReference<T extends CvFirestoreDocument> {
     bool? isNull,
   }) =>
       CvQueryReference._(
-          _collectionReference,
+          collectionReference,
           _impl.where(
             fieldPath,
             isLessThanOrEqualTo: isLessThanOrEqualTo,
@@ -141,8 +141,8 @@ class CvQueryReference<T extends CvFirestoreDocument> {
 
   /// Raw query reference, async since it might require a read first
   Future<Query> rawASync(Firestore firestore) async =>
-      await applyQueryInfo(firestore, _collectionReference.path, _queryInfo);
+      await applyQueryInfo(firestore, collectionReference.path, _queryInfo);
 
   @override
-  String toString() => 'CvQueryReference<$T>(${_collectionReference.path})';
+  String toString() => 'CvQueryReference<$T>(${collectionReference.path})';
 }

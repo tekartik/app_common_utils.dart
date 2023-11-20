@@ -362,6 +362,7 @@ void main() {
       var collection = CvCollectionReference<CvFsSingleString>('test');
       var query = collection.query().where('text', isEqualTo: 'value');
       expect(query.type, CvFsSingleString);
+      expect(query.collectionReference.doc('1').type, CvFsSingleString);
       expect(query.toString(), 'CvQueryReference<CvFsSingleString>(test)');
       var docRef = collection.doc('1');
       expect(docRef.path, 'test/1');
