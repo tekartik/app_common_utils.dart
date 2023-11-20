@@ -43,6 +43,11 @@ class CvDocumentReference<T extends CvFirestoreDocument>
     // ignore: invalid_use_of_visible_for_testing_member
     ..exists = false;
 
+  T cvType(Type type) => cvTypeBuildModel<T>(type, {})
+    ..path = path
+    // ignore: invalid_use_of_visible_for_testing_member
+    ..exists = false;
+
   /// Delete
   Future<void> delete(Firestore firestore) => firestore.doc(path).delete();
 

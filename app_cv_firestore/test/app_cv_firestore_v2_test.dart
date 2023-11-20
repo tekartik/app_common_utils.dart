@@ -319,6 +319,7 @@ void main() {
       expect(
           docRef.toString(), 'CvDocumentReference<CvFsSingleString>(test/1)');
       expect(docRef.path, 'test/1');
+      expect(docRef.cvType(CvFsSingleString), isA<CvFsSingleString>());
       var doc = docRef.cv();
       doc.text.v = 'value';
       await firestore.cvSet(doc);
