@@ -63,6 +63,12 @@ class CvDocumentReference<T extends CvFirestoreDocument>
   /// Raw document reference
   DocumentReference raw(Firestore firestore) => firestore.doc(path);
 
+  /// New path, same type to a different type
+  CvDocumentReference<T> withPath(String path) => CvDocumentReference<T>(path);
+
+  /// New path, same type to a different type
+  CvDocumentReference<T> withId(String id) =>
+      CvDocumentReference<T>(firestorePathReplaceId(path, id));
   @override
   String toString() => 'CvDocumentReference<$T>($path)';
 }

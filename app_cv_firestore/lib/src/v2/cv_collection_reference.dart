@@ -45,6 +45,13 @@ class CvCollectionReference<T extends CvFirestoreDocument>
   CvCollectionReference<TT> cast<TT extends CvFirestoreDocument>() =>
       CvCollectionReference<TT>(path);
 
+  /// New path, same type to a different type
+  CvCollectionReference<T> withPath(String path) =>
+      CvCollectionReference<T>(path);
+
+  /// New path, same type to a different type
+  CvCollectionReference<T> withId(String id) =>
+      CvCollectionReference<T>(firestorePathReplaceId(path, id));
   @override
   String toString() => 'CvCollectionReference<$T>($path)';
 }

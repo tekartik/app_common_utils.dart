@@ -311,7 +311,15 @@ void main() {
       var docRef = CvDocumentReference<CvFsSingleString>('test/1');
       var rawRef = docRef.raw(firestore);
       expect(rawRef.path, 'test/1');
+      expect(rawRef.path, 'test/1');
       expect(rawRef.cv(), docRef);
+
+      expect(docRef.withPath('other/2').path, 'other/2');
+      expect(docRef.withId('2').path, 'test/2');
+
+      expect(docRef.parent.withId('other').path, 'other');
+      expect(
+          docRef.parent.withPath('other/2/sub').withId('4').path, 'other/2/4');
     });
     test('document', () async {
       var docRef = CvDocumentReference<CvFsSingleString>('test/1');
