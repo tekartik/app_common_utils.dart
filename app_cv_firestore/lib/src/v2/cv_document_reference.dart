@@ -69,3 +69,6 @@ extension DocumentReferenceCvExtension on DocumentReference {
   CvDocumentReference<T> cv<T extends CvFirestoreDocument>() =>
       CvDocumentReference<T>(path);
 }
+
+/// Root reference
+final cvRootDocumentReference = CvDocumentReference<CvFirestoreDocument>('');

@@ -25,7 +25,7 @@ void initBuilders() {
 }
 
 void main() {
-  group('builder', () {
+  group('cv_firestore', () {
     late Firestore firestore;
     setUpAll(() {
       initBuilders();
@@ -405,6 +405,12 @@ void main() {
         'map': {'value': 9},
         'blob': Blob.fromList([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
       });
+    });
+    test('root', () {
+      expect(cvRootDocumentReference.path, '');
+      var collection =
+          cvRootDocumentReference.collection<CvFsSingleString>('single');
+      expect(collection.path, 'single');
     });
   });
 }

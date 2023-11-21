@@ -11,7 +11,10 @@ export 'src/v2/builder.dart'
 export 'src/v2/cv_collection_reference.dart'
     show CvCollectionReference, CollectionReferenceCvExtension;
 export 'src/v2/cv_document_reference.dart'
-    show CvDocumentReference, DocumentReferenceCvExtension;
+    show
+        CvDocumentReference,
+        DocumentReferenceCvExtension,
+        cvRootDocumentReference;
 export 'src/v2/cv_query_reference.dart' show CvQueryReference;
 export 'src/v2/fill_options.dart' show cvFirestoreFillOptions1;
 export 'src/v2/firestore_extension.dart'
