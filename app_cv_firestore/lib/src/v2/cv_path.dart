@@ -1,8 +1,11 @@
-abstract class CvPathReference {
+import 'package:tekartik_app_cv_firestore/app_cv_firestore.dart';
+import 'package:tekartik_app_cv_firestore/src/import_firestore.dart';
+
+abstract class CvPathReference<T> {
   String get path;
 }
 
-mixin CvPathReferenceMixin implements CvPathReference {
+mixin CvPathReferenceMixin<T> implements CvPathReference<T> {
   @override
   int get hashCode => path.hashCode;
 
@@ -14,3 +17,19 @@ mixin CvPathReferenceMixin implements CvPathReference {
     return false;
   }
 }
+
+extension CvFirestorePathExtension on String {
+  CvCollectionReference<T> parentColl<T extends CvFirestoreDocument>() {
+    return CvCollectionReference<T>(firestorePathGetParent(this)!);
+  }
+
+  CvDocumentReference<T>? parentDocOrNull<T extends CvFirestoreDocument>() {
+    var parentPath = firestorePathGetParent(this);
+    if (parentPath == null) {
+      return null;
+    }
+    return CvDocumentReference<T>(parentPath);
+  }
+}
+
+extension CvFirestorePathOrNullExtension on String? {}

@@ -14,6 +14,8 @@ class CvCollectionReference<T extends CvFirestoreDocument>
 
   Type get type => T;
 
+  CvDocumentReference<T>? get parent => path.parentDocOrNull<T>();
+
   /// Get a list of document
   Future<List<T>> get(Firestore firestore) =>
       firestore.collection(path).cvGet();

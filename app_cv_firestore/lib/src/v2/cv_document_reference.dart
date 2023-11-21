@@ -13,6 +13,10 @@ class CvDocumentReference<T extends CvFirestoreDocument>
 
   CvDocumentReference(this.path);
 
+  CvCollectionReference<T> get parent => path.parentColl<T>();
+
+  //String get genericPath => parent.parent.url.basename(path);
+
   Type get type => T;
 
   /// Get a document
