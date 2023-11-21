@@ -1,3 +1,4 @@
+import 'package:path/path.dart';
 import 'package:tekartik_app_cv_firestore/app_cv_firestore.dart';
 import 'package:tekartik_app_cv_firestore/src/import_firestore.dart';
 
@@ -16,6 +17,9 @@ mixin CvPathReferenceMixin<T> implements CvPathReference<T> {
     }
     return false;
   }
+
+  /// Id
+  String get id => url.basename(path);
 }
 
 extension CvFirestorePathExtension on String {

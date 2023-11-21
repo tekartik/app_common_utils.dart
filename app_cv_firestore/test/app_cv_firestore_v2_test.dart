@@ -414,7 +414,9 @@ void main() {
     });
     test('dirname', () {
       var doc = CvDocumentReference('a/b/c/d');
+      expect(doc.id, 'd');
       expect(doc.parent.path, 'a/b/c');
+      expect(doc.parent.id, 'c');
       expect(doc.parent.parent?.path, 'a/b');
       expect(doc.parent.parent?.parent.path, 'a');
       expect(doc.parent.parent?.parent.parent, isNull);
