@@ -4,7 +4,8 @@ import 'package:tekartik_firebase_firestore/firestore.dart';
 import 'package:tekartik_firebase_firestore/src/common/query_mixin.dart'; // ignore: implementation_imports
 import 'package:tekartik_firebase_firestore/src/firestore_common.dart'; // ignore: implementation_imports
 
-class QueryImpl with QueryMixin, FirestoreQueryExecutorMixin {
+class QueryImpl
+    with QueryDefaultMixin, QueryMixin, FirestoreQueryExecutorMixin {
   @override
   QueryMixin clone() => QueryImpl()..queryInfo = queryInfo.clone();
 
