@@ -29,7 +29,7 @@ dependencies:
 dev_dependencies:
   process_run:
   test:
-  dev_test:
+  dev_build:
 
 dependency_overrides:
   tekartik_app_sqflite:

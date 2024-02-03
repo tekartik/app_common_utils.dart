@@ -16,7 +16,7 @@ dependencies:
   rxdart: '>=0.27.7'
 
 dev_dependencies:
-  dev_test:
+  dev_build:
   test:
   build_runner: '>=1.2.7'
   build_test: any

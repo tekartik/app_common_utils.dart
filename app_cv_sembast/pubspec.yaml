@@ -1,6 +1,6 @@
 name: tekartik_app_cv_sembast
 description: Sembast content values helper
-version: 0.5.8
+version: 0.5.9
 publish_to: none
 environment:
   sdk: '>=3.0.0 <4.0.0'
@@ -17,4 +17,4 @@ dependencies:
   # sembast:
 dev_dependencies:
   test: ^1.14.4
-  dev_test:
+  dev_build:

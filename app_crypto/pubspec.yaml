@@ -23,7 +23,7 @@ dependencies:
   pointycastle: '>=3.2.0-rc0'
 
 dev_dependencies:
-  dev_test:
+  dev_build:
   test: '>=1.5.0'
   # downgrade testing
   file: '>=7.0.0'

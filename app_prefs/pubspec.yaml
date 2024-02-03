@@ -34,7 +34,7 @@ dependencies:
       path: app_sembast
     version: '>=0.1.0'
 dev_dependencies:
-  dev_test:
+  dev_build:
   test:
   tekartik_lints:
     git:

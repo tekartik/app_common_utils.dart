@@ -27,6 +27,6 @@ dependencies:
     version: '>=0.1.0'
 
 dev_dependencies:
-  dev_test:
+  dev_build:
   process_run:
   test:

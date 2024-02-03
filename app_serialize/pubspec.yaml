@@ -20,7 +20,7 @@ dependencies:
   path:
 
 dev_dependencies:
-  dev_test:
+  dev_build:
   test: ^1.0.0
   process_run:
 

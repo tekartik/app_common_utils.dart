@@ -17,7 +17,7 @@ dependencies:
     version: '>=0.10.7'
 dev_dependencies:
   path:
-  dev_test:
+  dev_build:
   test: ^1.6.0
   process_run:
   build_runner:
