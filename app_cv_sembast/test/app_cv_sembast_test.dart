@@ -199,13 +199,21 @@ void main() {
       var cvRecordRef = cvStore.record(1); //
       await (cvRecordRef.cv()..value.v = 2).put(db);
       DbTest? record;
+      var completer = Completer<void>();
       var subscription = cvRecordRef.onRecordSync(db).listen((event) {
         record = event;
+        if (event?.value.v == 3) {
+          completer.complete();
+        }
       });
+      var firstCompleter = Completer<void>();
       scheduleMicrotask(() {
         expect(record?.value.v, 2);
+        firstCompleter.complete();
       });
+      await firstCompleter.future;
       await (cvRecordRef.cv()..value.v = 3).put(db);
+      await completer.future;
       expect(record?.value.v, 3);
 
       await subscription.cancel();
@@ -241,9 +249,12 @@ void main() {
             completer.complete();
           }
         });
+        var firstCompleter = Completer<void>();
         scheduleMicrotask(() {
           expect(records, hasLength(1));
+          firstCompleter.complete();
         });
+        await firstCompleter.future;
         await cvRecordRef2.put(db, cvRecordRef.cv()..value.v = 2);
         await completer.future;
         expect(records, hasLength(2));
