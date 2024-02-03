@@ -106,6 +106,26 @@ class CvQueryRef<K, V extends DbRecord<K>> {
   /// Track changes
   Stream<List<V>> onRecords(Database db) =>
       rawRef.onSnapshots(db).map((snapshots) => snapshots.cv<V>());
+
+  /// Track changes, first event is emitted synchronously
+  Stream<V?> onRecordSync(Database db) =>
+      rawRef.onSnapshotSync(db).map((snapshot) => snapshot?.cv<V>());
+
+  /// Track changes, first event is emitted synchronously
+  Stream<List<V>> onRecordsSync(Database db) =>
+      rawRef.onSnapshotsSync(db).map((snapshots) => snapshots.cv<V>());
+
+  /// Count
+  Future<int> count(DatabaseClient db) => rawRef.count(db);
+
+  /// Count sync
+  int countSync(DatabaseClient db) => rawRef.countSync(db);
+
+  /// onCount
+  Stream<int> onCount(Database db) => rawRef.onCount(db);
+
+  /// onCountSync
+  Stream<int> onCountSync(Database db) => rawRef.onCountSync(db);
 }
 
 /// Store factory interface

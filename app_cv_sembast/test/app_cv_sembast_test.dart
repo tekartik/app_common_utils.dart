@@ -90,6 +90,7 @@ void main() {
       expect(cvRecordRef.key, 1);
       await store.record(1).put(db, {'value': 1});
       expect(await recordRef.get(db), {'value': 1});
+      expect(recordRef.getSync(db), {'value': 1});
       var readDbTest = (await cvRecordRef.get(db))!;
       expect(readDbTest, dbTest);
       expect(readDbTest.rawRef.key, 1);
@@ -193,6 +194,23 @@ void main() {
       await doneFuture;
     });
 
+    test('onRecordSync', () async {
+      var cvStore = cvIntRecordFactory.store<DbTest>('test');
+      var cvRecordRef = cvStore.record(1); //
+      await (cvRecordRef.cv()..value.v = 2).put(db);
+      DbTest? record;
+      var subscription = cvRecordRef.onRecordSync(db).listen((event) {
+        record = event;
+      });
+      scheduleMicrotask(() {
+        expect(record?.value.v, 2);
+      });
+      await (cvRecordRef.cv()..value.v = 3).put(db);
+      expect(record?.value.v, 3);
+
+      await subscription.cancel();
+    });
+
     test('fillModel', () async {
       var allFields = CvDbAllFields()..fillModel(cvSembastFillOptions1);
       expect(allFields.toMap(), {
@@ -206,6 +224,30 @@ void main() {
         'modelList': {'value': 8},
         'map': {'value': 9},
         'blob': Blob.fromList([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+      });
+    });
+
+    group('CvQueryRef', () {
+      test('CvQueryRef.onRecordsSync', () async {
+        var cvStore = cvIntRecordFactory.store<DbTest>('test');
+        var cvRecordRef = cvStore.record(1); //
+        var cvRecordRef2 = cvStore.record(2); //
+        await cvRecordRef.put(db, cvRecordRef.cv()..value.v = 1);
+        List<DbTest>? records;
+        var completer = Completer<void>();
+        var subscription = cvStore.query().onRecordsSync(db).listen((event) {
+          records = event;
+          if (records?.length == 2) {
+            completer.complete();
+          }
+        });
+        scheduleMicrotask(() {
+          expect(records, hasLength(1));
+        });
+        await cvRecordRef2.put(db, cvRecordRef.cv()..value.v = 2);
+        await completer.future;
+        expect(records, hasLength(2));
+        await subscription.cancel();
       });
     });
   });

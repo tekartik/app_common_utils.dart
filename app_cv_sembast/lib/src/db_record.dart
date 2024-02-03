@@ -223,6 +223,10 @@ class CvRecordRef<K, V extends DbRecord<K>> {
   Stream<V?> onRecord(Database db) =>
       rawRef.onSnapshot(db).map((event) => event?.cv<V>());
 
+  /// Track changes, first event is emitted synchronously.
+  Stream<V?> onRecordSync(Database db) =>
+      rawRef.onSnapshotSync(db).map((event) => event?.cv<V>());
+
   Future<void> delete(DatabaseClient client) async {
     await rawRef.delete(client);
   }
