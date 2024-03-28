@@ -3,6 +3,7 @@ import 'package:path/path.dart';
 import 'package:tekartik_app_cv_firestore/app_cv_firestore_v2.dart';
 import 'package:tekartik_app_cv_firestore/src/v2/cv_path.dart';
 import 'package:tekartik_firebase_firestore/firestore.dart';
+import 'package:tekartik_firebase_firestore/utils/track_changes_support.dart';
 
 /// Document helper
 class CvDocumentReference<T extends CvFirestoreDocument>
@@ -41,6 +42,11 @@ class CvDocumentReference<T extends CvFirestoreDocument>
   /// Document changed
   Stream<T> onSnapshot(Firestore firestore) =>
       firestore.doc(path).cvOnSnapshot();
+
+  /// Document changed
+  Stream<T> onSnapshotSupport(Firestore firestore,
+          {TrackChangesPullOptions? options}) =>
+      firestore.doc(path).cvOnSnapshotSupport(options: options);
 
   T cv() => cvBuildModel<T>({})
     ..path = path

@@ -4,6 +4,7 @@ import 'package:cv/cv.dart';
 import 'package:tekartik_app_cv_firestore/app_cv_firestore_v2.dart';
 import 'package:tekartik_common_utils/list_utils.dart';
 import 'package:tekartik_firebase_firestore/firestore.dart';
+import 'package:tekartik_firebase_firestore/utils/track_changes_support.dart';
 
 void _ensurePathSet(CvFirestoreDocument document) {
   if (!document.hasId) {
@@ -214,6 +215,14 @@ extension CvFirestoreDocumentReferenceExt on DocumentReference {
 
   /// on snapshots
   Stream<T> cvOnSnapshot<T extends CvFirestoreDocument>() => onSnapshot()
+          .transform(StreamTransformer.fromHandlers(handleData: (data, sink) {
+        sink.add(data.cv<T>());
+      }));
+
+  /// on snapshots
+  Stream<T> cvOnSnapshotSupport<T extends CvFirestoreDocument>(
+          {TrackChangesPullOptions? options}) =>
+      onSnapshotSupport(options: options)
           .transform(StreamTransformer.fromHandlers(handleData: (data, sink) {
         sink.add(data.cv<T>());
       }));

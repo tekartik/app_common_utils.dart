@@ -266,6 +266,12 @@ void main() {
               .cvOnSnapshots<CvFsSingleString>()
               .first,
           [doc]);
+      expect(
+          await firestore
+              .doc(doc.path)
+              .cvOnSnapshotSupport<CvFsSingleString>()
+              .first,
+          doc);
     });
 
     test('Collection reference', () {
@@ -375,11 +381,13 @@ void main() {
       var docRef = collection.doc('1');
       expect(docRef.path, 'test/1');
       expect((await query.onSnapshots(firestore).first), isEmpty);
+
       expect(await collection.get(firestore), isEmpty);
       expect(await collection.count(firestore), 0);
       var doc = docRef.cv()..text.v = 'value';
       await firestore.cvSet(doc);
       expect((await query.onSnapshots(firestore).first), [doc]);
+
       expect(await query.count(firestore), 1);
       doc = docRef.cv()..text.v = 'value2';
       await firestore.cvSet(doc);
