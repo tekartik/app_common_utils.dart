@@ -1,8 +1,7 @@
 name: tekartik_app_date
 description: Date utilities
-version: 0.1.0
-# repository: https://github.com/my_org/my_repo
-
+version: 0.1.1
+publish_to: none
 environment:
   sdk: ^3.3.0
 

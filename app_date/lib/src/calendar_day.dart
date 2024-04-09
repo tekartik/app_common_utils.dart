@@ -43,7 +43,9 @@ class CalendarDay implements Comparable<CalendarDay> {
       _dateTime.millisecondsSinceEpoch - other._dateTime.millisecondsSinceEpoch;
 
   @override
-  String toString() => _dateTime.toIso8601String().substring(0, 10);
+  String toString() => 'Day($text)';
+
+  String get text => _dateTime.toIso8601String().substring(0, 10);
 
   @override
   int get hashCode => _dateTime.millisecondsSinceEpoch;
