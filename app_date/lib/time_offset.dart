@@ -1,1 +1,1 @@
-export 'src/time_offset.dart' show TimeOffset, parseTimeOffsetOrNull;
+export 'src/time_offset.dart' show TimeOffset;
