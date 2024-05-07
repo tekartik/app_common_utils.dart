@@ -19,6 +19,7 @@ export 'src/v2/cv_query_reference.dart' show CvQueryReference;
 export 'src/v2/fill_options.dart' show cvFirestoreFillOptions1;
 export 'src/v2/firestore_extension.dart'
     show
+        CvFirestoreDocumentIterableExt,
         CvFirestoreDocumentSnapshotExt,
         CvFirestoreDocumentSnapshotsExt,
         CvFirestoreQuerySnapshotExt,

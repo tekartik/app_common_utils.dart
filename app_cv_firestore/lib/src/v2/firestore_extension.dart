@@ -169,6 +169,13 @@ extension CvFirestoreQueryExt on Query {
 }
 
 /// Easy extension
+extension CvFirestoreDocumentIterableExt<T extends CvFirestoreDocument>
+    on Iterable<T> {
+  /// List to map
+  Map<String, T> toMap() => {for (var item in this) item.id: item};
+}
+
+/// Easy extension
 extension CvFirestoreDocumentSnapshotExt on DocumentSnapshot {
   /// Create a DbRecord from a snapshot
   T cv<T extends CvFirestoreDocument>() {
