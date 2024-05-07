@@ -59,6 +59,8 @@ void main() {
       expect(time.hourMinutes, 59);
       expect(time.hours, -1);
       expect(time.minuteSeconds, 0);
+
+      expect(CalendarTime.zero().text, '00:00');
     });
     test('dateTime', () {
       var dateTime = DateTime.utc(2024, 5, 7, 15, 5, 13);

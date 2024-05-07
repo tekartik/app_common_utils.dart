@@ -90,6 +90,9 @@ class CalendarTime implements Comparable<CalendarTime> {
         seconds:
             ((dateTime.hour * 60) + dateTime.minute) * 60 + dateTime.second);
   }
+  CalendarTime.zero() {
+    _seconds = 0;
+  }
 
   @override
   int compareTo(CalendarTime other) => _seconds - other._seconds;
