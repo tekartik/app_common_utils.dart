@@ -1,14 +1,17 @@
-import 'package:tekartik_app_date/calendar_day.dart';
+import 'package:tekartik_app_date/calendar_time.dart';
+import 'package:tekartik_app_date/src/calendar_day.dart';
 import 'package:test/test.dart';
 
 void main() {
   group('day', () {
     test('day', () {
       var day = CalendarDay(text: '2012-01-23');
-      expect(day.toString(), '2012-01-23');
+      expect(day.text, '2012-01-23');
+      expect(day.dateTime.toIso8601String(), '2012-01-23T00:00:00.000Z');
+      expect(day.localDateTime.toIso8601String(), '2012-01-23T00:00:00.000');
 
       day = CalendarDay(text: '20120123');
-      expect(day.toString(), '2012-01-23');
+      expect(day.text, '2012-01-23');
     });
     test('nextDay', () {
       var day = CalendarDay.today();
@@ -18,6 +21,18 @@ void main() {
         var nextDay = day.nextDay();
         expect(nextDay, isNot(day));
       }
+    });
+    test('dayTimeToDateTime', () {
+      expect(
+          dayTimeToDateTime(
+                  CalendarDay(text: '2021-05-07'), CalendarTime(text: '26:40'))
+              .toIso8601String(),
+          '2021-05-08T02:40:00.000Z');
+      expect(
+          dayTimeToLocalDateTime(
+                  CalendarDay(text: '2021-05-07'), CalendarTime(text: '26:40'))
+              .toIso8601String(),
+          '2021-05-08T02:40:00.000');
     });
   });
 }

@@ -14,6 +14,10 @@ class CalendarDay implements Comparable<CalendarDay> {
     assert(dateTime.isUtc);
     _dateTime = DateTime.utc(dateTime.year, dateTime.month, dateTime.day);
   }
+  CalendarDay.fromLocalDateTime(DateTime dateTime) {
+    assert(!dateTime.isUtc);
+    _dateTime = DateTime(dateTime.year, dateTime.month, dateTime.day);
+  }
 
   /// From '2000-01-01'
   CalendarDay.fromText(String text) {
@@ -35,7 +39,13 @@ class CalendarDay implements Comparable<CalendarDay> {
     }
   }
 
-  DateTime get dateTime => _dateTime;
+  /// UTC
+  DateTime get dateTime => timestamp;
+  DateTime get timestamp => _dateTime;
+
+  /// Local
+  DateTime get localDateTime =>
+      DateTime(dateTime.year, dateTime.month, dateTime.day);
 
   @override
   int compareTo(CalendarDay other) =>
@@ -85,8 +95,11 @@ CalendarDay? parseCalendarDay(String text) {
 
 // Return a time in the even timezone as UTC
 DateTime dayTimeToDateTime(CalendarDay day, CalendarTime time) {
-  var hours = (time.seconds ~/ 60) % 24;
-  var minutes = time.seconds % 60;
-  return DateTime.utc(
-      day.dateTime.year, day.dateTime.month, day.dateTime.day, hours, minutes);
+  var dateTime = day.dateTime;
+  return dateTime.add(Duration(seconds: time.seconds));
+}
+
+DateTime dayTimeToLocalDateTime(CalendarDay day, CalendarTime time) {
+  var dateTime = day.localDateTime;
+  return dateTime.add(Duration(seconds: time.seconds));
 }
