@@ -15,6 +15,7 @@ Future main() async {
     'app_csv',
     'app_web_socket',
     'app_bloc',
+    'app_rx',
     'app_rx_bloc',
     'app_http',
     'app_sembast',

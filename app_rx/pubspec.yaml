@@ -1,0 +1,22 @@
+name: tekartik_app_rx
+description: Rx helpers
+version: 0.2.0
+publish_to: none
+
+environment:
+  sdk: '>=3.3.0 <4.0.0'
+
+dependencies:
+  rxdart: '>=0.27.7'
+
+dev_dependencies:
+  dev_build:
+  test:
+  build_runner: '>=1.2.7'
+  build_test: any
+  build_web_compilers: any
+  process_run:
+
+dependency_overrides:
+  tekartik_app_bloc:
+    path: ../app_bloc
