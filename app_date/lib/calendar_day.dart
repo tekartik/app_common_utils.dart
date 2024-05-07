@@ -3,4 +3,5 @@ export 'src/calendar_day.dart'
         CalendarDay,
         parseCalendarDay,
         parseCalendarDayOrNull,
-        dayTimeToDateTime;
+        dayTimeToDateTime,
+        dayTimeToLocalDateTime;

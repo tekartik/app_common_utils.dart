@@ -1,5 +1,5 @@
+import 'package:tekartik_app_date/calendar_day.dart';
 import 'package:tekartik_app_date/calendar_time.dart';
-import 'package:tekartik_app_date/src/calendar_day.dart';
 import 'package:test/test.dart';
 
 void main() {
