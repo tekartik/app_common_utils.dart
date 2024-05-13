@@ -1,4 +1,6 @@
 @TestOn('vm')
+library;
+
 import 'package:json_annotation/json_annotation.dart';
 import 'package:tekartik_app_mirrors/mirrors.dart';
 import 'package:test/test.dart';

@@ -1,4 +1,6 @@
 @TestOn('vm')
+library;
+
 import 'package:tekartik_app_sembast/sembast.dart';
 import 'package:test/test.dart';
 
