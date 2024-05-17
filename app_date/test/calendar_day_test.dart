@@ -22,6 +22,12 @@ void main() {
         expect(nextDay, isNot(day));
       }
     });
+    test('addDays', () {
+      var day = CalendarDay.today();
+      expect(day.addDays(3), day.nextDay().nextDay().nextDay());
+      expect(day.addDays(-3), day.previousDay().previousDay().previousDay());
+      expect(day.addDays(3000).addDays(-3000), day);
+    });
     test('dayTimeToDateTime', () {
       expect(
           dayTimeToDateTime(

@@ -59,10 +59,17 @@ class CalendarDay implements Comparable<CalendarDay> {
   @override
   int get hashCode => _dateTime.millisecondsSinceEpoch;
 
+  /// Next day
   CalendarDay nextDay() {
-    return CalendarDay.fromTimestamp(_dateTime.add(const Duration(days: 1)));
+    return addDays(1);
   }
 
+  /// Add a number of days (or substract if negative)
+  CalendarDay addDays(int days) {
+    return CalendarDay.fromTimestamp(_dateTime.add(Duration(days: days)));
+  }
+
+  /// Previous day
   CalendarDay previousDay() {
     return CalendarDay.fromTimestamp(
         _dateTime.subtract(const Duration(days: 1)));
