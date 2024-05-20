@@ -1,3 +1,4 @@
+import 'package:tekartik_app_date/time_offset.dart';
 import 'package:tekartik_common_utils/int_utils.dart';
 
 String from2Digits(int value) {
@@ -40,45 +41,53 @@ class CalendarTime implements Comparable<CalendarTime> {
   /// Seconds in the minute (>=0 <60)
   int get minuteSeconds => seconds % 60;
 
-  // Handle 11:00 and 1100
-  CalendarTime({String? text, int? seconds}) {
-    if (seconds != null) {
-      _seconds = seconds;
-    } else if (text != null) {
-      try {
-        late List<String> parts;
+  /// From '2000-01-01'
+  CalendarTime.fromText(String text) {
+    try {
+      late List<String> parts;
 
-        if (text.length == 4) {
-          parts = [text.substring(0, 2), text.substring(2, 4)];
-          var hours = int.tryParse(parts[0]);
-          var minutes = int.tryParse(parts[1]);
-          if (hours != null && minutes != null) {
-            _seconds = (hours * 60 + minutes) * 60;
-            return;
-          }
+      if (text.length == 4) {
+        parts = [text.substring(0, 2), text.substring(2, 4)];
+        var hours = int.tryParse(parts[0]);
+        var minutes = int.tryParse(parts[1]);
+        if (hours != null && minutes != null) {
+          _seconds = (hours * 60 + minutes) * 60;
+          return;
         }
-        parts = text.split(':');
-        var hourPart = parts[0];
-        var hours = parseInt(hourPart)!;
-        _seconds = hours * 60 * 60;
-
-        var negative = (_seconds < 0);
-        if (negative) {
-          _seconds = -_seconds;
-        }
-        if (parts.length > 1) {
-          _seconds += parseInt(parts[1])! * 60;
-          if (parts.length > 2) {
-            _seconds += parseInt(parts[2])!;
-          }
-        }
-
-        if (negative) {
-          _seconds = -_seconds;
-        }
-      } catch (e) {
-        throw ArgumentError.value('invalid $text $e');
       }
+      parts = text.split(':');
+      var hourPart = parts[0];
+      var hours = parseInt(hourPart)!;
+      _seconds = hours * 60 * 60;
+
+      var negative = (_seconds < 0);
+      if (negative) {
+        _seconds = -_seconds;
+      }
+      if (parts.length > 1) {
+        _seconds += parseInt(parts[1])! * 60;
+        if (parts.length > 2) {
+          _seconds += parseInt(parts[2])!;
+        }
+      }
+
+      if (negative) {
+        _seconds = -_seconds;
+      }
+    } catch (e) {
+      throw ArgumentError.value('invalid $text $e');
+    }
+  }
+
+  CalendarTime.fromSeconds(int seconds) {
+    _seconds = seconds;
+  }
+  // Handle 11:00 and 1100
+  factory CalendarTime({String? text, int? seconds}) {
+    if (seconds != null) {
+      return CalendarTime.fromSeconds(seconds);
+    } else if (text != null) {
+      return CalendarTime.fromText(text);
     } else {
       throw ArgumentError.notNull('text and seconds');
     }
@@ -86,9 +95,8 @@ class CalendarTime implements Comparable<CalendarTime> {
 
   /// From any date time, pick the correct one
   factory CalendarTime.fromDateTime(DateTime dateTime) {
-    return CalendarTime(
-        seconds:
-            ((dateTime.hour * 60) + dateTime.minute) * 60 + dateTime.second);
+    return CalendarTime.fromSeconds(
+        ((dateTime.hour * 60) + dateTime.minute) * 60 + dateTime.second);
   }
   CalendarTime.zero() {
     _seconds = 0;
@@ -107,6 +115,10 @@ class CalendarTime implements Comparable<CalendarTime> {
     var minutes = hourMinutes;
     var minuteSeconds = this.minuteSeconds;
     return '${from2Digits(hours)}:${from2Digits(minutes)}${minuteSeconds == 0 ? '' : ':${from2Digits(minuteSeconds)}'}';
+  }
+
+  CalendarTime addOffset(TimeOffset offset) {
+    return CalendarTime(seconds: seconds + offset.milliseconds ~/ 1000);
   }
 }
 

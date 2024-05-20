@@ -1,4 +1,5 @@
 import 'package:tekartik_app_date/calendar_time.dart';
+import 'package:tekartik_app_date/time_offset.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -62,10 +63,21 @@ void main() {
 
       expect(CalendarTime.zero().text, '00:00');
     });
+    test('fromSeconds', () {
+      expect(CalendarTime.fromSeconds(123456).text, '34:17:36');
+    });
+    test('fromText', () {
+      expect(CalendarTime.fromText('34:17:36').seconds, 123456);
+    });
     test('dateTime', () {
       var dateTime = DateTime.utc(2024, 5, 7, 15, 5, 13);
       var time = CalendarTime.fromDateTime(dateTime);
       expect(time.text, '15:05:13');
+    });
+    test('addOffset', () {
+      var time = CalendarTime.fromText('10:00');
+      expect(time.addOffset(TimeOffset(1, 2)).text, '11:02');
+      expect(time.addOffset(TimeOffset(-1, -2)).text, '08:58');
     });
   });
 }
