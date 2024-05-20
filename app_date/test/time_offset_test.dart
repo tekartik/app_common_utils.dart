@@ -11,4 +11,9 @@ void main() {
     expect(TimeOffset(-1, 1).toString(), 'TimeOffset(-01:01)');
     expect(TimeOffset.parse('-2:61').text, '-01:01');
   });
+  test('seconds time_offset', () {
+    expect(TimeOffset.fromSeconds(3720).seconds, 3720);
+    expect(TimeOffset.fromSeconds(-3720).seconds, -3720);
+    expect(TimeOffset.fromSeconds(-3720).text, '-02:58');
+  });
 }
