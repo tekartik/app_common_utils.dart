@@ -41,6 +41,10 @@ class TimeOffset {
 
   @override
   String toString() {
+    return 'TimeOffset($text)';
+  }
+
+  String get text {
     return "${hour < 0 ? '-' : ''}${hour.abs().toString().padLeft(2, "0")}:${minute.toString().padLeft(2, "0")}";
   }
 
