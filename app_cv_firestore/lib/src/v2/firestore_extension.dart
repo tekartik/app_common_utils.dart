@@ -44,9 +44,22 @@ extension CvFirestoreExt on Firestore {
   }
 
   /// Returns non-null [Future] of the read data in a [DocumentSnapshot].
-  void refDelete<T extends CvFirestoreDocument>(
+  Future<void> refDelete<T extends CvFirestoreDocument>(
       CvDocumentReference<T> ref) async {
     await pathDelete(ref.path);
+  }
+
+  /// Returns non-null [Future] of the read data in a [DocumentSnapshot].
+  Future<T> refGet<T extends CvFirestoreDocument>(
+      CvDocumentReference<T> ref) async {
+    return await cvGet<T>(ref.path);
+  }
+
+  /// Set
+  Future<void> refSet<T extends CvFirestoreDocument>(
+      CvDocumentReference<T> ref, T document,
+      [SetOptions? options]) async {
+    await doc(ref.path).set(document.toMap(), options);
   }
 
   /// Delete
@@ -96,6 +109,13 @@ class CvFirestoreTransaction extends Transaction {
   Future<T> refGet<T extends CvFirestoreDocument>(
       CvDocumentReference<T> ref) async {
     return await cvGet<T>(ref.path);
+  }
+
+  /// Set
+  void refSet<T extends CvFirestoreDocument>(
+      CvDocumentReference<T> ref, T document,
+      [SetOptions? options]) async {
+    set(_firestore.doc(ref.path), document.toMap(), options);
   }
 
   /// Returns non-null [Future] of the read data in a [DocumentSnapshot].

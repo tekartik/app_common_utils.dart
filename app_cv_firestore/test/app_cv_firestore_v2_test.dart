@@ -412,8 +412,8 @@ void main() {
       expect(allFields.toMap(), {
         'int': 1,
         'double': 2.5,
-        'bool': 3.5,
-        'string': 4.5,
+        'bool': false,
+        'string': 'text_4',
         'timestamp': Timestamp.parse('1970-01-01T00:00:05.000Z'),
         'intList': [6],
         'model': {'text': 'text_7'},
@@ -446,14 +446,68 @@ void main() {
         ..text.v = '2';
       expect([doc1, doc2].toMap(), {'1': doc1, '2': doc2});
     });
+    test('ref', () async {
+      cvAddConstructor(TwoFields.new);
+      var docRef = CvDocumentReference<TwoFields>('test/update');
+      await firestore.refSet(docRef, TwoFields()..v1.v = 1);
+      var doc = await firestore.refGet(docRef);
+      expect(doc.path, docRef.path);
+      expect(doc.toMap(), {'v1': 1});
+      await firestore.refSet(
+          docRef, TwoFields()..v2.v = 'value2', SetOptions(merge: true));
+      doc = await firestore.refGet(docRef);
+      expect(doc.toMap(), {'v1': 1, 'v2': 'value2'});
+      await firestore.refSet(docRef, TwoFields()..v2.v = 'value3');
+      doc = await firestore.refGet(docRef);
+      expect(doc.toMap(), {'v2': 'value3'});
+      await firestore.refDelete(docRef);
+      doc = await firestore.refGet(docRef);
+      expect(doc.exists, isFalse);
+
+      await firestore.cvRunTransaction((txn) async {
+        txn.refSet(docRef, TwoFields()..v1.v = 1);
+      });
+
+      await firestore.cvRunTransaction((txn) async {
+        var doc = await txn.refGet(docRef);
+        expect(doc.path, docRef.path);
+        expect(doc.toMap(), {'v1': 1});
+        txn.refSet(
+            docRef, TwoFields()..v2.v = 'value2', SetOptions(merge: true));
+      });
+
+      await firestore.cvRunTransaction((txn) async {
+        var doc = await txn.refGet(docRef);
+        expect(doc.toMap(), {'v1': 1, 'v2': 'value2'});
+        txn.refSet(docRef, TwoFields()..v2.v = 'value3');
+      });
+
+      await firestore.cvRunTransaction((txn) async {
+        var doc = await txn.refGet(docRef);
+        expect(doc.toMap(), {'v2': 'value3'});
+        txn.refDelete(docRef);
+      });
+
+      await firestore.cvRunTransaction((txn) async {
+        var doc = await txn.refGet(docRef);
+        expect(doc.exists, isFalse);
+      });
+    });
   });
+}
+
+class TwoFields extends CvFirestoreDocumentBase {
+  final v1 = CvField<int>('v1');
+  final v2 = CvField<String>('v2');
+  @override
+  CvFields get fields => [v1, v2];
 }
 
 class CvFsAllFields extends CvFirestoreDocumentBase {
   final intValue = CvField<int>('int');
   final doubleValue = CvField<double>('double');
-  final boolValue = CvField<double>('bool');
-  final stringValue = CvField<double>('string');
+  final boolValue = CvField<bool>('bool');
+  final stringValue = CvField<String>('string');
   final timestampValue = CvField<Timestamp>('timestamp');
   final intListValue = CvListField<int>('intList');
   final model = CvModelField<CvFsSingleString>('model');
