@@ -147,13 +147,7 @@ void main() {
       var doc = CvFsSingleString()
         ..path = 'test/single_string'
         ..text.v = 'value';
-      try {
-        // ignore: unnecessary_statements
-        doc.exists;
-        fail('shoud fail');
-      } catch (e) {
-        expect(e, isNot(const TypeMatcher<TestFailure>()));
-      }
+
       expect(doc.path, 'test/single_string');
       expect(doc.toMap(), {'text': 'value'});
       await firestore.cvSet(doc);
@@ -492,6 +486,10 @@ void main() {
         var doc = await txn.refGet(docRef);
         expect(doc.exists, isFalse);
       });
+    });
+    test('exists new', () async {
+      var model = CvFsSingleString();
+      expect(model.exists, isFalse);
     });
   });
 }

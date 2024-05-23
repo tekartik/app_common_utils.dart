@@ -1,6 +1,8 @@
 import 'package:cv/cv.dart';
 import 'package:path/path.dart';
 import 'package:tekartik_app_cv_firestore/app_cv_firestore_v2.dart';
+import 'package:tekartik_app_cv_firestore/src/v2/cv_document.dart'
+    show CvFirestoreDocumentPrvExt;
 import 'package:tekartik_app_cv_firestore/src/v2/cv_path.dart';
 import 'package:tekartik_firebase_firestore/firestore.dart';
 import 'package:tekartik_firebase_firestore/utils/track_changes_support.dart';
@@ -51,12 +53,12 @@ class CvDocumentReference<T extends CvFirestoreDocument>
   T cv() => cvBuildModel<T>({})
     ..path = path
     // ignore: invalid_use_of_visible_for_testing_member
-    ..exists = false;
+    ..prvExists = false;
 
   T cvType(Type type) => cvTypeBuildModel<T>(type, {})
     ..path = path
     // ignore: invalid_use_of_visible_for_testing_member
-    ..exists = false;
+    ..prvExists = false;
 
   /// Delete
   Future<void> delete(Firestore firestore) => firestore.doc(path).delete();
