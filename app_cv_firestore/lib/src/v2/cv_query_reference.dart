@@ -144,6 +144,10 @@ class CvQueryReference<T extends CvFirestoreDocument> {
   Future<Query> rawASync(Firestore firestore) async =>
       await applyQueryInfo(firestore, collectionReference.path, _queryInfo);
 
+  /// Raw query reference, sync if there is no document id in end/start
+  Query rawSync(Firestore firestore) => applyQueryInfoNoDocumentId(
+      firestore, collectionReference.path, _queryInfo);
+
   @override
   String toString() => 'CvQueryReference<$T>(${collectionReference.path})';
 }
