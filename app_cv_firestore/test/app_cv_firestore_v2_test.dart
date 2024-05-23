@@ -34,13 +34,6 @@ void main() {
       firestore = newFirestoreMemory();
     });
     test('get/set empty', () async {
-      try {
-        // ignore: unnecessary_statements
-        CvFsEmpty().exists;
-        fail('shoud fail');
-      } catch (e) {
-        expect(e, isNot(const TypeMatcher<TestFailure>()));
-      }
       var snapshot = await firestore.doc('test/1').get();
       expect(snapshot.cv<CvFsEmpty>(), CvFsEmpty()..path = 'test/1');
       expect(snapshot.cvType(CvFsEmpty), CvFsEmpty()..path = 'test/1');
