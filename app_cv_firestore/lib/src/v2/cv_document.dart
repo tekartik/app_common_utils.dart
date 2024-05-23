@@ -7,6 +7,7 @@ set exists(bool exists);*/
 import 'package:cv/cv.dart';
 import 'package:cv/src/content_values.dart'; // ignore: implementation_imports
 import 'package:path/path.dart';
+import 'package:tekartik_app_cv_firestore/app_cv_firestore.dart';
 
 mixin _WithPath implements CvFirestoreDocument {
   String? _path;
@@ -45,6 +46,12 @@ extension CvFirestoreDocumentExt<T extends CvFirestoreDocument> on T {
 
   /// Path or null
   String? get pathOrNull => hasId ? path : null;
+
+  /// Reference
+  CvDocumentReference<T>? get refOrNull => hasId ? ref : null;
+
+  /// Reference
+  CvDocumentReference<T> get ref => CvDocumentReference<T>(path);
 }
 
 /// common helper

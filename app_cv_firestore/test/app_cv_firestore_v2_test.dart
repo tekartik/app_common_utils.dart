@@ -122,6 +122,12 @@ void main() {
       } catch (e) {
         expect(e, isNot(const TypeMatcher<TestFailure>()));
       }
+      try {
+        doc.ref;
+        fail('should fail');
+      } catch (e) {
+        expect(e, isNot(const TypeMatcher<TestFailure>()));
+      }
 
       doc.path = 'test/id';
       expect(doc.pathOrNull, 'test/id');
@@ -439,6 +445,7 @@ void main() {
       await firestore.refSet(docRef, TwoFields()..v1.v = 1);
       var doc = await firestore.refGet(docRef);
       expect(doc.path, docRef.path);
+      expect(doc.ref, docRef);
       expect(doc.toMap(), {'v1': 1});
       await firestore.refSet(
           docRef, TwoFields()..v2.v = 'value2', SetOptions(merge: true));
@@ -483,6 +490,7 @@ void main() {
     test('exists new', () async {
       var model = CvFsSingleString();
       expect(model.exists, isFalse);
+      expect(model.refOrNull, isNull);
     });
   });
 }
