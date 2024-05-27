@@ -8,13 +8,16 @@ extension TekartikRxStreamExt<T> on Stream<T> {
   BehaviorSubject<T> toBehaviorSubject() {
     late StreamSubscription<T> subscription;
     late BehaviorSubject<T> subject;
-    subject = BehaviorSubject<T>(onListen: () {
-      subscription = listen((event) {
-        subject.add(event);
-      });
-    }, onCancel: () {
-      subscription.cancel();
-    });
+    subject = BehaviorSubject<T>(
+        onListen: () {
+          subscription = listen((event) {
+            subject.add(event);
+          });
+        },
+        onCancel: () {
+          subscription.cancel();
+        },
+        sync: true);
     return subject;
   }
 }
