@@ -13,12 +13,20 @@ void main() {
         expect(subject.value, 1);
       }).unawait();
 
+      StreamSubscription? subscription1;
+      subscription1 = subject.listen((data) {
+        if (data == 1) {
+          subscription1?.cancel();
+          subscription1 = null;
+        }
+      });
       subject.listen((data) {
         if (data == 3) {
           completer.complete();
         }
       });
       await completer.future;
+      expect(subscription1, isNull);
       expect(await subject.first, 3);
       expect(subject.value, 3);
       await subject.close();
