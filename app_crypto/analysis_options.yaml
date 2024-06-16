@@ -1,2 +1,6 @@
 # tekartik strict extension
 include: package:tekartik_lints/strict.yaml
+
+linter:
+  rules:
+    # avoid_print: true

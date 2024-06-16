@@ -9,7 +9,7 @@ void main() {
   void aesRoundTrip(String decoded, String password) {
     var encrypter = aesEncrypterFromPassword(password);
     var encrypted = encrypter.encrypt(decoded);
-    print('${decoded.length}:${encrypted.length}');
+    // print('${decoded.length}:${encrypted.length}');
     encrypter = aesEncrypterFromPassword(password);
     expect(encrypter.decrypt(encrypted), decoded);
   }
@@ -75,7 +75,7 @@ void main() {
     for (var i = 0; i < count; i++) {
       aes.decrypt(aes.encrypt(textWithLength(count * 10)));
     }
-    print('aes round trip: ${sw.elapsedMilliseconds} ms');
+    // print('aes round trip: ${sw.elapsedMilliseconds} ms');
     sw = Stopwatch()..start();
 
     for (var i = 0; i < count; i++) {
