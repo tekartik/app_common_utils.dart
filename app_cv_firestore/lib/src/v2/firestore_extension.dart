@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:cv/cv.dart';
 import 'package:tekartik_app_cv_firestore/app_cv_firestore_v2.dart';
 import 'package:tekartik_app_cv_firestore/src/v2/cv_document.dart'
     show CvFirestoreDocumentPrvExt;

@@ -4,7 +4,6 @@ extension
 @visibleForTesting
 set exists(bool exists);*/
 
-import 'package:cv/cv.dart';
 import 'package:cv/src/content_values.dart'; // ignore: implementation_imports
 import 'package:path/path.dart';
 import 'package:tekartik_app_cv_firestore/app_cv_firestore.dart';

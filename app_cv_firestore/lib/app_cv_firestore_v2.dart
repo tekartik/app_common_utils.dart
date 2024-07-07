@@ -1,6 +1,7 @@
 /// Firestore content values helper
 library tekartik_app_cv_firestore_v2;
 
+export 'package:cv/cv.dart';
 export 'src/v2/builder.dart' show cvFirestoreAddBuilder;
 export 'src/v2/cv_collection_reference.dart'
     show CvCollectionReference, CollectionReferenceCvExtension;

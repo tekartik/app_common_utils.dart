@@ -1,4 +1,3 @@
-import 'package:cv/cv.dart';
 import 'package:path/path.dart';
 import 'package:tekartik_app_cv_firestore/app_cv_firestore_v2.dart';
 import 'package:tekartik_firebase_firestore/firestore.dart';
