@@ -142,10 +142,10 @@ void main() {
       var record = DbStringTest()..value.v = 1;
       var docRef = cvStore.record('test');
       expect(await docRef.exists(db), isFalse);
-      expect(await docRef.existsSync(db), isFalse);
+      expect(docRef.existsSync(db), isFalse);
       await docRef.put(db, record);
       expect(await docRef.exists(db), isTrue);
-      expect(await docRef.existsSync(db), isTrue);
+      expect(docRef.existsSync(db), isTrue);
       var doc = docRef.cv();
       expect(await docRef.get(db), record);
       doc.value.v = 2;
