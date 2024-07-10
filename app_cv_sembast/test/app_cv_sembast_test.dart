@@ -112,6 +112,7 @@ void main() {
       var cvRecordRef = cvStore.record('1');
       await store.record('1').put(db, {'value': 1});
       expect(await recordRef.get(db), {'value': 1});
+      expect(await recordRef.exists(db), true);
       var readDbTest = await cvRecordRef.get(db);
       expect(readDbTest, dbTest);
       expect(readDbTest!.rawRef.key, '1');
@@ -140,7 +141,11 @@ void main() {
       var cvStore = cvStringRecordFactory.store<DbStringTest>('test');
       var record = DbStringTest()..value.v = 1;
       var docRef = cvStore.record('test');
+      expect(await docRef.exists(db), isFalse);
+      expect(await docRef.existsSync(db), isFalse);
       await docRef.put(db, record);
+      expect(await docRef.exists(db), isTrue);
+      expect(await docRef.existsSync(db), isTrue);
       var doc = docRef.cv();
       expect(await docRef.get(db), record);
       doc.value.v = 2;
