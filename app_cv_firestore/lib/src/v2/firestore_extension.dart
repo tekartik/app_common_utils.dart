@@ -1,8 +1,8 @@
-import 'dart:async';
-
 import 'package:tekartik_app_cv_firestore/app_cv_firestore_v2.dart';
 import 'package:tekartik_app_cv_firestore/src/v2/cv_document.dart'
     show CvFirestoreDocumentPrvExt;
+import 'package:tekartik_common_utils/common_utils_import.dart';
+import 'package:tekartik_common_utils/foundation/constants.dart';
 import 'package:tekartik_common_utils/list_utils.dart';
 import 'package:tekartik_firebase_firestore/firestore.dart';
 import 'package:tekartik_firebase_firestore/utils/track_changes_support.dart';
@@ -241,19 +241,30 @@ extension CvFirestoreDocumentReferenceExt on DocumentReference {
     return (await get()).cv();
   }
 
+  StreamTransformer<DocumentSnapshot, T>
+      _snapshotTransformer<T extends CvFirestoreDocument>() =>
+          StreamTransformer<DocumentSnapshot, T>.fromHandlers(
+              handleData: (data, sink) {
+            try {
+              var converted = data.cv<T>();
+              sink.add(converted);
+              // devPrint('cvOnSnapshot $converted');
+            } catch (e) {
+              if (kDebugMode) {
+                print('cvOnSnapshot.error: $e');
+              }
+              rethrow;
+            }
+          });
+
   /// on snapshots
-  Stream<T> cvOnSnapshot<T extends CvFirestoreDocument>() => onSnapshot()
-          .transform(StreamTransformer.fromHandlers(handleData: (data, sink) {
-        sink.add(data.cv<T>());
-      }));
+  Stream<T> cvOnSnapshot<T extends CvFirestoreDocument>() =>
+      onSnapshot().transform(_snapshotTransformer<T>());
 
   /// on snapshots
   Stream<T> cvOnSnapshotSupport<T extends CvFirestoreDocument>(
           {TrackChangesPullOptions? options}) =>
-      onSnapshotSupport(options: options)
-          .transform(StreamTransformer.fromHandlers(handleData: (data, sink) {
-        sink.add(data.cv<T>());
-      }));
+      onSnapshotSupport(options: options).transform(_snapshotTransformer<T>());
 }
 
 /// Easy extension
