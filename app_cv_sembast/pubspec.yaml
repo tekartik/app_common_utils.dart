@@ -16,5 +16,5 @@ dependencies:
   sembast: '>=3.6.0'
   # sembast:
 dev_dependencies:
-  test: ^1.14.4
+  test: '>=1.14.4'
   dev_build:
