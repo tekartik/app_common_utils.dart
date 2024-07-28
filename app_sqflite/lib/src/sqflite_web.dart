@@ -10,6 +10,11 @@ DatabaseFactory getDatabaseFactory(
 /// Only needed/implemented on windows
 void sqfliteWindowsFfiInit() => _stub('sqfliteWindowsFfiInit');
 
+/// no op on the web
+String getDatabasePath(String databasePath,
+        {String? packageName, String? rootPath}) =>
+    databasePath;
+
 T _stub<T>(String message) {
   throw UnimplementedError(message);
 }

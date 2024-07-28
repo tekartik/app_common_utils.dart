@@ -9,7 +9,7 @@ DatabaseFactory get databaseFactory => src.databaseFactory;
 
 /// Get the database factory for a given package (setting in home path)
 ///
-/// [packageName] or [rootPath] only used on linux and windows for now
+/// [packageName] or [rootPath] only used on desktop (linux, windows and mac) for now
 ///
 /// autoInit is sqflite_ffi on windows
 DatabaseFactory getDatabaseFactory(
