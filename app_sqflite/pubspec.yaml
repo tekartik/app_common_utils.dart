@@ -4,7 +4,7 @@ version: 0.6.1
 publish_to: none
 
 environment:
-  sdk: ^3.4.0
+  sdk: ^3.5.0
 
 dependencies:
   sqflite_common_ffi_web: '>=0.4.0'

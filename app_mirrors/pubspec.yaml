@@ -5,7 +5,7 @@ homepage: https://github.com/tekartik/app_common_utils.dart/app_mirrors
 publish_to: none
 
 environment:
-  sdk: ^3.4.0
+  sdk: ^3.5.0
 
 dependencies:
   tekartik_common_utils:

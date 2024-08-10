@@ -3,7 +3,7 @@ description: Firestore content values helper
 version: 0.10.14
 publish_to: none
 environment:
-  sdk: ^3.4.0
+  sdk: ^3.5.0
 
 dependencies:
   meta:
