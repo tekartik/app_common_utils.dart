@@ -35,7 +35,7 @@ class CalendarDay implements Comparable<CalendarDay> {
     if (dateTime != null) {
       _dateTime = DateTime.utc(dateTime.year, dateTime.month, dateTime.day);
     } else {
-      throw ArgumentError('$text $_dateTime');
+      throw ArgumentError('CalendarDay(test: $text, dateTime: $dateTime)');
     }
   }
 
