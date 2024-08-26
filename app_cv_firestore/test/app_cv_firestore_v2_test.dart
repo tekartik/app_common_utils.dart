@@ -38,6 +38,8 @@ void main() {
       expect(snapshot.cvType(CvFsEmpty), CvFsEmpty()..path = 'test/1');
       expect(snapshot.ref.path, 'test/1');
       expect(snapshot.cv<CvFsEmpty>().exists, false);
+      var empty = CvFsEmpty()..ref = CvDocumentReference<CvFsEmpty>('test/2');
+      expect(empty.path, 'test/2');
 
       var cvFsEmpty = await firestore.cvGet<CvFsEmpty>('test/1');
       expect(cvFsEmpty, CvFsEmpty()..path = 'test/1');

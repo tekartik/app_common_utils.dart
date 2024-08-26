@@ -51,6 +51,9 @@ extension CvFirestoreDocumentExt<T extends CvFirestoreDocument> on T {
 
   /// Reference
   CvDocumentReference<T> get ref => CvDocumentReference<T>(path);
+
+  /// Reference setter helper
+  set ref(CvDocumentReference<T> ref) => path = ref.path;
 }
 
 /// common helper
