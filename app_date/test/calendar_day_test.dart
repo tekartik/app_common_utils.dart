@@ -12,6 +12,11 @@ void main() {
 
       day = CalendarDay(text: '20120123');
       expect(day.text, '2012-01-23');
+
+      try {
+        CalendarDay();
+        fail('should fail');
+      } on ArgumentError catch (_) {}
     });
     test('nextDay', () {
       var day = CalendarDay.today();
