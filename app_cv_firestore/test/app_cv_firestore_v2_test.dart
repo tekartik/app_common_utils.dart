@@ -368,6 +368,7 @@ void main() {
 
     test('query', () async {
       var collection = CvCollectionReference<CvFsSingleString>('test');
+
       var query = collection.query().where('text', isEqualTo: 'value');
       expect(query.type, CvFsSingleString);
       expect(query.collectionReference.doc('1').type, CvFsSingleString);
@@ -387,6 +388,9 @@ void main() {
       await firestore.cvSet(doc);
       expect((await query.onSnapshots(firestore).first), isEmpty);
       expect(await query.count(firestore), 0);
+
+      /// Api
+      query = query.orderBy('dummy').orderById();
     });
 
     test('extension', () {

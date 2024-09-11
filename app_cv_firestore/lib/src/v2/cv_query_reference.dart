@@ -84,9 +84,14 @@ class CvQueryReference<T extends CvFirestoreDocument> {
   CvQueryReference<T> limit(int limit) =>
       CvQueryReference._(collectionReference, _impl.limit(limit));
 
+  /// Multipler orders can be used, might need an index.
   CvQueryReference<T> orderBy(String key, {bool? descending}) =>
       CvQueryReference._(
           collectionReference, _impl.orderBy(key, descending: descending));
+
+  /// Order by id
+  CvQueryReference<T> orderById({bool? descending}) => CvQueryReference._(
+      collectionReference, _impl.orderById(descending: descending));
 
   CvQueryReference<T> select(List<String> keyPaths) =>
       CvQueryReference._(collectionReference, _impl.select(keyPaths));
