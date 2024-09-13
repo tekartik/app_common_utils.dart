@@ -2,7 +2,7 @@ import 'package:cv/cv.dart';
 import 'package:sembast/sembast.dart';
 import 'package:tekartik_app_cv_sembast/src/logger_utils.dart';
 
-import 'db_store.dart';
+import 'cv_store_ref.dart';
 
 mixin _WithRef<K> {
   RecordRef<K, Map<String, Object?>> get rawRef => _ref!;
@@ -22,22 +22,30 @@ mixin _WithRef<K> {
   set id(K id) => rawRef = rawRef.store.record(id);
 }
 
+/// DbRecord
 abstract class DbRecord<K> extends CvModelBase with _WithRef<K> {
+  /// Put(add/update) inner data
   Future<void> put(DatabaseClient db, {bool merge});
 
+  /// Update inner data.
   Future<bool> update(DatabaseClient db);
 
+  /// Add data.
   Future<bool> add(DatabaseClient db);
 
+  /// Delete data.
   Future<bool> delete(DatabaseClient db);
 }
 
 /// Access to ref.
 extension DbRecordToRefExt<K> on DbRecord<K> {
+  /// Get the record ref
   CvRecordRef<K, DbRecord<K>> get ref =>
       CvStoreRef<K, DbRecord<K>>(rawRef.store.name).record(rawRef.key);
 }
 
+/// Base record implementation. Protected fields:
+/// - ref
 abstract class DbRecordBase<K> extends CvModelBase
     with _WithRef<K>
     implements DbRecord<K> {
@@ -106,6 +114,7 @@ class DbRecordMap<K> extends DbRecordBase<K> {
   @override
   List<CvField> get fields => _mapModel.fields;
 
+  /// Copy from another map
   void fromModel(Map map, {List<String>? columns}) {
     _mapModel = CvMapModel()..fromMap(map, columns: columns);
   }
@@ -144,11 +153,13 @@ extension CvSembastRecordSnapshotStreamExt<K>
 
 /// Easy extension
 extension DbRecordExt<K, V> on DbRecord<K> {
+  /// put
   Future<void> put(DatabaseClient db, {bool merge = false}) async {
     var data = await rawRef.put(db, toMap(), merge: merge);
     fromMap(data);
   }
 
+  /// delete
   Future<void> delete(DatabaseClient db) async {
     await rawRef.delete(db);
   }
@@ -160,7 +171,9 @@ extension DbRecordExt<K, V> on DbRecord<K> {
   }*/
 }
 
+/// transaction helper
 extension DatabaseClientSembastExt on DatabaseClient {
+  /// Transaction helper
   Future<T> transaction<T>(
       Future<T> Function(Transaction transaction) action) async {
     var dbOrTxn = this;
@@ -174,6 +187,7 @@ extension DatabaseClientSembastExt on DatabaseClient {
 
 /// Easy extension
 extension DbRecordListExt<K, V> on List<DbRecord<K>> {
+  /// put
   Future<void> put(DatabaseClient db, {bool merge = false}) async {
     await db.transaction((txn) async {
       for (var record in this) {
@@ -182,6 +196,7 @@ extension DbRecordListExt<K, V> on List<DbRecord<K>> {
     });
   }
 
+  /// delete
   Future<int> delete(DatabaseClient db) {
     return db.transaction((txn) async {
       var count = 0;
@@ -201,12 +216,18 @@ extension DbRecordListExt<K, V> on List<DbRecord<K>> {
   }*/
 }
 
+/// Record reference
 class CvRecordRef<K, V extends DbRecord<K>> {
+  /// Store
   final CvStoreRef<K, V> store;
+
+  /// Raw ref
   final RecordRef<K, Map<String, Object?>> rawRef;
 
+  /// Key
   K get key => rawRef.key;
 
+  /// Constructor
   CvRecordRef(this.store, K key) : rawRef = store.rawRef.record(key);
 
   /// To build for write
@@ -227,6 +248,7 @@ class CvRecordRef<K, V extends DbRecord<K>> {
   Stream<V?> onRecordSync(Database db) =>
       rawRef.onSnapshotSync(db).map((event) => event?.cv<V>());
 
+  /// Delete
   Future<void> delete(DatabaseClient client) async {
     await rawRef.delete(client);
   }
@@ -264,34 +286,45 @@ class CvRecordRef<K, V extends DbRecord<K>> {
 
 /// Records helpers
 class CvRecordsRef<K, V extends DbRecord<K>> {
+  /// Store
   final CvStoreRef<K, V> store;
-  final RecordsRef<K, Model> rawRef;
 
-  List<K> get keys => rawRef.keys;
+  /// Raw ref
+  final RecordsRef<K, Model> rawRefs;
 
+  /// Raw ref
+  @Deprecated('Use rawRefs')
+  RecordsRef<K, Model> get rawRef => rawRefs;
+
+  /// Keys
+  List<K> get keys => rawRefs.keys;
+
+  /// Record refs
   List<CvRecordRef<K, V>> get refs =>
       keys.map((key) => store.record(key)).toList();
 
   /// Direct access to a record ref.
   CvRecordRef<K, V> operator [](int i) => store.record(keys[i]);
 
+  /// Constructor
   CvRecordsRef(this.store, Iterable<K> keys)
-      : rawRef = store.rawRef.records(keys);
+      : rawRefs = store.rawRef.records(keys);
 
   /// Get
   Future<List<V?>> get(DatabaseClient db) async =>
-      (await rawRef.getSnapshots(db)).cvOrNull<V>();
+      (await rawRefs.getSnapshots(db)).cvOrNull<V>();
 
   /// Get synchronously
   List<V?> getSync(DatabaseClient db) =>
-      rawRef.getSnapshotsSync(db).cvOrNull<V>();
+      rawRefs.getSnapshotsSync(db).cvOrNull<V>();
 
   /// Track changes
   Stream<List<V?>> onRecords(Database db) =>
-      rawRef.onSnapshots(db).map((event) => event.cvOrNull<V>());
+      rawRefs.onSnapshots(db).map((event) => event.cvOrNull<V>());
 
+  /// Delete
   Future<void> delete(DatabaseClient client) async {
-    await rawRef.delete(client);
+    await rawRefs.delete(client);
   }
 
   @override

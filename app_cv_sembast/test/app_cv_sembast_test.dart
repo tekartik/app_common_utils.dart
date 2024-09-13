@@ -163,7 +163,7 @@ void main() {
       }
 
       Future<void> doneWithTimeOut() async {
-        await done().timeout(Duration(milliseconds: 10));
+        await done().timeout(const Duration(milliseconds: 10));
       }
 
       try {
@@ -193,7 +193,7 @@ void main() {
       }
 
       var doneFuture = done();
-      Future<void>.delayed(Duration(milliseconds: 2)).then((_) async {
+      Future<void>.delayed(const Duration(milliseconds: 2)).then((_) async {
         await (cvRecordRef.cv()..value.v = 3).put(db);
       }).unawait();
       await doneFuture;
@@ -241,6 +241,21 @@ void main() {
     });
 
     group('CvQueryRef', () {
+      test('CvQueryRef.getRecord', () async {
+        var cvStore = cvIntRecordFactory.store<DbTest>('test');
+        var cvRecordRef = cvStore.record(1); //
+        var cvRecordRef2 = cvStore.record(2); //
+        var record = cvRecordRef.cv()..value.v = 1;
+        var record2 = cvRecordRef2.cv()..value.v = 2;
+        await db.transaction((txn) async {
+          await record.put(txn);
+          await record2.put(txn);
+        });
+        expect(await cvStore.query().getRecord(db), record);
+        expect(await cvStore.query().getRecords(db), [record, record2]);
+        expect(cvStore.query().getRecordSync(db), record);
+        expect(cvStore.query().getRecordsSync(db), [record, record2]);
+      });
       test('CvQueryRef.onRecordsSync', () async {
         var cvStore = cvIntRecordFactory.store<DbTest>('test');
         var cvRecordRef = cvStore.record(1); //

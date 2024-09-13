@@ -1,6 +1,8 @@
 /// Sembast cv helpers
 library tekartik_app_cv_sembast;
 
+export 'cv_query_ref.dart' show CvQueryRef, CvQueryRefExt;
+export 'cv_store_ref.dart' show CvStoreRef, CvStoreRefExt;
 export 'db_record.dart'
     show
         DbRecordListExt,
@@ -22,15 +24,11 @@ export 'db_record.dart'
         CvRecordRefExt,
         CvRecordRefListExt,
         CvRecordsRefExt;
-
 export 'db_store.dart'
     show
-        CvStoreRef,
-        CvQueryRef,
         cvIntRecordFactory,
         cvStringRecordFactory,
         CvStoreFactory,
         CvIntStoreFactory,
-        CvStringStoreFactory,
-        CvStoreRefExt;
+        CvStringStoreFactory;
 export 'fill_options.dart' show cvSembastFillOptions1;
