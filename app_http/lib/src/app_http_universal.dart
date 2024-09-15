@@ -1,17 +1,9 @@
-import 'package:tekartik_app_http/app_http.dart';
-import 'package:tekartik_common_utils/env_utils.dart';
+import 'package:tekartik_http/http.dart';
 
-HttpClientFactory? _httpClientFactoryUniversal;
+import 'platform/platform.dart' show httpClientFactoryUniversal;
 
-/// The convenient client factory
-HttpClientFactory get httpClientFactoryUniversal =>
-    _httpClientFactoryUniversal ??= () {
-      if (isRunningAsJavascript) {
-        return httpClientFactoryBrowser;
-      } else {
-        return httpClientFactoryIo;
-      }
-    }();
+export 'platform/platform.dart' show httpClientFactoryUniversal;
 
-// Compat
+// Compat, prefer using httpClientFactoryUniversal
+// @Deprecated('Use httpClientFactoryUniversal')
 HttpClientFactory get httpClientFactory => httpClientFactoryUniversal;
