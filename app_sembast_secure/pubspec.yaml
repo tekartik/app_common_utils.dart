@@ -13,7 +13,7 @@ dependencies:
       ref: dart3a
       path: app_sembast
     version: '>=0.1.0'
-  sembast:
+  sembast: '>=3.7.4'
   path:
   # Dependencies for encryption
   encrypt: '>=5.0.0-0'
