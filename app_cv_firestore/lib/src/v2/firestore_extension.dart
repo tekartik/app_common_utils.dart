@@ -116,7 +116,14 @@ class CvFirestoreTransaction extends Transaction {
   void refSet<T extends CvFirestoreDocument>(
       CvDocumentReference<T> ref, T document,
       [SetOptions? options]) async {
-    set(_firestore.doc(ref.path), document.toMap(), options);
+    refSetMap(ref, document.toMap(), options);
+  }
+
+  /// Set
+  void refSetMap<T extends CvFirestoreDocument>(
+      CvDocumentReference<T> ref, Model map,
+      [SetOptions? options]) async {
+    set(_firestore.doc(ref.path), map, options);
   }
 
   /// Returns non-null [Future] of the read data in a [DocumentSnapshot].
