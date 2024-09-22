@@ -302,23 +302,51 @@ class CvFirestoreWriteBatch extends WriteBatch {
           [SetOptions? options]) =>
       _writeBatch.set(ref, data, options);
 
-  @override
-  void update(DocumentReference ref, Map<String, Object?> data) =>
-      _writeBatch.update(ref, data);
-
-  @override
-  void delete(DocumentReference ref) => _writeBatch.delete(ref);
-
   /// set document
   void cvSet(CvFirestoreDocument document, [SetOptions? options]) {
     _ensurePathSet(document);
     set(_firestore.doc(document.path), document.toMap(), options);
   }
 
-  void cvUpdate(CvFirestoreDocument document) {
+  void refSet<T extends CvFirestoreDocument>(
+      CvDocumentReference<T> ref, T document,
+      [SetOptions? options]) {
+    refSetMap<T>(ref, document.toMap(), options);
+  }
+
+  /// Set
+  void refSetMap<T extends CvFirestoreDocument>(
+      CvDocumentReference<T> ref, Model map,
+      [SetOptions? options]) async {
+    set(ref.raw(_firestore), map, options);
+  }
+
+  @override
+  void update(DocumentReference ref, Map<String, Object?> data) =>
+      _writeBatch.update(ref, data);
+
+  void cvUpdate<T extends CvFirestoreDocument>(T document) {
     _ensurePathSet(document);
     update(_firestore.doc(document.path), document.toMap());
   }
 
+  void refUpdate<T extends CvFirestoreDocument>(
+      CvDocumentReference<T> ref, T document) {
+    refUpdateMap(ref, document.toMap());
+  }
+
+  void refUpdateMap<T extends CvFirestoreDocument>(
+      CvDocumentReference<T> ref, Model map) {
+    update(ref.raw(_firestore), map);
+  }
+
+  @override
+  void delete(DocumentReference ref) => _writeBatch.delete(ref);
+
+  void refDelete<T extends CvFirestoreDocument>(CvDocumentReference<T> ref) =>
+      delete(ref.raw(_firestore));
+
+  // ? now
+  // @Deprecated('use refDelete')
   void cvDelete(String path) => delete(_firestore.doc(path));
 }
