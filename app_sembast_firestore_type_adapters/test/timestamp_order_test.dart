@@ -1,4 +1,3 @@
-import 'package:sembast/sembast.dart';
 import 'package:sembast/sembast_memory.dart';
 import 'package:tekartik_app_sembast_firestore_type_adapters/type_adapters.dart';
 import 'package:tekartik_firebase_firestore/firestore.dart';

@@ -1,6 +1,5 @@
 import 'package:path/path.dart';
 import 'package:tekartik_app_cv_firestore/app_cv_firestore.dart';
-import 'package:tekartik_app_cv_firestore/src/import_firestore.dart';
 
 abstract class CvPathReference<T> {
   String get path;

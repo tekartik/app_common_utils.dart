@@ -4,7 +4,6 @@ import 'package:tekartik_app_cv_firestore/src/v2/cv_document.dart'
 import 'package:tekartik_common_utils/common_utils_import.dart';
 import 'package:tekartik_common_utils/foundation/constants.dart';
 import 'package:tekartik_common_utils/list_utils.dart';
-import 'package:tekartik_firebase_firestore/firestore.dart';
 import 'package:tekartik_firebase_firestore/utils/track_changes_support.dart';
 
 void _ensurePathSet(CvFirestoreDocument document) {

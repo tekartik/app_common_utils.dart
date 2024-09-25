@@ -1,4 +1,3 @@
-import 'package:sembast/sembast.dart';
 import 'package:sembast/sembast_memory.dart';
 import 'package:tekartik_app_sembast/unique_index.dart';
 import 'package:test/test.dart';

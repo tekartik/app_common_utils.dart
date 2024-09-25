@@ -3,7 +3,6 @@ import 'package:tekartik_app_cv_firestore/app_cv_firestore_v2.dart';
 import 'package:tekartik_app_cv_firestore/src/v2/cv_document.dart'
     show CvFirestoreDocumentPrvExt;
 import 'package:tekartik_app_cv_firestore/src/v2/cv_path.dart';
-import 'package:tekartik_firebase_firestore/firestore.dart';
 import 'package:tekartik_firebase_firestore/utils/track_changes_support.dart';
 
 /// Document helper

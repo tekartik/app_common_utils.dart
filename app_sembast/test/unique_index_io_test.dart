@@ -1,7 +1,6 @@
 @TestOn('vm')
 library;
 
-import 'package:sembast/sembast.dart';
 import 'package:sembast/sembast_io.dart';
 import 'package:tekartik_app_sembast/unique_index.dart';
 import 'package:test/test.dart';

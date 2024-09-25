@@ -1,5 +1,4 @@
 import 'package:sembast/blob.dart';
-import 'package:sembast/sembast.dart';
 import 'package:sembast/sembast_memory.dart';
 import 'package:sembast/timestamp.dart';
 import 'package:tekartik_app_cv_sembast/app_cv_sembast.dart';
