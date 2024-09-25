@@ -1,5 +1,4 @@
 import 'package:tekartik_app_sembast/sembast.dart';
-import 'package:tekartik_prefs/prefs.dart';
 import 'package:tekartik_prefs_sembast/prefs.dart';
 
 /// Default for io use a local folder
