@@ -14,9 +14,9 @@ dependencies:
       path: app_sqflite
     version: '>=0.2.0'
   synchronized:
-  sembast: '>=3.5.0+1'
-  sembast_web: '>=2.0.0'
-  sembast_sqflite: '>=2.0.0'
+  sembast: '>=3.7.4+2'
+  sembast_web: '>=2.4.0+3'
+  sembast_sqflite: '>=2.2.0+3'
   sqflite_common_ffi:
   path:
   cv:
