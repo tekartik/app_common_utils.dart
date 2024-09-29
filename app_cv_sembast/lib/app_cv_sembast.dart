@@ -1,5 +1,5 @@
 /// Sembast content values helper
-library tekartik_app_cv_sembast;
+library;
 
 export 'package:cv/cv.dart';
 export 'package:sembast/sembast.dart';

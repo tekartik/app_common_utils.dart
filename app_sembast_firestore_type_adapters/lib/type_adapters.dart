@@ -1,4 +1,4 @@
-library tekartik_app_sembast_firestore_type_adapters;
+library;
 
 import 'dart:convert';
 

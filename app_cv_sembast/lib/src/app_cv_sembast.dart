@@ -1,5 +1,5 @@
 /// Sembast cv helpers
-library tekartik_app_cv_sembast;
+library;
 
 export 'cv_query_ref.dart' show CvQueryRef, CvQueryRefExt;
 export 'cv_store_ref.dart' show CvStoreRef, CvStoreRefExt;

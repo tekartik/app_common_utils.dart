@@ -1,4 +1,4 @@
 /// Firestore content values helper
-library tekartik_app_cv_firestore;
+library;
 
 export 'app_cv_firestore_v2.dart';
