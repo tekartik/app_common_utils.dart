@@ -37,6 +37,12 @@ class CvCollectionReference<T extends CvFirestoreDocument>
   Future<T> add(Firestore firestore, T document) =>
       firestore.collection(path).cvAdd(document);
 
+  /// Add a map
+  Future<CvDocumentReference<T>> addMap(Firestore firestore, Model data) async {
+    var rawRef = await raw(firestore).add(data);
+    return CvDocumentReference<T>(rawRef.path);
+  }
+
   /// Raw document reference
   CollectionReference raw(Firestore firestore) => firestore.collection(path);
 

@@ -289,6 +289,9 @@ void main() {
       // Create a new record
       doc = await collection.add(firestore, doc);
       expect(doc.id, isNot('1'));
+      var ref = await collection.addMap(firestore, doc.toMap());
+      expect(ref.id, isNot('1'));
+      expect(ref.id, isNot(doc.id));
     });
     test('collection.cast', () async {
       var collectionOther = CvCollectionReference<CvFsEmpty>('test');
