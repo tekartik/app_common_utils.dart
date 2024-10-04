@@ -404,20 +404,26 @@ void main() {
           {'value': 1, 'timestamp': FieldValue.serverTimestamp});
     });
 
-    test('fillModel', () async {
-      var allFields = CvFsAllFields()..fillModel(cvFirestoreFillOptions1);
-      expect(allFields.toMap(), {
-        'int': 1,
-        'double': 2.5,
-        'bool': false,
-        'string': 'text_4',
-        'timestamp': Timestamp.parse('1970-01-01T00:00:05.000Z'),
-        'intList': [6],
-        'model': {'text': 'text_7'},
-        'modelList': {'text': 'text_8'},
-        'map': {'value': 9},
-        'blob': Blob.fromList([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
-      });
+    test('jsonInfoList', () async {
+      var collection = CvCollectionReference<CvFsSingleString>('test');
+      cvAddConstructor(CvFsSingleString.new);
+      var docRef = collection.doc('1');
+      expect(docRef.path, 'test/1');
+      var doc = docRef.cv()..text.v = 'value';
+      await firestore.cvSet(doc);
+      var list = await collection.raw(firestore).get();
+      var infoJsonList = list.docs.toInfoJsonList();
+      expect(infoJsonList, [
+        {
+          'path': 'test/1',
+          'data': {'text': 'value'}
+        }
+      ]);
+      expect((await collection.get(firestore)).toInfoJsonList(), infoJsonList);
+      expect(
+          infoJsonListToDocumentList<CvFsSingleString>(infoJsonList)
+              .toInfoJsonList(),
+          infoJsonList);
     });
     test('root', () {
       expect(cvRootDocumentReference.path, '');
