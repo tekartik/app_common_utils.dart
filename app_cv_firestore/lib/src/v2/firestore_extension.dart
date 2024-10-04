@@ -129,6 +129,18 @@ class CvFirestoreTransaction extends Transaction {
   void refDelete<T extends CvFirestoreDocument>(CvDocumentReference<T> ref) =>
       pathDelete(ref.path);
 
+  /// Update
+  void refUpdate<T extends CvFirestoreDocument>(
+      CvDocumentReference<T> ref, T document) async {
+    refUpdateMap(ref, document.toMap());
+  }
+
+  /// Update
+  void refUpdateMap<T extends CvFirestoreDocument>(
+      CvDocumentReference<T> ref, Model map) async {
+    update(ref.raw(_firestore), map);
+  }
+
   /// Set
   void cvSet<T extends CvFirestoreDocument>(T document, [SetOptions? options]) {
     _ensurePathSet(document);
@@ -138,7 +150,7 @@ class CvFirestoreTransaction extends Transaction {
   /// update
   void cvUpdate<T extends CvFirestoreDocument>(T document) {
     _ensurePathSet(document);
-    update(_firestore.doc(document.path), document.toMap());
+    refUpdate(document.ref, document);
   }
 
   @override

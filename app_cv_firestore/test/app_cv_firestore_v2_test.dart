@@ -474,15 +474,23 @@ void main() {
             docRef, TwoFields()..v2.v = 'value2', SetOptions(merge: true));
       });
 
+      // update
       await firestore.cvRunTransaction((txn) async {
         var doc = await txn.refGet(docRef);
         expect(doc.toMap(), {'v1': 1, 'v2': 'value2'});
-        txn.refSet(docRef, TwoFields()..v2.v = 'value3');
+        txn.refUpdate(docRef, TwoFields()..v2.v = 'value3');
+      });
+
+      // Set
+      await firestore.cvRunTransaction((txn) async {
+        var doc = await txn.refGet(docRef);
+        expect(doc.toMap(), {'v1': 1, 'v2': 'value3'});
+        txn.refSet(docRef, TwoFields()..v2.v = 'value4');
       });
 
       await firestore.cvRunTransaction((txn) async {
         var doc = await txn.refGet(docRef);
-        expect(doc.toMap(), {'v2': 'value3'});
+        expect(doc.toMap(), {'v2': 'value4'});
         txn.refDelete(docRef);
       });
 
@@ -490,6 +498,15 @@ void main() {
         var doc = await txn.refGet(docRef);
         expect(doc.exists, isFalse);
       });
+
+      try {
+        await firestore.cvRunTransaction((txn) async {
+          txn.refUpdate(docRef, TwoFields()..v2.v = 'value5');
+        });
+        fail('should fail');
+      } catch (e) {
+        expect(e, isNot(isA<TestFailure>()));
+      }
     });
     test('exists new', () async {
       var model = CvFsSingleString();
