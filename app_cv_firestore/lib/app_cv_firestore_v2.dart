@@ -3,6 +3,7 @@ library;
 
 export 'package:cv/cv.dart';
 export 'package:tekartik_firebase_firestore/firestore.dart';
+
 export 'src/v2/builder.dart' show cvFirestoreAddBuilder;
 export 'src/v2/cv_collection_reference.dart'
     show CvCollectionReference, CollectionReferenceCvExtension;
@@ -32,5 +33,12 @@ export 'src/v2/firestore_extension.dart'
         CvFirestoreQueryExt,
         CvFirestoreWriteBatch,
         CvFirestoreTransaction;
+export 'src/v2/json_utils.dart'
+    show
+        infoJsonListToDocumentList,
+        infoJsonToDocument,
+        TekartikCvFirestoreDocumentSnapshotListInfoJsonListExt,
+        TekartikCvFirestoreCvDocumentInfoJsonExt,
+        TekartikCvFirestoreCvDocumentListInfoJsonListExt;
 export 'src/v2/map_extension.dart'
     show AppCvFirestoreFieldMapExt, WithServerTimestampMixin;
