@@ -8,6 +8,11 @@ environment:
 
 dependencies:
   rxdart: '>=0.28.0'
+  tekartik_app_common_utils:
+    git:
+      url: https://github.com/tekartik/app_common_utils.dart
+      ref: dart3a
+      path: app
   tekartik_common_utils:
     git:
       url: https://github.com/tekartik/common_utils.dart
@@ -24,3 +29,5 @@ dev_dependencies:
 dependency_overrides:
   tekartik_app_bloc:
     path: ../app_bloc
+  tekartik_app_common_utils:
+    path: ../app

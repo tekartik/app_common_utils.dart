@@ -150,12 +150,15 @@ class SequenceValidator {
   /// the index in the current sequence
   int? _inSequenceIndex;
   Stopwatch? _stopwatch;
+
+  /// the sequence to validate
   final List<int>? sequence;
   late int _lastEllapsedMs;
   static const int _smallDiff = 500; // inclusive for small
   static const int _cancelDiff = 1500;
   Completer<bool>? _endValidator;
 
+  /// Constructor
   SequenceValidator({this.sequence});
 
   void _cancel() {
@@ -173,6 +176,7 @@ class SequenceValidator {
 
   late bool _lazyCancelled;
 
+  /// Restart the sequence
   void restart() {
     _cancel();
   }

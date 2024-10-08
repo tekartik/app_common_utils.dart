@@ -1,2 +1,2 @@
 # tekartik strict extension
-include: package:tekartik_lints/strict.yaml
+include: package:tekartik_lints/package.yaml
