@@ -50,8 +50,9 @@ abstract class DbRecordBase<K> extends CvModelBase
     with _WithRef<K>
     implements DbRecord<K> {
   @override
-  String toString() =>
-      _ref == null ? '<null_ref_record>' : '$rawRef ${super.toString()}';
+  String toString() => _ref == null
+      ? '<null> ${super.toString()}'
+      : '$rawRef ${super.toString()}';
 
   /// Put(add/update) inner data
   ///
@@ -255,7 +256,8 @@ class CvRecordRef<K, V extends DbRecord<K>> {
 
   /// Get
   Future<V> put(DatabaseClient db, V value, {bool? merge}) async =>
-      (await rawRef.put(db, value.toMap(), merge: merge)).cv<V>();
+      (await rawRef.put(db, value.toMap(), merge: merge)).cv<V>()
+        ..rawRef = rawRef;
 
   /// Check if exists.
   Future<bool> exists(DatabaseClient client) => rawRef.exists(client);

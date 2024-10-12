@@ -142,7 +142,8 @@ void main() {
       var docRef = cvStore.record('test');
       expect(await docRef.exists(db), isFalse);
       expect(docRef.existsSync(db), isFalse);
-      await docRef.put(db, record);
+      var putRecord = await docRef.put(db, record);
+      expect(putRecord.ref, docRef);
       expect(await docRef.exists(db), isTrue);
       expect(docRef.existsSync(db), isTrue);
       var doc = docRef.cv();
