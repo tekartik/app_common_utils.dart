@@ -67,6 +67,19 @@ void main() {
       record2 = store2.record(1);
       expect(record1, isNot(record2));
     });
+    test('model.ref', () {
+      var store = cvIntRecordFactory.store<DbTest>('test');
+      var record = store.record(1);
+      var dbRecord = record.cv();
+      expect(dbRecord.ref, record);
+      dbRecord.ref = store.record(2);
+      expect(dbRecord.id, 2);
+      dbRecord = DbTest();
+      expect(dbRecord.hasId, isFalse);
+      dbRecord.ref = store.record(2);
+      expect(dbRecord.id, 2);
+      expect(dbRecord.hasId, isTrue);
+    });
     test('cast', () async {
       var store = cvIntRecordFactory
           .store<DbTest>('test')
