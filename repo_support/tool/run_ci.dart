@@ -21,6 +21,7 @@ Future main() async {
     'app_sembast',
     'app_sqflite',
     'app_prefs',
+    'app_archive',
   ]) {
     await packageRunCi(join('..', dir));
   }
