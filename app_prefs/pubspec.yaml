@@ -25,8 +25,8 @@ dependencies:
       path: prefs_browser
       ref: dart3a
     version: '>=0.1.0'
-  path:
-  process_run:
+  path: ">=1.9.0"
+  process_run: ">=1.2.0+3"
   tekartik_app_sembast:
     git:
       url: https://github.com/tekartik/app_common_utils.dart
@@ -34,8 +34,8 @@ dependencies:
       path: app_sembast
     version: '>=0.1.0'
 dev_dependencies:
-  dev_build:
-  test:
+  dev_build: ">=1.1.0+1"
+  test: ">=1.24.0"
   tekartik_lints:
     git:
       url: https://github.com/tekartik/common.dart
