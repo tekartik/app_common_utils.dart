@@ -80,6 +80,17 @@ void main() {
       expect(dbRecord.id, 2);
       expect(dbRecord.hasId, isTrue);
     });
+    test('clone', () async {
+      var record = (cvIntRecordFactory.store<DbTest>('test').record(1).cv()
+            ..value.v = 2)
+          .dbClone();
+      expect(record.value.v, 2);
+      expect(record.id, 1);
+
+      record = DbTest()..value.v = 3;
+      expect(record.value.v, 3);
+      expect(record.idOrNull, isNull);
+    });
     test('cast', () async {
       var store = cvIntRecordFactory
           .store<DbTest>('test')

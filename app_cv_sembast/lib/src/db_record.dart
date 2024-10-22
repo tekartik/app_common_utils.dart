@@ -168,12 +168,18 @@ extension DbRecordExt<K, V> on DbRecord<K> {
   Future<void> delete(DatabaseClient db) async {
     await rawRef.delete(db);
   }
+}
 
-/*
-  /// Weird, this reads onto an existing record...
-  Future<bool> get(DatabaseClient db) async {
-
-  }*/
+/// Public extension on CvModelWrite
+extension DbRecordCloneExt<T extends DbRecord> on T {
+  /// Copy content and ref if not null
+  T dbClone() {
+    var newRecord = clone();
+    if (idOrNull != null) {
+      newRecord.rawRef = rawRef;
+    }
+    return newRecord;
+  }
 }
 
 /// transaction helper
