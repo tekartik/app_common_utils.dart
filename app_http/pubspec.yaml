@@ -32,7 +32,7 @@ dependencies:
     version: '>=0.0.1'
 dev_dependencies:
   http:
-  dev_build:
-  process_run:
-  test:
-  build_web_compilers: '>=2.4.0'
+  dev_build: ">=1.1.0+1"
+  process_run: ">=1.2.1+1"
+  test: ">=1.24.0"
+  build_web_compilers: ">=4.0.11"

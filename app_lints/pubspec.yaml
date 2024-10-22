@@ -7,14 +7,14 @@ environment:
   sdk: ^3.5.0
 
 dependencies:
-  cv:
-  yaml:
+  cv: ">=1.1.0+4"
+  yaml: ">=3.1.2"
   tekartik_io_utils:
     git:
       url: https://github.com/tekartik/io_utils.dart
       ref: dart3a
     version: '>=0.7.0'
-  lints:
+  lints: ">=5.0.0"
   tekartik_lints:
     git:
       url: https://github.com/tekartik/common.dart
@@ -23,4 +23,4 @@ dependencies:
     version: '>=0.1.0'
 dev_dependencies:
   # yaml:
-  path:
+  path: ">=1.9.0"

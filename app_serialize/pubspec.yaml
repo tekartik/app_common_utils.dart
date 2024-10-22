@@ -17,12 +17,12 @@ dependencies:
   meta:
   dart_style:
   json_annotation:
-  path:
+  path: ">=1.9.0"
 
 dev_dependencies:
-  dev_build:
-  test: '>=1.0.0'
-  process_run:
+  dev_build: ">=1.1.0+1"
+  test: ">=1.24.0"
+  process_run: ">=1.2.1+1"
 
 
 dependency_overrides:

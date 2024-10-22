@@ -13,15 +13,15 @@ dependencies:
       ref: dart3a
       path: app_sembast
     version: '>=0.1.0'
-  sembast: '>=3.7.4+2'
-  path:
+  sembast: ">=3.7.4+3"
+  path: ">=1.9.0"
   # Dependencies for encryption
   encrypt: '>=5.0.0-0'
   crypto: '>=3.0.0'
 
 dev_dependencies:
-  lints:
-  test: '>=1.16.0'
+  lints: ">=5.0.0"
+  test: ">=1.24.0"
 
 dependency_overrides:
   tekartik_app_sembast:

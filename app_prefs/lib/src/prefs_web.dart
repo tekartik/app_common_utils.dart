@@ -1,4 +1,3 @@
-import 'package:tekartik_prefs/prefs_async.dart';
 import 'package:tekartik_prefs_browser/prefs.dart';
 import 'package:tekartik_prefs_browser/prefs_async.dart';
 

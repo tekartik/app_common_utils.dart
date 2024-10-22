@@ -8,13 +8,13 @@ environment:
 
 dependencies:
   sqflite_common_ffi_web: '>=0.4.0'
-  sqflite_common_ffi: '>=2.3.3'
+  sqflite_common_ffi: ">=2.3.4"
   sqflite_common: '>=2.5.4'
-  path:
-  process_run: '>=0.13.2'
+  path: ">=1.9.0"
+  process_run: ">=1.2.1+1"
 dev_dependencies:
-  test:
-  dev_build:
+  test: ">=1.24.0"
+  dev_build: ">=1.1.0+1"
   tekartik_lints:
     git:
       url: https://github.com/tekartik/common.dart

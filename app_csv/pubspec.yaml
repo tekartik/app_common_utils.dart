@@ -16,9 +16,9 @@ dependencies:
       ref: dart3a
     version: '>=0.10.7'
 dev_dependencies:
-  path:
-  dev_build:
-  test: '>=1.6.0'
-  process_run:
-  build_runner:
+  path: ">=1.9.0"
+  dev_build: ">=1.1.0+1"
+  test: ">=1.24.0"
+  process_run: ">=1.2.1+1"
+  build_runner: ">=2.4.13"
   build_test:
