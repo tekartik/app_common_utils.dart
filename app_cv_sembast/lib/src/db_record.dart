@@ -175,7 +175,7 @@ extension DbRecordCloneExt<T extends DbRecord> on T {
   /// Copy content and ref if not null
   T dbClone() {
     var newRecord = clone();
-    if (idOrNull != null) {
+    if (hasId) {
       newRecord.rawRef = rawRef;
     }
     return newRecord;

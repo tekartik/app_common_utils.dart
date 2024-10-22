@@ -10,6 +10,7 @@ export 'src/v2/cv_collection_reference.dart'
 export 'src/v2/cv_document.dart'
     show
         CvFirestoreDocument,
+        CvFirestoreDocumentCloneExt,
         CvFirestoreDocumentBase,
         CvFirestoreMapDocument,
         CvFirestoreDocumentExt;

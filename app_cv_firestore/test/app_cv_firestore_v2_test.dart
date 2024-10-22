@@ -342,6 +342,23 @@ void main() {
       expect(docRef.collection('sub').path, 'test/1/sub');
     });
 
+    test('document.clone', () async {
+      var docRef = CvDocumentReference<CvFsSingleString>('test/1');
+      var originalDoc = docRef.cv()..text.v = 'v1';
+      var doc = originalDoc.fsClone();
+      expect(doc, originalDoc);
+      expect(doc, isNot(same(originalDoc)));
+      expect(doc.text.v, 'v1');
+      expect(doc.path, 'test/1');
+
+      originalDoc = CvFsSingleString()..text.v = 'v2';
+      doc = originalDoc.fsClone();
+      expect(doc, originalDoc);
+      expect(doc, isNot(same(originalDoc)));
+      expect(doc.text.v, 'v2');
+      expect(doc.pathOrNull, isNull);
+    });
+
     test('document.set', () async {
       var docRef = CvDocumentReference<CvFsSingleString>('test/set');
 

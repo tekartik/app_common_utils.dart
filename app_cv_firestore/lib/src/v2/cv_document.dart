@@ -102,14 +102,18 @@ class _FsDocumentMap extends ContentValuesMap
     with _WithPath
     implements CvFirestoreMapDocument {}
 
-/*
 /// Easy extension
-extension CvFsDocumentExt on CvFsDocument {
-  Future<void> add(Firestore)
+extension CvFirestoreDocumentCloneExt<T extends CvFirestoreDocument> on T {
+  /// Copy content and ref if not null
+  T fsClone() {
+    var newRecord = clone();
+    if (hasId) {
+      newRecord.path = path;
+    }
+    return newRecord;
+  }
 }
 
-
- */
 class _FsDocumentWithCvFields extends CvBase
     with _WithPath
     implements CvFirestoreMapDocument {
