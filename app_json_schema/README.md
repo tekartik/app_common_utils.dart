@@ -3,10 +3,9 @@
 pubspec.yaml:
 
 ```yaml
-  tekartik_app_date:
+  tekartik_app_json_schema:
     git:
       url: https://github.com/tekartik/app_common_utils.dart
       ref: dart3a
-      path: app_date
-    version: '>=0.1.1'
+      path: app_json_schema
 ```

@@ -1,6 +1,6 @@
 ## Setup
 
-pubspect.yaml:
+pubspec.yaml:
 
 ```yaml
   tekartik_app_cv_firestore:

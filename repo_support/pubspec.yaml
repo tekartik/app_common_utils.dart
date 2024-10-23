@@ -9,6 +9,11 @@ environment:
 dependencies:
   path: ">=1.9.0"
   process_run: ">=1.2.1+1"
+  tekartik_ci:
+    git:
+      url: https://github.com/tekartik/ci.dart
+      ref: dart3a
+      path: ci
 
 dev_dependencies:
   test: ">=1.24.0"

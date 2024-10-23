@@ -10,6 +10,10 @@ updates:
     schedule:
       interval: "monthly"
   - package-ecosystem: "pub"
+    directory: "app_archive"
+    schedule:
+      interval: "monthly"
+  - package-ecosystem: "pub"
     directory: "app_bloc"
     schedule:
       interval: "monthly"
@@ -43,6 +47,10 @@ updates:
       interval: "monthly"
   - package-ecosystem: "pub"
     directory: "app_intl"
+    schedule:
+      interval: "monthly"
+  - package-ecosystem: "pub"
+    directory: "app_json_schema"
     schedule:
       interval: "monthly"
   - package-ecosystem: "pub"

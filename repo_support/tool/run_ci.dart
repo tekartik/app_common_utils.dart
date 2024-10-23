@@ -2,6 +2,8 @@ import 'package:dev_build/package.dart';
 import 'package:path/path.dart';
 
 Future main() async {
+  await packageRunCi(join('..'), options: PackageRunCiOptions(recursive: true));
+  /*
   for (var dir in [
     'app_intl',
     'app_cv_firestore',
@@ -24,5 +26,5 @@ Future main() async {
     'app_archive',
   ]) {
     await packageRunCi(join('..', dir));
-  }
+  }*/
 }
