@@ -28,8 +28,10 @@ export 'db_record.dart'
 export 'db_store.dart'
     show
         cvIntStoreFactory,
+        // ignore: deprecated_member_use_from_same_package
         cvIntRecordFactory, // tmp
         cvStringStoreFactory,
+        // ignore: deprecated_member_use_from_same_package
         cvStringRecordFactory, // tmp
         CvStoreFactory,
         CvIntStoreFactory,
