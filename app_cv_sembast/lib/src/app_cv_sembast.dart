@@ -28,7 +28,9 @@ export 'db_record.dart'
 export 'db_store.dart'
     show
         cvIntStoreFactory,
+        cvIntRecordFactory, // tmp
         cvStringStoreFactory,
+        cvStringRecordFactory, // tmp
         CvStoreFactory,
         CvIntStoreFactory,
         CvStringStoreFactory;

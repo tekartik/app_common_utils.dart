@@ -23,11 +23,11 @@ abstract class CvStoreFactory<K> {
 // class CvStoreFactoryBase<K> with CvStoreFactoryMixin<K> {}
 
 /// common `<int, Map<String, Object?>>` factory
-// @Deprecated('Use cvIntStoreFactory instead')
+@Deprecated('Use cvIntStoreFactory instead')
 final cvIntRecordFactory = cvIntStoreFactory;
 
 /// common `<String, Map<String, Object?>>` factory
-// @Deprecated('Use cvStringStoreFactory instead')
+@Deprecated('Use cvStringStoreFactory instead')
 final cvStringRecordFactory = cvStringStoreFactory;
 
 /// common `<int, Map<String, Object?>>` factory
