@@ -27,8 +27,8 @@ export 'db_record.dart'
         CvRecordsRefExt;
 export 'db_store.dart'
     show
-        cvIntRecordFactory,
-        cvStringRecordFactory,
+        cvIntStoreFactory,
+        cvStringStoreFactory,
         CvStoreFactory,
         CvIntStoreFactory,
         CvStringStoreFactory;

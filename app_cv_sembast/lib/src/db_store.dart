@@ -23,10 +23,18 @@ abstract class CvStoreFactory<K> {
 // class CvStoreFactoryBase<K> with CvStoreFactoryMixin<K> {}
 
 /// common `<int, Map<String, Object?>>` factory
-final cvIntRecordFactory = CvIntStoreFactory();
+// @Deprecated('Use cvIntStoreFactory instead')
+final cvIntRecordFactory = cvIntStoreFactory;
 
 /// common `<String, Map<String, Object?>>` factory
-final cvStringRecordFactory = CvStringStoreFactory();
+// @Deprecated('Use cvStringStoreFactory instead')
+final cvStringRecordFactory = cvStringStoreFactory;
+
+/// common `<int, Map<String, Object?>>` factory
+final cvIntStoreFactory = CvIntStoreFactory();
+
+/// common `<String, Map<String, Object?>>` factory
+final cvStringStoreFactory = CvStringStoreFactory();
 
 /// Store with int key
 class CvIntStoreFactory extends CvStoreFactoryBase<int> {}
