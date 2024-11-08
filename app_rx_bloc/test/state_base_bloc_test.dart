@@ -23,5 +23,11 @@ void main() {
       bloc.dispose();
       expect(() => bloc.add('test2'), throwsA(const TypeMatcher<StateError>()));
     });
+    test('error', () {
+      var bloc = TestBloc();
+      bloc.addError('Error');
+      expect(bloc.state.valueOrNull, isNull);
+      expect(bloc.state.errorOrNull, 'Error');
+    });
   });
 }
