@@ -198,6 +198,9 @@ extension DatabaseClientSembastExt on DatabaseClient {
 
 /// Easy extension
 extension DbRecordListExt<K, V> on List<DbRecord<K>> {
+  /// List of ifs
+  List<K> get ids => map((record) => record.id).toList();
+
   /// put
   Future<void> put(DatabaseClient db, {bool merge = false}) async {
     await db.transaction((txn) async {

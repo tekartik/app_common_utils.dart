@@ -79,6 +79,9 @@ void main() {
       dbRecord.ref = store.record(2);
       expect(dbRecord.id, 2);
       expect(dbRecord.hasId, isTrue);
+
+      var list = [dbRecord, store.record(3).cv()];
+      expect(list.ids, [2, 3]);
     });
     test('clone', () async {
       var original = cvIntStoreFactory.store<DbTest>('test').record(1).cv()
