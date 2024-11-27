@@ -20,8 +20,8 @@ class _AutoDisposer<T extends Object> {
 /// Auto dispose extension
 extension AutoDisposeDisposableExt on AutoDispose {
   /// Dispose the object
-  void audiAddDisposable(AutoDisposable disposable) {
-    audiAdd(disposable, disposable.audiDispose);
+  T audiAddDisposable<T extends AutoDisposable>(T disposable) {
+    return audiAdd(disposable, disposable.audiDispose);
   }
 }
 

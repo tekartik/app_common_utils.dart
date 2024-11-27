@@ -28,21 +28,25 @@ void main() {
     test('object disposable', () {
       var disposer = _AutoDisposer();
       var disposable = _TestDisposable();
-      disposer.audiAdd(disposable, disposable.dispose);
+      var user = disposer.audiAdd(disposable, disposable.dispose);
       expect(disposable.disposed, false);
+      expect(user.disposed, false);
       expect(disposer.length, 1);
       disposer.audiDisposeAll();
       expect(disposable.disposed, true);
+      expect(user.disposed, true);
       expect(disposer.length, 0);
     });
     test('object auto disposable', () {
       var disposer = _AutoDisposer();
       var disposable = _TestAutoDisposable();
-      disposer.audiAddDisposable(disposable);
+      var user = disposer.audiAddDisposable(disposable);
       expect(disposable.disposed, false);
+      expect(user.disposed, false);
       expect(disposer.length, 1);
       disposer.audiDisposeAll();
       expect(disposable.disposed, true);
+      expect(user.disposed, true);
       expect(disposer.length, 0);
     });
     test('function', () {
