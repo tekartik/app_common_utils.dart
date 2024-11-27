@@ -12,15 +12,33 @@ class _TestDisposable {
   }
 }
 
+class _TestAutoDisposable implements AutoDisposable {
+  var disposed = false;
+  @override
+  void audiDispose() {
+    disposed = true;
+  }
+}
+
 /// Test mixin
 class _AutoDisposer with AutoDisposeMixin {}
 
 void main() {
   group('audi', () {
-    test('object auto', () {
+    test('object disposable', () {
       var disposer = _AutoDisposer();
       var disposable = _TestDisposable();
       disposer.audiAdd(disposable, disposable.dispose);
+      expect(disposable.disposed, false);
+      expect(disposer.length, 1);
+      disposer.audiDisposeAll();
+      expect(disposable.disposed, true);
+      expect(disposer.length, 0);
+    });
+    test('object auto disposable', () {
+      var disposer = _AutoDisposer();
+      var disposable = _TestAutoDisposable();
+      disposer.audiAddDisposable(disposable);
       expect(disposable.disposed, false);
       expect(disposer.length, 1);
       disposer.audiDisposeAll();

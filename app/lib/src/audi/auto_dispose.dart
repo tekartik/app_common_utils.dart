@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:tekartik_app_common_utils/auto_dispose.dart';
+
 /// Auto dispose function
 typedef AutoDisposeFunction = void Function();
 
@@ -13,6 +15,14 @@ class _AutoDisposer<T extends Object> {
 
   /// Constructor
   _AutoDisposer({required this.object, required this.dispose});
+}
+
+/// Auto dispose extension
+extension AutoDisposeDisposableExt on AutoDispose {
+  /// Dispose the object
+  void audiAddDisposable(AutoDisposable disposable) {
+    audiAdd(disposable, disposable.audiDispose);
+  }
 }
 
 /// Auto dispose interface
