@@ -58,6 +58,10 @@ updates:
     schedule:
       interval: "monthly"
   - package-ecosystem: "pub"
+    directory: "app_media"
+    schedule:
+      interval: "monthly"
+  - package-ecosystem: "pub"
     directory: "app_mirrors"
     schedule:
       interval: "monthly"

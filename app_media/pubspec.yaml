@@ -1,5 +1,5 @@
 name: tekartik_app_media
-description: Media type constants
+description: Media type constants and helpers
 version: 1.0.0
 publish_to: none
 
