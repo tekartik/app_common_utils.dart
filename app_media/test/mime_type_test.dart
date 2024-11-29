@@ -27,6 +27,8 @@ void main() {
       expect(extensionFromMimeType(mimeTypeImagePng), extensionImagePng);
       expect(extensionFromMimeType(mimeTypeImageJpg), extensionImageJpg);
       expect(extensionFromMimeType(mimeTypeImageWebp), extensionImageWebp);
+      expect(extensionFromMimeType(mimeTypeApplicationZip),
+          extensionApplicationZip);
     });
   });
 }

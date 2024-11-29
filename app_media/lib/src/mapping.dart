@@ -5,6 +5,7 @@ const _mimeTypeExtensions = {
   mimeTypeImageJpg: extensionImageJpg,
   mimeTypeImagePng: extensionImagePng,
   mimeTypeImageWebp: extensionImageWebp,
+  mimeTypeApplicationZip: extensionApplicationZip,
 };
 
 /// Get the extension from a mime type

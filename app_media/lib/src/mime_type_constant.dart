@@ -21,3 +21,9 @@ const mimeTypeImageWebp = 'image/webp';
 
 /// Extension for webp
 const extensionImageWebp = '.webp';
+
+/// Zip mime type
+const mimeTypeApplicationZip = 'application/zip';
+
+/// PNG extension
+const extensionApplicationZip = '.zip';
