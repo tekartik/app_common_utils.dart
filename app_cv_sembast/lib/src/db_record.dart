@@ -107,10 +107,10 @@ abstract class DbIntRecordBase extends DbRecordBase<int>
     implements DbIntRecord {}
 
 /// Record with a string key
-abstract class DbStringRecord extends DbRecord<String> {}
+typedef DbStringRecord = DbRecord<String>;
 
 /// Record with an int key
-abstract class DbIntRecord extends DbRecord<int> {}
+typedef DbIntRecord = DbRecord<int>;
 
 /// Generic map
 class DbRecordMap<K> extends DbRecordBase<K> {
