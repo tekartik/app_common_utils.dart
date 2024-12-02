@@ -67,6 +67,24 @@ void main() {
       record2 = store2.record(1);
       expect(record1, isNot(record2));
     });
+    test('int.ref', () async {
+      var store = cvIntStoreFactory.store<DbTest>('store');
+      var record = store.record(1);
+      expect(record, isA<DbIntRecordRef<DbTest>>());
+      var dbRecordRef = DbIntRecordRef(store, 1);
+      expect(dbRecordRef, isA<DbIntRecordRef<DbTest>>());
+      dbRecordRef = store.record(2);
+      expect(dbRecordRef, isA<DbIntRecordRef<DbTest>>());
+    });
+    test('string.ref', () async {
+      var store = cvStringStoreFactory.store<DbStringTest>('store');
+      var record = store.record('test');
+      expect(record, isA<DbStringRecordRef<DbStringTest>>());
+      var dbRecordRef = DbStringRecordRef(store, 'test');
+      expect(dbRecordRef, isA<DbStringRecordRef<DbStringTest>>());
+      dbRecordRef = store.record('test2');
+      expect(dbRecordRef, isA<DbStringRecordRef<DbStringTest>>());
+    });
     test('model.ref', () {
       var store = cvIntStoreFactory.store<DbTest>('test');
       var record = store.record(1);
