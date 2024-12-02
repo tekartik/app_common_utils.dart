@@ -113,11 +113,12 @@ void main() {
     test('int store', () async {
       var store = intMapStoreFactory.store('test');
       var cvStore = cvIntStoreFactory.store<DbTest>('test');
-
+      expect(cvStore, isA<DbIntStoreRef<DbTest>>());
       var dbTest = DbTest()..value.v = 1;
       expect(dbTest.hasId, false);
       var recordRef = store.record(1);
       var cvRecordRef = cvStore.record(1);
+      expect(cvRecordRef, isA<DbIntRecordRef<DbTest>>());
       expect(cvRecordRef.key, 1);
       await store.record(1).put(db, {'value': 1});
       expect(await recordRef.get(db), {'value': 1});
@@ -138,9 +139,11 @@ void main() {
     test('string store', () async {
       var store = stringMapStoreFactory.store('test');
       var cvStore = cvStringStoreFactory.store<DbStringTest>('test');
+      expect(cvStore, isA<DbStringStoreRef<DbStringTest>>());
       var dbTest = DbTest()..value.v = 1;
       var recordRef = store.record('1');
       var cvRecordRef = cvStore.record('1');
+      expect(cvRecordRef, isA<DbStringRecordRef<DbStringTest>>());
       await store.record('1').put(db, {'value': 1});
       expect(await recordRef.get(db), {'value': 1});
       expect(await recordRef.exists(db), true);

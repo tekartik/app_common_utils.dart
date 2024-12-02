@@ -2,7 +2,8 @@
 library;
 
 export 'cv_query_ref.dart' show CvQueryRef, CvQueryRefExt;
-export 'cv_store_ref.dart' show CvStoreRef, CvStoreRefExt;
+export 'cv_store_ref.dart'
+    show CvStoreRef, CvStoreRefExt, DbStoreRef, DbIntStoreRef, DbStringStoreRef;
 export 'db_record.dart'
     show
         DbRecordListExt,
@@ -20,6 +21,9 @@ export 'db_record.dart'
         CvSembastRecordSnapshotsExt,
         CvSembastRecordSnapshotsOrNullExt,
         CvSembastRecordSnapshotStreamExt,
+        DbRecordRef,
+        DbStringRecordRef,
+        DbIntRecordRef,
         CvRecordRef,
         CvRecordsRef,
         CvRecordRefExt,

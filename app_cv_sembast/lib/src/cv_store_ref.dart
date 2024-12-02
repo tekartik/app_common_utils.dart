@@ -5,16 +5,25 @@ import 'db_record.dart';
 
 var _mainStore = intMapStoreFactory.store().name;
 
+/// compat
+typedef CvStoreRef<K, V extends DbRecord<K>> = DbStoreRef<K, V>;
+
+/// Int store key
+typedef DbIntStoreRef<V extends DbIntRecord> = DbStoreRef<int, V>;
+
+/// String store key
+typedef DbStringStoreRef<V extends DbStringRecord> = DbStoreRef<String, V>;
+
 /// Store helper
-class CvStoreRef<K, V extends DbRecord<K>> {
+class DbStoreRef<K, V extends DbRecord<K>> {
   /// Raw ref
   final StoreRef<K, Map<String, Object?>> rawRef;
 
   /// Constructor
-  CvStoreRef(String name) : rawRef = StoreRef<K, Map<String, Object?>>(name);
+  DbStoreRef(String name) : rawRef = StoreRef<K, Map<String, Object?>>(name);
 
   /// A pointer to the main store
-  factory CvStoreRef.main() => CvStoreRef<K, V>(_mainStore);
+  factory DbStoreRef.main() => CvStoreRef<K, V>(_mainStore);
 
   @override
   String toString() => 'CvStoreRef($name)';

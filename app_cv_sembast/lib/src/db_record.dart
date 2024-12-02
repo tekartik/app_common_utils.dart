@@ -230,8 +230,17 @@ extension DbRecordListExt<K, V> on List<DbRecord<K>> {
   }*/
 }
 
+/// Compat
+typedef CvRecordRef<K, V extends DbRecord<K>> = DbRecordRef<K, V>;
+
+/// String record ref
+typedef DbStringRecordRef<T extends DbStringRecord> = DbRecordRef<String, T>;
+
+/// int record ref
+typedef DbIntRecordRef<T extends DbIntRecord> = DbRecordRef<int, T>;
+
 /// Record reference
-class CvRecordRef<K, V extends DbRecord<K>> {
+class DbRecordRef<K, V extends DbRecord<K>> {
   /// Store
   final CvStoreRef<K, V> store;
 
@@ -242,7 +251,7 @@ class CvRecordRef<K, V extends DbRecord<K>> {
   K get key => rawRef.key;
 
   /// Constructor
-  CvRecordRef(this.store, K key) : rawRef = store.rawRef.record(key);
+  DbRecordRef(this.store, K key) : rawRef = store.rawRef.record(key);
 
   /// To build for write
   V cv() => cvBuildModel<V>({})..rawRef = rawRef;
