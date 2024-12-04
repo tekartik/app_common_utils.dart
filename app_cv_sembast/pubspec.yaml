@@ -13,7 +13,7 @@ dependencies:
       url: https://github.com/tekartik/common_utils.dart
       ref: dart3a
     version: '>=0.11.1'
-  sembast: ">=3.7.4+3"
+  sembast: ">=3.8.0+1"
   # sembast:
 dev_dependencies:
   test: ">=1.24.0"
