@@ -313,6 +313,11 @@ void main() {
         'map': {'value': 9},
         'blob': {'@Blob': 'AAECAwQFBgcICQ=='}
       });
+      var tests = [DbTest()..value.v = 1, DbTest()..value.v = 2];
+      expect(tests.toJsonEncodable(), [
+        {'value': 1},
+        {'value': 2}
+      ]);
     });
 
     group('CvQueryRef', () {

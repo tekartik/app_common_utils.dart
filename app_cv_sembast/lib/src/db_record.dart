@@ -174,10 +174,27 @@ extension DbRecordExt<K, V> on DbRecord<K> {
 /// Easy extension
 extension DbRecordJsonExt<K, V> on DbRecord<K> {
   /// to json encodable
-  Model toJsonEncodable({List<String>? columns, JsonEncodableCodec? codec}) {
-    return (codec ?? sembastDefaultJsonEncodableCodec)
-        .encode(toMap(columns: columns)) as Model;
+  Model toJsonEncodable(
+      {List<String>? columns,
+      bool includeMissingValue = false,
+      JsonEncodableCodec? codec}) {
+    return (codec ?? sembastDefaultJsonEncodableCodec).encode(
+            toMap(columns: columns, includeMissingValue: includeMissingValue))
+        as Model;
   }
+}
+
+/// Easy extension
+extension DbRecordListJsonExt<K, V> on List<DbRecord<K>> {
+  /// to json encodable
+  List<Model> toJsonEncodable(
+          {List<String>? columns,
+          bool includeMissingValue = false,
+          JsonEncodableCodec? codec}) =>
+      map((item) => item.toJsonEncodable(
+          columns: columns,
+          includeMissingValue: includeMissingValue,
+          codec: codec)).toList();
 }
 
 /// Public extension on CvModelWrite
