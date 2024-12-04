@@ -15,15 +15,14 @@ dependencies:
       path: app_mirrors
     version: '>=0.1.1'
   meta:
-  dart_style:
+  process_run: ">=1.2.2+1"
+  dart_style: ">=3.0.0"
   json_annotation:
   path: ">=1.9.0"
 
 dev_dependencies:
   dev_build: ">=1.1.0+1"
   test: ">=1.24.0"
-  process_run: ">=1.2.1+1"
-
 
 dependency_overrides:
   tekartik_app_mirrors:

@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:dart_style/dart_style.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:path/path.dart';
+import 'package:process_run/shell.dart';
 import 'package:tekartik_app_mirrors/mirrors.dart';
 
 String _fixLinesStringForIoGit(String json) {
@@ -84,7 +85,7 @@ Future genSerializer({required String src, required Type type}) async {
 
   sb.writeln(sbTo);
 
-  var formatter = DartFormatter(fixes: StyleFix.all);
+  var formatter = DartFormatter(languageVersion: dartVersion);
   // print(sb);
   var formatted = formatter.format(sb.toString(), uri: Uri.file(src));
   // print(formatted);
