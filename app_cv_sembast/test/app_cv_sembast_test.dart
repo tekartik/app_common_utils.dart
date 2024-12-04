@@ -299,6 +299,21 @@ void main() {
         'blob': Blob.fromList([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
       });
     });
+    test('toJsonEncodable', () async {
+      var allFields = CvDbAllFields()..fillModel(cvSembastFillOptions1);
+      expect(allFields.toJsonEncodable(), {
+        'int': 1,
+        'double': 2.5,
+        'bool': 3.5,
+        'string': 4.5,
+        'timestamp': {'@Timestamp': '1970-01-01T00:00:05.000Z'},
+        'intList': [6],
+        'model': {'value': 7},
+        'modelList': {'value': 8},
+        'map': {'value': 9},
+        'blob': {'@Blob': 'AAECAwQFBgcICQ=='}
+      });
+    });
 
     group('CvQueryRef', () {
       test('CvQueryRef.getRecord', () async {
