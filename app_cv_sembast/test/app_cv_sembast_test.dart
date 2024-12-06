@@ -35,9 +35,7 @@ void main() {
   group('store', () {
     late Database db;
     setUpAll(() {
-      cvAddBuilder<DbTest>((_) => DbTest());
-      cvAddBuilder<DbStringTest>((_) => DbStringTest());
-      cvAddConstructor(DbString2Test.new);
+      cvAddConstructors([DbTest.new, DbStringTest.new, DbString2Test.new]);
     });
     setUp(() async {
       db = await newDatabaseFactoryMemory().openDatabase('test');
@@ -52,6 +50,12 @@ void main() {
       CvRecordRef;
       // ignore: unnecessary_statements
       CvQueryRef;
+    });
+    test('toMap', () async {
+      var store = cvIntStoreFactory.store<DbTest>('test');
+      var record1 = store.record(1).cv();
+      var record2 = store.record(2).cv();
+      expect([record1, record2].toMap(), {1: record1, 2: record2});
     });
     test('ref', () async {
       var store1 = cvIntStoreFactory.store('test');

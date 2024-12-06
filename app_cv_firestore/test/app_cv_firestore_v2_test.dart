@@ -460,6 +460,15 @@ void main() {
       expect(doc.parent.parent?.parent.path, 'a');
       expect(doc.parent.parent?.parent.parent, isNull);
     });
+    test('List to Map', () {
+      var doc1 = CvFsSingleString()
+        ..path = 'test/1'
+        ..text.v = '1';
+      var doc2 = CvFsSingleString()
+        ..path = 'test/2'
+        ..text.v = '2';
+      expect([doc1, doc2].toMap(), {'1': doc1, '2': doc2});
+    });
     test('toMap', () {
       var doc1 = CvFsSingleString()
         ..path = 'test/1'

@@ -21,6 +21,7 @@ export 'src/v2/cv_document_reference.dart'
         CvDocumentReferenceExtension,
         cvRootDocumentReference;
 export 'src/v2/cv_query_reference.dart' show CvQueryReference;
+export 'src/v2/cv_utils.dart' show TekartikCvFirestoreCvDocumentListCvExt;
 export 'src/v2/fill_options.dart' show cvFirestoreFillOptions1;
 export 'src/v2/firestore_extension.dart'
     show
@@ -41,5 +42,6 @@ export 'src/v2/json_utils.dart'
         TekartikCvFirestoreDocumentSnapshotListInfoJsonListExt,
         TekartikCvFirestoreCvDocumentInfoJsonExt,
         TekartikCvFirestoreCvDocumentListInfoJsonListExt;
+
 export 'src/v2/map_extension.dart'
     show AppCvFirestoreFieldMapExt, WithServerTimestampMixin;
