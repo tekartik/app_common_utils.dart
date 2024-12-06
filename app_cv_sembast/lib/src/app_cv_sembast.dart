@@ -4,7 +4,8 @@ library;
 export 'cv_query_ref.dart' show CvQueryRef, CvQueryRefExt;
 export 'cv_store_ref.dart'
     show CvStoreRef, CvStoreRefExt, DbStoreRef, DbIntStoreRef, DbStringStoreRef;
-export 'cv_utils.dart' show TekartikDbRecordListCvExt;
+export 'cv_utils.dart'
+    show TekartikDbIntRecordListCvExt, TekartikDbStringRecordListCvExt;
 export 'db_record.dart'
     show
         DbRecordListExt,
