@@ -21,3 +21,5 @@ dev_dependencies:
   process_run: ">=1.2.1+1"
   build_runner: ">=2.4.13"
   build_test:
+dependency_overrides:
+  archive: ">=4.0.0"
