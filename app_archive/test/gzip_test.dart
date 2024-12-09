@@ -1,8 +1,9 @@
 // ignore_for_file: avoid_print
 
+import 'dart:typed_data';
+
 import 'package:tekartik_app_archive/gzip.dart';
 import 'package:tekartik_common_utils/byte_utils.dart';
-import 'package:tekartik_common_utils/env_utils.dart';
 import 'package:tekartik_common_utils/hex_utils.dart';
 import 'package:tekartik_common_utils/list_utils.dart';
 import 'package:tekartik_common_utils/log_format.dart';
@@ -84,9 +85,10 @@ void main() {
     });
 
     test('compress latest', () {
-      if (!kDartIsWeb) {
-        expect(gzipText('étoile', noDate: true), gzipBytesV2);
-      }
+      expect(
+          gzipText('étoile',
+              noDate: true, operatingSystem: gzipOperatingSystemLinux),
+          gzipBytesV2Linux);
 
       void roundTrip(String text) {
         var result = ungzipText(gzipText(text));
@@ -105,9 +107,9 @@ void main() {
     });
 
     test('decompress', () {
-      expect(gzipBytesV2, isNot(gzipBytesV1));
+      expect(gzipBytesV2Linux, isNot(gzipBytesV1));
       expect(ungzipText(gzipBytesV1), 'étoile');
-      expect(ungzipText(gzipBytesV2), 'étoile');
+      expect(ungzipText(gzipBytesV2Linux), 'étoile');
     });
   });
 }
@@ -141,32 +143,8 @@ var gzipBytesV1 = asUint8List([
   0,
   0,
 ]);
-var gzipBytesV2 = asUint8List([
-  31,
-  139,
-  8,
-  0,
-  0,
-  0,
-  0,
-  0,
-  0,
-  3, // ? WAS 255,
-  59,
-  188,
-  178,
-  36,
-  63,
-  51,
-  39,
-  21,
-  0,
-  199,
-  250,
-  11,
-  130,
-  7,
-  0,
-  0,
-  0,
-]);
+var gzipBytesV2Linux = () {
+  var bytes = Uint8List.fromList(gzipBytesV1);
+  bytes[9] = gzipOperatingSystemLinux;
+  return bytes;
+}();
