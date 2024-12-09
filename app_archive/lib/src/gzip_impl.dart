@@ -7,7 +7,7 @@ import 'package:tekartik_common_utils/byte_utils.dart';
 /// GZip some text
 Uint8List gzipText(String text, {bool? noDate}) {
   noDate ??= false;
-  var data = const GZipEncoder().encode(utf8.encode(text));
+  var data = const GZipEncoder().encodeBytes(utf8.encode(text));
   if (noDate) {
     data[4] = 0;
     data[5] = 0;
@@ -25,7 +25,7 @@ String ungzipText(Uint8List data) {
 /// GZip some bytes
 Uint8List gzipBytes(Uint8List bytes, {bool? noDate}) {
   noDate ??= false;
-  var data = const GZipEncoder().encode(bytes);
+  var data = const GZipEncoder().encodeBytes(bytes);
   if (noDate) {
     data[4] = 0;
     data[5] = 0;

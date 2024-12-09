@@ -22,4 +22,4 @@ dev_dependencies:
   build_runner: ">=2.4.13"
   build_test:
 dependency_overrides:
-  archive: ">=4.0.0"
+  archive: ">=4.0.1"
