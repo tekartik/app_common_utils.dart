@@ -77,7 +77,8 @@ class AesWithIVEntrypter extends _AesStringEncrypter {
 ///
 /// returns a base 64 encrypted string.
 ///
-/// Encryption used is AES.
+/// Encryption used is AES. Calling multiple times will not return the same
+/// result as a salt is added to the input.
 String aesEncrypt(String decoded, String password) =>
     aesEncrypterFromPassword(password).encrypt(decoded);
 

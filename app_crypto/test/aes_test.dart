@@ -14,7 +14,19 @@ void main() {
     expect(encrypter.decrypt(encrypted), decoded);
   }
 
-  test('aes encrypt decrypt', () {
+  test('aes encrypt different output', () {
+    var password = 'EA5eg5hQVuyPz3EaKqx4vcCJyQZKI5x7';
+    var encryptSet = <String>{};
+    for (var i = 0; i < 1000; i++) {
+      var encrypted = aesEncrypt('test', password);
+      print('"test" aesEncrypt by $password: $encrypted');
+      encryptSet.add(encrypted);
+      if (encryptSet.length > 1) {
+        break;
+      }
+    }
+  });
+  test('raw aes encrypt decrypt', () {
     var password = r'E4x*$TwbkJC-xK4KGC4zJF9j*Rh&WLgR';
     var encrypter = AesWithIVEntrypter(password, IV.allZerosOfLength(16));
 
