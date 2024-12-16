@@ -94,16 +94,24 @@ void main() {
       var record = store.record(1);
       var dbRecord = record.cv();
       expect(dbRecord.ref, record);
+      expect(dbRecord.refOrNull, record);
       dbRecord.ref = store.record(2);
       expect(dbRecord.id, 2);
+      expect(dbRecord.idOrNull, 2);
       dbRecord = DbTest();
       expect(dbRecord.hasId, isFalse);
       dbRecord.ref = store.record(2);
       expect(dbRecord.id, 2);
       expect(dbRecord.hasId, isTrue);
+      dbRecord.idOrNull = 3;
+      expect(dbRecord.id, 3);
+      dbRecord.refOrNull = null;
+      expect(dbRecord.idOrNull, isNull);
+      dbRecord.refOrNull = record;
+      expect(dbRecord.id, 1);
 
       var list = [dbRecord, store.record(3).cv()];
-      expect(list.ids, [2, 3]);
+      expect(list.ids, [1, 3]);
     });
     test('clone', () async {
       var original = cvIntStoreFactory.store<DbTest>('test').record(1).cv()
@@ -149,6 +157,8 @@ void main() {
       expect(readDbTest, dbTest);
       expect(readDbTest.rawRef.key, 1);
       expect(readDbTest.ref.key, 1);
+      expect(readDbTest.refOrNull?.key, 1);
+      expect(readDbTest.idOrNull, 1);
       var writeDbTest = cvRecordRef.cv()..value.v = 2;
       await writeDbTest.put(db);
       readDbTest = (await cvRecordRef.get(db))!;

@@ -15,7 +15,16 @@ mixin _WithRef<K> {
   /// Check hasId first
   K get id => rawRef.key;
 
+  /// Id or null
   K? get idOrNull => _ref?.key;
+
+  set idOrNull(K? id) {
+    if (id == null) {
+      _ref = null;
+    } else {
+      this.id = id;
+    }
+  }
 
   /// Only true f newly created record
   bool get hasId => _ref != null;
@@ -45,8 +54,15 @@ extension DbRecordToRefExt<K> on DbRecord<K> {
   CvRecordRef<K, DbRecord<K>> get ref =>
       CvStoreRef<K, DbRecord<K>>(rawRef.store.name).record(rawRef.key);
 
+  /// Get the record ref
+  CvRecordRef<K, DbRecord<K>>? get refOrNull => hasId ? ref : null;
+
   /// Set the record ref
   set ref(CvRecordRef<K, DbRecord<K>> ref) => rawRef = ref.rawRef;
+
+  /// Set the record ref
+  set refOrNull(CvRecordRef<K, DbRecord<K>>? ref) =>
+      ref == null ? _ref = null : this.ref = ref;
 }
 
 /// Base record implementation. Protected fields:
