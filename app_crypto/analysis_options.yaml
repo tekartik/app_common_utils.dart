@@ -2,5 +2,5 @@
 include: package:tekartik_lints/strict.yaml
 
 linter:
-  rules:
+  rules: []
     # avoid_print: true

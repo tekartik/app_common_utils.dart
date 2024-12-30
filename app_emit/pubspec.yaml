@@ -15,7 +15,7 @@ dependencies:
       url: https://github.com/tekartik/common_utils.dart
       ref: dart3a
     version: '>=0.10.7'
-  meta:
+  meta: ">=1.15.0"
 
 dev_dependencies:
   test: ">=1.24.0"

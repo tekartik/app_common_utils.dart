@@ -6,7 +6,7 @@ environment:
   sdk: ^3.5.0
 
 dependencies:
-  meta:
+  meta: ">=1.15.0"
   cv: ">=1.1.0+4"
   tekartik_common_utils:
     git:
@@ -17,4 +17,4 @@ dependencies:
   # sembast:
 dev_dependencies:
   test: ">=1.24.0"
-  dev_build: ">=1.1.0+1"
+  dev_build: ">=1.1.0+2"
