@@ -377,9 +377,9 @@ void main() {
       test('delete', () async {
         var cvStore = cvIntStoreFactory.store<DbTest>('test');
         await db.transaction((txn) async {
-          await cvStore.record(1).cv().put(db);
-          await cvStore.record(2).cv().put(db);
-          await cvStore.record(3).cv().put(db);
+          await cvStore.record(1).cv().put(txn);
+          await cvStore.record(2).cv().put(txn);
+          await cvStore.record(3).cv().put(txn);
           var query = cvStore.query(
               finder: Finder(sortOrders: [SortOrder(Field.key)], offset: 1));
           expect(await query.delete(txn), 2);
