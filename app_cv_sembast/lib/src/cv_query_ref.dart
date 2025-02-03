@@ -60,4 +60,23 @@ extension CvQueryRefExt<K, V extends DbRecord<K>> on CvQueryRef<K, V> {
 
   /// onCountSync
   Stream<int> onCountSync(Database db) => rawRef.onCountSync(db);
+
+  /// Delete
+  Future<int> delete(DatabaseClient db) => rawRef.delete(db);
+
+  /// Get keys
+  Future<List<K>> getKeys(DatabaseClient db) async {
+    return (await rawRef.getKeys(db));
+  }
+
+  /// Get keys
+  List<K> getKeysSync(DatabaseClient db) {
+    return (rawRef.getKeysSync(db));
+  }
+
+  /// onKeys
+  Stream<List<K>> onKeys(Database db) => rawRef.onKeys(db);
+
+  /// onKeysSync
+  Stream<List<K>> onKeysSync(Database db) => rawRef.onKeysSync(db);
 }

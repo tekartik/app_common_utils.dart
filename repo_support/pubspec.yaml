@@ -4,7 +4,7 @@ publish_to: none
 deploy_to: none
 
 environment:
-  sdk: ^3.5.0
+  sdk: ^3.6.0
 
 dependencies:
   path: ">=1.9.0"

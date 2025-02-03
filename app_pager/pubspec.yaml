@@ -6,7 +6,7 @@ homepage: https://www.example.com
 publish_to: none
 
 environment:
-  sdk: ^3.5.0
+  sdk: ^3.6.0
 
 dependencies:
   cv: ">=1.1.0+4"

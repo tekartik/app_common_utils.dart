@@ -374,6 +374,18 @@ void main() {
         expect(records, hasLength(2));
         await subscription.cancel();
       });
+      test('delete', () async {
+        var cvStore = cvIntStoreFactory.store<DbTest>('test');
+        await db.transaction((txn) async {
+          await cvStore.record(1).cv().put(db);
+          await cvStore.record(2).cv().put(db);
+          await cvStore.record(3).cv().put(db);
+          var query = cvStore.query(
+              finder: Finder(sortOrders: [SortOrder(Field.key)], offset: 1));
+          expect(await query.delete(txn), 2);
+          expect(cvStore.query().getKeysSync(txn), [1]);
+        });
+      });
     });
   });
 }
