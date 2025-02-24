@@ -45,6 +45,9 @@ void main() {
       expect(cvFsEmpty.path, 'test/1');
       expect(cvFsEmpty.exists, false);
       expect(cvFsEmpty.toMap(), isEmpty);
+      // ignore: deprecated_member_use_from_same_package
+      cvFsEmpty.exists = true;
+      expect(cvFsEmpty.exists, true);
 
       await firestore.cvSet(cvFsEmpty);
       cvFsEmpty = await firestore.cvGet<CvFsEmpty>('test/1');

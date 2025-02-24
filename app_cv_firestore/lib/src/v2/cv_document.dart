@@ -27,6 +27,10 @@ mixin _WithPath implements CvFirestoreDocument {
   @override
   bool get hasId => _path != null;
 
+  /// Do no use unless you know what you are doing
+  @Deprecated('Do not use unless you know what you are doing')
+  set exists(bool exists) => _exists = exists;
+
   /// Can only be called on read documents
   @override
   bool get exists => _exists ?? false;
@@ -64,7 +68,9 @@ extension CvFirestoreDocumentPrvExt on CvFirestoreDocument {
 }
 
 /// Only the content is compared on equals
-abstract class CvFirestoreDocumentBase extends CvModelBase with _WithPath {}
+abstract class CvFirestoreDocumentBase extends CvModelBase
+    with _WithPath
+    implements CvFirestoreDocument {}
 
 /// Only the content is compared on equals
 abstract class CvFirestoreDocument implements CvModel {
