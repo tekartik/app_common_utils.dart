@@ -15,9 +15,13 @@ dependencies:
       ref: dart3a
     version: '>=0.10.7'
   meta: ">=1.15.0"
-  encrypt: '>=5.0.3' # <=5.0.3'
+  # encrypt: '>=5.0.3' # <=5.0.3'
   # Temp aes issue limited to 5.0.1
   # encrypt: '<=5.0.3'
+  tekartik_encrypt:
+    git:
+      url: https://github.com/tekartikdev/encrypt
+      ref: dart3a
   crypto:
   # Temp web compile issue
   pointycastle: '>=3.2.0-rc0'

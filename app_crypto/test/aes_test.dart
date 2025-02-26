@@ -1,8 +1,8 @@
-import 'package:encrypt/encrypt.dart';
 import 'package:tekartik_app_crypto/encrypt.dart';
 import 'package:tekartik_app_crypto/src/aes.dart';
 import 'package:tekartik_app_crypto/src/generate_password.dart'
     show generatePassword;
+import 'package:tekartik_encrypt/encrypt.dart';
 import 'package:test/test.dart';
 
 void main() {

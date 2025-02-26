@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:encrypt/encrypt.dart';
+import 'package:tekartik_encrypt/encrypt.dart';
 import 'package:test/test.dart';
 
 /// Old bidirectional encryption

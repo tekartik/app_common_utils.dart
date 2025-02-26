@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:crypto/crypto.dart';
-import 'package:encrypt/encrypt.dart';
+import 'package:tekartik_encrypt/encrypt.dart';
 
 import 'encrypt.dart';
 
