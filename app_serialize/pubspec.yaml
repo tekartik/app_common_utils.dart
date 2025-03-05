@@ -23,7 +23,5 @@ dependencies:
 dev_dependencies:
   dev_build: ">=1.1.0+2"
   test: ">=1.24.0"
+resolution: workspace
 
-dependency_overrides:
-  tekartik_app_mirrors:
-    path: ../app_mirrors

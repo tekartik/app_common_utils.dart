@@ -31,6 +31,7 @@ dev_dependencies:
   dev_build: ">=1.1.0+2"
 
 dependency_overrides:
+resolution: workspace
 #  tekartik_app_pager:
 #    path: ../app_pager
 # tmp

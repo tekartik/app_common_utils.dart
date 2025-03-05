@@ -1,0 +1,41 @@
+name: tekartik_app_firebase_local
+description: All firebase local import
+version: 1.0.0
+publish_to: none
+
+environment:
+  sdk: ^3.7.0
+
+# Add regular dependencies here.
+dependencies:
+  tekartik_firebase_local:
+    git:
+      url: https://github.com/tekartik/firebase.dart
+      ref: dart3a
+      path: firebase_local
+  tekartik_firebase_firestore_sembast:
+    git:
+      url: https://github.com/tekartik/firebase_firestore.dart
+      ref: dart3a
+      path: firestore_sembast
+  tekartik_firebase_auth_sembast:
+    git:
+      url: https://github.com/tekartik/firebase_auth.dart
+      ref: dart3a
+      path: auth_sembast
+  tekartik_firebase_functions_io:
+    git:
+      url: https://github.com/tekartik/firebase_functions.dart
+      ref: dart3a
+      path: firebase_functions_io
+  tekartik_firebase_storage_fs:
+    git:
+      url: https://github.com/tekartik/firebase_storage.dart
+      ref: dart3a
+      path: storage_fs
+  # path: ^1.8.0
+
+dev_dependencies:
+  lints: ">=5.0.0"
+  test: ">=1.24.0"
+resolution: workspace

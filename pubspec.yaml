@@ -1,0 +1,32 @@
+name: _
+publish_to: none
+environment:
+  sdk: ^3.6.0
+workspace:
+  - app
+  - app_archive
+  - app_bloc
+  - app_crypto
+  - app_csv
+  - app_cv_firestore
+  - app_cv_sembast
+  - app_date
+  - app_emit
+  - app_http
+  - app_intl
+  - app_json_schema
+  - app_lints
+  - app_media
+  - app_mirrors
+  - app_pager
+  - app_prefs
+  - app_rx
+  - app_rx_bloc
+  - app_sembast
+  - app_sembast_firestore_type_adapters
+  - app_sembast_secure
+  - app_serialize
+  - app_sqflite
+  - app_web_socket
+  - repo_support
+  - app_firebase_local

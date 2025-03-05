@@ -42,9 +42,5 @@ dev_dependencies:
       ref: dart3a
       path: packages/lints
     version: '>=0.1.0'
+resolution: workspace
 
-dependency_overrides:
-  tekartik_app_sqflite:
-    path: ../app_sqflite
-  tekartik_app_sembast:
-    path: ../app_sembast

@@ -24,3 +24,4 @@ dependencies:
 dev_dependencies:
   # yaml:
   path: ">=1.9.0"
+resolution: workspace

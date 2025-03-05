@@ -40,3 +40,4 @@ _dependency_overrides:
   encrypt:
     git:
       url: https://github.com/leocavalcante/encrypt
+resolution: workspace
