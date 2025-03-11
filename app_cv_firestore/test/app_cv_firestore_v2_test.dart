@@ -397,13 +397,17 @@ void main() {
       expect(query.toString(), 'CvQueryReference<CvFsSingleString>(test)');
       var docRef = collection.doc('1');
       expect(docRef.path, 'test/1');
+      expect((await collection.onSnapshots(firestore).first), isEmpty);
+      expect((await collection.onSnapshotsSupport(firestore).first), isEmpty);
       expect((await query.onSnapshots(firestore).first), isEmpty);
+      expect((await query.onSnapshotsSupport(firestore).first), isEmpty);
 
       expect(await collection.get(firestore), isEmpty);
       expect(await collection.count(firestore), 0);
       var doc = docRef.cv()..text.v = 'value';
       await firestore.cvSet(doc);
       expect((await query.onSnapshots(firestore).first), [doc]);
+      expect((await query.onSnapshotsSupport(firestore).first), [doc]);
 
       expect(await query.count(firestore), 1);
       doc = docRef.cv()..text.v = 'value2';

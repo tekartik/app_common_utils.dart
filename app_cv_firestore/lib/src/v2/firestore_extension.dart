@@ -205,6 +205,13 @@ extension CvFirestoreQueryExt on Query {
           .transform(StreamTransformer.fromHandlers(handleData: (data, sink) {
         sink.add(data.docs.cv<T>());
       }));
+
+  Stream<List<T>> cvOnSnapshotsSupport<T extends CvFirestoreDocument>(
+          {TrackChangesPullOptions? options}) =>
+      onSnapshotSupport(options: options)
+          .transform(StreamTransformer.fromHandlers(handleData: (data, sink) {
+        sink.add(data.docs.cv<T>());
+      }));
 }
 
 /// Easy extension

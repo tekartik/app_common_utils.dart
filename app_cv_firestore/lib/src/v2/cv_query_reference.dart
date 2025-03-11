@@ -2,6 +2,7 @@ import 'package:tekartik_app_cv_firestore/app_cv_firestore_v2.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
 import 'package:tekartik_firebase_firestore/src/common/query_mixin.dart'; // ignore: implementation_imports
 import 'package:tekartik_firebase_firestore/src/firestore_common.dart'; // ignore: implementation_imports
+import 'package:tekartik_firebase_firestore/utils/track_changes_support.dart'; // ignore: implementation_imports
 
 class QueryImpl
     with QueryDefaultMixin, QueryMixin, FirestoreQueryExecutorMixin {
@@ -66,6 +67,33 @@ class CvQueryReference<T extends CvFirestoreDocument> {
         var query = await applyQueryInfo(
             firestore, collectionReference.path, _queryInfo);
         streamSubscription = query.cvOnSnapshots<T>().listen((event) {
+          if (!done) {
+            ctlr.add(event);
+          }
+        });
+      });
+    }, onCancel: () {
+      done = true;
+      lock.synchronized(() {
+        streamSubscription?.cancel();
+      });
+    });
+    return ctlr.stream;
+  }
+
+  /// query snapshots
+  Stream<List<T>> onSnapshotsSupport(Firestore firestore,
+      {TrackChangesPullOptions? options}) {
+    final lock = Lock();
+    StreamSubscription? streamSubscription;
+    var done = false;
+    late StreamController<List<T>> ctlr;
+    ctlr = StreamController<List<T>>(onListen: () {
+      lock.synchronized(() async {
+        var query = await applyQueryInfo(
+            firestore, collectionReference.path, _queryInfo);
+        streamSubscription =
+            query.cvOnSnapshotsSupport<T>(options: options).listen((event) {
           if (!done) {
             ctlr.add(event);
           }

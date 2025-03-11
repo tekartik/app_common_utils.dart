@@ -75,5 +75,5 @@ extension CvCollectionReferenceExtension<T extends CvFirestoreDocument>
   /// Document changed
   Stream<List<T>> onSnapshotsSupport(Firestore firestore,
           {TrackChangesPullOptions? options}) =>
-      firestore.doc(path).cvOnSnapshotSupport(options: options);
+      firestore.collection(path).cvOnSnapshotsSupport(options: options);
 }
