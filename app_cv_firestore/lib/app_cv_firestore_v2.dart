@@ -6,7 +6,10 @@ export 'package:tekartik_firebase_firestore/firestore.dart';
 
 export 'src/v2/builder.dart' show cvFirestoreAddBuilder;
 export 'src/v2/cv_collection_reference.dart'
-    show CvCollectionReference, CollectionReferenceCvExtension;
+    show
+        CvCollectionReference,
+        CollectionReferenceCvExtension,
+        CvCollectionReferenceExtension;
 export 'src/v2/cv_document.dart'
     show
         CvFirestoreDocument,

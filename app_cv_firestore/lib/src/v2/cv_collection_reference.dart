@@ -1,5 +1,6 @@
 import 'package:path/path.dart';
 import 'package:tekartik_app_cv_firestore/app_cv_firestore_v2.dart';
+import 'package:tekartik_firebase_firestore/utils/track_changes_support.dart';
 
 import 'cv_path.dart';
 
@@ -16,15 +17,7 @@ class CvCollectionReference<T extends CvFirestoreDocument>
   CvDocumentReference<T>? get parent => path.parentDocOrNull<T>();
 
   /// Get a list of document
-  Future<List<T>> get(Firestore firestore) =>
-      firestore.collection(path).cvGet();
-
-  /// Get a list of document
   Future<int> count(Firestore firestore) => firestore.collection(path).count();
-
-  /// Get a list of document
-  Stream<List<T>> onSnapshots(Firestore firestore) =>
-      firestore.collection(path).cvOnSnapshots();
 
   /// Document reference
   CvDocumentReference<T> doc(String path) =>
@@ -66,4 +59,21 @@ extension CollectionReferenceCvExtension on CollectionReference {
   /// Convert from raw reference.
   CvCollectionReference<T> cv<T extends CvFirestoreDocument>() =>
       CvCollectionReference<T>(path);
+}
+
+/// Collection reference helpers.
+extension CvCollectionReferenceExtension<T extends CvFirestoreDocument>
+    on CvCollectionReference<T> {
+  /// Get a list of document
+  Future<List<T>> get(Firestore firestore) =>
+      firestore.collection(path).cvGet();
+
+  /// Get a list of document
+  Stream<List<T>> onSnapshots(Firestore firestore) =>
+      firestore.collection(path).cvOnSnapshots();
+
+  /// Document changed
+  Stream<List<T>> onSnapshotsSupport(Firestore firestore,
+          {TrackChangesPullOptions? options}) =>
+      firestore.doc(path).cvOnSnapshotSupport(options: options);
 }
