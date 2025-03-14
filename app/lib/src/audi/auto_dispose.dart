@@ -5,6 +5,9 @@ import 'package:tekartik_app_common_utils/auto_dispose.dart';
 /// Auto dispose function
 typedef AutoDisposeFunction = void Function();
 
+/// Auto dispose self function
+typedef AutoDisposeSelfFunction<T extends Object> = void Function(T object);
+
 /// Auto dispose class
 class _AutoDisposer<T extends Object> {
   /// Dispose function
@@ -37,6 +40,9 @@ abstract class AutoDispose {
 
   /// Add a disposer to the auto dispose list, if object is null.
   T audiAdd<T extends Object>(T object, AutoDisposeFunction dispose);
+
+  /// Add a disposer to the auto dispose list, if object is null.
+  T audiAddSelf<T extends Object>(T object, AutoDisposeSelfFunction dispose);
 
   /// Add a function to the auto dispose list, audiDisposeAll will dispose it
   void audiAddFunction(AutoDisposeFunction dispose);
@@ -79,6 +85,13 @@ mixin AutoDisposeMixin implements AutoDispose {
   @override
   T audiAdd<T extends Object>(T object, AutoDisposeFunction dispose) {
     return _audiAdd<T>(_AutoDisposer(object: object, dispose: dispose));
+  }
+
+  @override
+  T audiAddSelf<T extends Object>(
+      T object, AutoDisposeSelfFunction<T> dispose) {
+    return _audiAdd<T>(
+        _AutoDisposer(object: object, dispose: () => dispose(object)));
   }
 
   @override

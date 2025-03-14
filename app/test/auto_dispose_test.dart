@@ -73,17 +73,21 @@ void main() {
 
       var disposable = _TestDisposable();
       var disposable2 = _TestDisposable();
+      var disposable3 = _TestDisposable();
       expect(disposer.length, 0);
       disposer.audiAdd(disposable, disposable.dispose);
       disposer.audiAddFunction(disposable2.dispose);
-      expect(disposer.length, 2);
+      disposer.audiAddSelf(disposable3, (object) => object.dispose());
+      expect(disposer.length, 3);
       expect(disposable.disposed, false);
       disposer.audiDispose(disposable);
-      expect(disposer.length, 1);
+      expect(disposer.length, 2);
       expect(disposable.disposed, true);
       expect(disposable2.disposed, false);
+      expect(disposable3.disposed, false);
       disposer.audiDisposeAll();
       expect(disposable2.disposed, true);
+      expect(disposable3.disposed, true);
       expect(disposer.length, 0);
     });
     test('subscription', () async {
