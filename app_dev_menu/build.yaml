@@ -1,0 +1,20 @@
+targets:
+  $default:
+    sources:
+    - "lib/**"
+    - "starter_browser_mdl/**"
+    - "starter_browser/**"
+    - "starter_web/**"
+    - "starter_universal/**"
+    - $package$
+    builders:
+      build_web_compilers|entrypoint:
+        # These are globs for the entrypoints you want to compile.
+        generate_for:
+        - starter_browser_mdl/**.dart
+        - starter_browser/**.dart
+        - starter_web/**.dart
+        - starter_universal/**.dart
+        - web/**.dart
+        - example/**.dart
+        - lib/**

@@ -1,0 +1,54 @@
+name: tekartik_app_dev_menu
+version: 0.6.1
+homepage: https://github.com/tekartik/test_menu.dart
+# https://github.com/tekartik/tekartik_test_menu.dart
+description: Simple test menu for web and io
+
+publish_to: none
+
+environment:
+  sdk: ^3.6.0
+
+dependencies:
+  process_run: ">=1.2.1+1"
+  test: ">=1.24.0"
+  tekartik_test_menu_browser:
+    git:
+      url: https://github.com/tekartik/test_menu.dart
+      ref: dart3a
+      path: test_menu_browser
+  tekartik_test_menu_io:
+    git:
+      url: https://github.com/tekartik/test_menu.dart
+      path: test_menu_io
+      ref: dart3a
+    version: '>=0.4.7'
+
+  tekartik_common_utils:
+    git:
+      url: https://github.com/tekartik/common_utils.dart
+      ref: dart3a
+  tekartik_test_menu:
+    git:
+      url: https://github.com/tekartik/test_menu.dart
+      ref: dart3a
+      path: test_menu
+dev_dependencies:
+  build_runner: ">=2.4.13"
+  build_test: '>=0.10.2'
+  build_web_compilers: ">=4.0.11"
+  tekartik_app_web_build:
+    git:
+      url: https://github.com/tekartik/app_web_utils.dart
+      ref: dart3a
+      path: packages/app_build
+
+
+resolution: workspace
+  # dev_build:
+  #  path: ../../../tekartik/dev_test.dart/dev_build
+#  tekartik_mdl_js:
+#    path: /opt/devx/git/github.com/alextekartik/mdl_js.dart
+#  platform_context:
+#    # path: /opt/devx/git/github.com/tekartik/platform_context.dart
+#    path: /opt/devx/git/github.com/alextekartik/platform_context.dart

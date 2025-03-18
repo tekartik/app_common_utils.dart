@@ -30,3 +30,4 @@ workspace:
   - app_web_socket
   - repo_support
   - app_firebase_local
+  - app_dev_menu
