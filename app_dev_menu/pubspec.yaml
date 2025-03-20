@@ -34,6 +34,7 @@ dependencies:
       ref: dart3a
       path: test_menu
 dev_dependencies:
+  dev_build: ">=1.1.2"
   build_runner: ">=2.4.13"
   build_test: '>=0.10.2'
   build_web_compilers: ">=4.0.11"
