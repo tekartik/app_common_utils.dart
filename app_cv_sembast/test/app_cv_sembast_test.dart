@@ -315,7 +315,7 @@ void main() {
     });
     test('toJsonEncodable', () async {
       var allFields = CvDbAllFields()..fillModel(cvSembastFillOptions1);
-      expect(allFields.toJsonEncodable(), {
+      expect(allFields.dbToJsonEncodable(), {
         'int': 1,
         'double': 2.5,
         'bool': 3.5,
@@ -328,10 +328,33 @@ void main() {
         'blob': {'@Blob': 'AAECAwQFBgcICQ=='}
       });
       var tests = [DbTest()..value.v = 1, DbTest()..value.v = 2];
-      expect(tests.toJsonEncodable(), [
+      expect(tests.dbToJsonEncodable(), [
         {'value': 1},
         {'value': 2}
       ]);
+    });
+    test('json', () async {
+      var record = CvDbAllFields()..timestampValue.v = Timestamp(1, 2000);
+      expect(record.dbToJson(),
+          '{"timestamp":{"@Timestamp":"1970-01-01T00:00:01.000002Z"}}');
+      expect(
+          record.dbToJsonPretty(),
+          '{\n'
+          '  "timestamp": {\n'
+          '    "@Timestamp": "1970-01-01T00:00:01.000002Z"\n'
+          '  }\n'
+          '}');
+      expect([record].dbToJson(),
+          '[{"timestamp":{"@Timestamp":"1970-01-01T00:00:01.000002Z"}}]');
+      expect(
+          [record].dbToJsonPretty(),
+          '[\n'
+          '  {\n'
+          '    "timestamp": {\n'
+          '      "@Timestamp": "1970-01-01T00:00:01.000002Z"\n'
+          '    }\n'
+          '  }\n'
+          ']');
     });
 
     group('CvQueryRef', () {

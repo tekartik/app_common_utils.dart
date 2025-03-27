@@ -16,8 +16,6 @@ export 'db_record.dart'
         DbIntRecordBase,
         DbIntRecord,
         DbRecordExt,
-        DbRecordJsonExt,
-        DbRecordListJsonExt,
         DbRecordCloneExt,
         DbRecordToRefExt,
         DbRecordMap,
@@ -45,3 +43,4 @@ export 'db_store.dart'
         CvIntStoreFactory,
         CvStringStoreFactory;
 export 'fill_options.dart' show cvSembastFillOptions1;
+export 'json_utils.dart' show DbRecordJsonExt, DbRecordListJsonExt;

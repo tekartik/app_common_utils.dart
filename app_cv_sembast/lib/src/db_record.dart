@@ -1,6 +1,5 @@
 import 'package:cv/cv.dart';
 import 'package:sembast/sembast.dart';
-import 'package:sembast/utils/type_adapter.dart';
 import 'package:tekartik_app_cv_sembast/src/logger_utils.dart';
 
 import 'cv_store_ref.dart';
@@ -185,32 +184,6 @@ extension DbRecordExt<K, V> on DbRecord<K> {
   Future<void> delete(DatabaseClient db) async {
     await rawRef.delete(db);
   }
-}
-
-/// Easy extension
-extension DbRecordJsonExt<K, V> on DbRecord<K> {
-  /// to json encodable
-  Model toJsonEncodable(
-      {List<String>? columns,
-      bool includeMissingValue = false,
-      JsonEncodableCodec? codec}) {
-    return (codec ?? sembastDefaultJsonEncodableCodec).encode(
-            toMap(columns: columns, includeMissingValue: includeMissingValue))
-        as Model;
-  }
-}
-
-/// Easy extension
-extension DbRecordListJsonExt<K, V> on List<DbRecord<K>> {
-  /// to json encodable
-  List<Model> toJsonEncodable(
-          {List<String>? columns,
-          bool includeMissingValue = false,
-          JsonEncodableCodec? codec}) =>
-      map((item) => item.toJsonEncodable(
-          columns: columns,
-          includeMissingValue: includeMissingValue,
-          codec: codec)).toList();
 }
 
 /// Public extension on CvModelWrite
