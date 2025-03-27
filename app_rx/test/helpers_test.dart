@@ -87,5 +87,9 @@ void main() {
 
       await subject.close();
     });
+    test('api', () {
+      // ignore: unnecessary_statements
+      BroadcastValueStream;
+    });
   });
 }
