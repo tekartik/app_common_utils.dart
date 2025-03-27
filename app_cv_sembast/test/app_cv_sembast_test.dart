@@ -315,7 +315,7 @@ void main() {
     });
     test('toJsonEncodable', () async {
       var allFields = CvDbAllFields()..fillModel(cvSembastFillOptions1);
-      expect(allFields.dbToJsonEncodable(), {
+      expect(allFields.toJsonEncodable(), {
         'int': 1,
         'double': 2.5,
         'bool': 3.5,
@@ -328,7 +328,7 @@ void main() {
         'blob': {'@Blob': 'AAECAwQFBgcICQ=='}
       });
       var tests = [DbTest()..value.v = 1, DbTest()..value.v = 2];
-      expect(tests.dbToJsonEncodable(), [
+      expect(tests.toJsonEncodable(), [
         {'value': 1},
         {'value': 2}
       ]);

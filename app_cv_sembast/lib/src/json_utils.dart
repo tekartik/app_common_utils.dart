@@ -7,7 +7,7 @@ import 'package:tekartik_app_cv_sembast/app_cv_sembast.dart';
 /// Easy extension
 extension DbRecordJsonExt<K, V> on DbRecord<K> {
   /// to json encodable
-  Model dbToJsonEncodable(
+  Model toJsonEncodable(
       {List<String>? columns,
       bool includeMissingValue = false,
       JsonEncodableCodec? codec}) {
@@ -22,7 +22,7 @@ extension DbRecordJsonExt<K, V> on DbRecord<K> {
           List<String>? columns,
           bool includeMissingValue = false}) =>
       jsonEncode(
-        dbToJsonEncodable(
+        toJsonEncodable(
             codec: codec,
             columns: columns,
             includeMissingValue: includeMissingValue),
@@ -35,7 +35,7 @@ extension DbRecordJsonExt<K, V> on DbRecord<K> {
     bool includeMissingValue = false,
   }) =>
       jsonPrettyEncode(
-        dbToJsonEncodable(
+        toJsonEncodable(
             codec: codec,
             columns: columns,
             includeMissingValue: includeMissingValue),
@@ -45,11 +45,11 @@ extension DbRecordJsonExt<K, V> on DbRecord<K> {
 /// Easy extension
 extension DbRecordListJsonExt<K, V> on List<DbRecord<K>> {
   /// to json encodable
-  List<Model> dbToJsonEncodable(
+  List<Model> toJsonEncodable(
           {List<String>? columns,
           bool includeMissingValue = false,
           JsonEncodableCodec? codec}) =>
-      map((item) => item.dbToJsonEncodable(
+      map((item) => item.toJsonEncodable(
           columns: columns,
           includeMissingValue: includeMissingValue,
           codec: codec)).toList();
@@ -60,7 +60,7 @@ extension DbRecordListJsonExt<K, V> on List<DbRecord<K>> {
           List<String>? columns,
           bool includeMissingValue = false}) =>
       jsonEncode(
-        dbToJsonEncodable(
+        toJsonEncodable(
             codec: codec,
             columns: columns,
             includeMissingValue: includeMissingValue),
@@ -73,7 +73,7 @@ extension DbRecordListJsonExt<K, V> on List<DbRecord<K>> {
     bool includeMissingValue = false,
   }) =>
       jsonPrettyEncode(
-        dbToJsonEncodable(
+        toJsonEncodable(
             codec: codec,
             columns: columns,
             includeMissingValue: includeMissingValue),
