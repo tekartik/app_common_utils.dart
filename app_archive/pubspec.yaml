@@ -9,7 +9,7 @@ environment:
   sdk: ^3.7.0
 
 dependencies:
-  archive: ">=3.6.1"
+  archive: ">=4.0.5"
   tekartik_common_utils:
     git:
       url: https://github.com/tekartik/common_utils.dart
