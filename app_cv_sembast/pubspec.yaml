@@ -3,7 +3,7 @@ description: Sembast content values helper
 version: 1.2.2
 publish_to: none
 environment:
-  sdk: ^3.6.0
+  sdk: ^3.7.0
 
 dependencies:
   meta: ">=1.15.0"
@@ -17,5 +17,5 @@ dependencies:
   # sembast:
 dev_dependencies:
   test: ">=1.24.0"
-  dev_build: ">=1.1.0+2"
+  dev_build: ">=1.1.2"
 resolution: workspace

@@ -16,13 +16,17 @@ PrefsAsyncFactory? _defaultPrefsAsyncFactory;
 /// Sembast prefs factory
 PrefsFactory newPrefsFactorySembast(String? packageName) {
   return getPrefsFactorySembast(
-      getDatabaseFactory(packageName: packageName), '.');
+    getDatabaseFactory(packageName: packageName),
+    '.',
+  );
 }
 
 /// Sembast prefs factory
 PrefsAsyncFactory newPrefsAsyncFactorySembast({String? packageName}) {
   return getPrefsAsyncFactorySembast(
-      getDatabaseFactory(packageName: packageName), '.');
+    getDatabaseFactory(packageName: packageName),
+    '.',
+  );
 }
 
 /// Use sembast on linux and windows
@@ -44,8 +48,10 @@ PrefsAsyncFactory getPrefsAsyncFactory({String? packageName}) {
   var prefsFactory = _prefsAsyncFactoryMap[packageName];
   if (prefsFactory == null) {
     if (packageName == null) {
-      prefsFactory = _defaultPrefsAsyncFactory ??=
-          newPrefsAsyncFactorySembast(packageName: packageName);
+      prefsFactory =
+          _defaultPrefsAsyncFactory ??= newPrefsAsyncFactorySembast(
+            packageName: packageName,
+          );
     } else {
       _prefsAsyncFactoryMap[packageName] =
           prefsFactory = newPrefsAsyncFactorySembast(packageName: packageName);

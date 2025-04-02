@@ -14,21 +14,22 @@ extension TekartikRxStreamExt<T> on Stream<T> {
       print('toBehaviorSubject $hashCode');
     }
     subject = BehaviorSubject<T>(
-        onListen: () {
-          if (_debug) {
-            print('onListen $hashCode');
-          }
-          subscription = listen((event) {
-            subject.add(event);
-          });
-        },
-        onCancel: () {
-          if (_debug) {
-            print('onCancel $hashCode');
-          }
-          subscription?.cancel();
-        },
-        sync: true);
+      onListen: () {
+        if (_debug) {
+          print('onListen $hashCode');
+        }
+        subscription = listen((event) {
+          subject.add(event);
+        });
+      },
+      onCancel: () {
+        if (_debug) {
+          print('onCancel $hashCode');
+        }
+        subscription?.cancel();
+      },
+      sync: true,
+    );
     return subject;
   }
 
@@ -50,20 +51,21 @@ class _BroadcastValueStream<T> extends Stream<T>
 
   _BroadcastValueStream(Stream<T> stream) {
     _subject = BehaviorSubject<T>(
-        onListen: () {
-          if (_debug) {
-            print('onListen $hashCode');
-          }
-          subscription ??= stream.listen((event) {
-            _subject.add(event);
-          });
-        },
-        onCancel: () {
-          if (_debug) {
-            print('onCancel $hashCode');
-          }
-        },
-        sync: true);
+      onListen: () {
+        if (_debug) {
+          print('onListen $hashCode');
+        }
+        subscription ??= stream.listen((event) {
+          _subject.add(event);
+        });
+      },
+      onCancel: () {
+        if (_debug) {
+          print('onCancel $hashCode');
+        }
+      },
+      sync: true,
+    );
   }
 
   @override
@@ -72,13 +74,12 @@ class _BroadcastValueStream<T> extends Stream<T>
     Function? onError,
     void Function()? onDone,
     bool? cancelOnError,
-  }) =>
-      _subject.listen(
-        onData,
-        onError: onError,
-        onDone: onDone,
-        cancelOnError: cancelOnError,
-      );
+  }) => _subject.listen(
+    onData,
+    onError: onError,
+    onDone: onDone,
+    cancelOnError: cancelOnError,
+  );
 
   @override
   Future<void> close() async {
@@ -116,9 +117,10 @@ class _BroadcastValueStream<T> extends Stream<T>
   /// Returns the last emitted event (either data/value or error event).
   /// `null` if no value or error events have been emitted yet.
   @override
-  StreamNotification<T>? get lastEventOrNull => hasValue
-      ? StreamNotification<T>.data(value)
-      : hasError
+  StreamNotification<T>? get lastEventOrNull =>
+      hasValue
+          ? StreamNotification<T>.data(value)
+          : hasError
           ? StreamNotification<T>.error(error)
           : null;
 }

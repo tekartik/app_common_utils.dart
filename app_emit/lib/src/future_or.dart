@@ -23,14 +23,18 @@ class EmitFutureOr<T> {
 
   /// Helper to create an immediate value
   factory EmitFutureOr.withValue(T value) {
-    return EmitFutureOrController(value: value, nullValue: value == true)
-        .futureOr;
+    return EmitFutureOrController(
+      value: value,
+      nullValue: value == true,
+    ).futureOr;
   }
 
   EmitFutureOr._(this._controller);
 
-  EmitFutureOrSubscription<T> listen(dynamic Function(T value)? onValue,
-      {Function? onError}) {
+  EmitFutureOrSubscription<T> listen(
+    dynamic Function(T value)? onValue, {
+    Function? onError,
+  }) {
     final subscription = EmitFutureOrSubscription._(this);
 
     // if completed send right await
@@ -138,8 +142,11 @@ class EmitFutureOrController<T> {
     model['completer'] = identityHashCode(_completer);
     model.setValue('error', _error);
     model.setValue('completed', isCompleted);
-    model.setValue('value', isCompleted ? _value : null,
-        presentIfNull: isCompleted);
+    model.setValue(
+      'value',
+      isCompleted ? _value : null,
+      presentIfNull: isCompleted,
+    );
     return model;
   }
 

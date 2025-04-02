@@ -35,15 +35,19 @@ void main() {
     });
     test('dayTimeToDateTime', () {
       expect(
-          dayTimeToDateTime(
-                  CalendarDay(text: '2021-05-07'), CalendarTime(text: '26:40'))
-              .toIso8601String(),
-          '2021-05-08T02:40:00.000Z');
+        dayTimeToDateTime(
+          CalendarDay(text: '2021-05-07'),
+          CalendarTime(text: '26:40'),
+        ).toIso8601String(),
+        '2021-05-08T02:40:00.000Z',
+      );
       expect(
-          dayTimeToLocalDateTime(
-                  CalendarDay(text: '2021-05-07'), CalendarTime(text: '26:40'))
-              .toIso8601String(),
-          '2021-05-08T02:40:00.000');
+        dayTimeToLocalDateTime(
+          CalendarDay(text: '2021-05-07'),
+          CalendarTime(text: '26:40'),
+        ).toIso8601String(),
+        '2021-05-08T02:40:00.000',
+      );
     });
   });
 }

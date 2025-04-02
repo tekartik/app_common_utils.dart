@@ -95,10 +95,11 @@ void main() {
       var controller = StreamController<bool>(sync: true);
       var received = false;
       // ignore: cancel_subscriptions
-      var subscription =
-          disposer.audiAddStreamSubscription(controller.stream.listen((_) {
-        received = true;
-      }));
+      var subscription = disposer.audiAddStreamSubscription(
+        controller.stream.listen((_) {
+          received = true;
+        }),
+      );
       controller.add(true);
       expect(received, true);
       received = false;

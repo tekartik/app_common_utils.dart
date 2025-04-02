@@ -11,8 +11,10 @@ import 'package:tekartik_common_utils/env_utils.dart';
 import 'package:test/test.dart';
 
 void expectCsv(String value, String expected) {
-  expect(const LineSplitter().convert(value),
-      const LineSplitter().convert(expected));
+  expect(
+    const LineSplitter().convert(value),
+    const LineSplitter().convert(expected),
+  );
 }
 
 void main() {
@@ -26,8 +28,9 @@ void main() {
           outdir.createSync(recursive: true);
           outputDirExists = true;
         }
-        await File(join(outdir.path, filename))
-            .writeAsString(jsonPretty(jsonEncode(data))!);
+        await File(
+          join(outdir.path, filename),
+        ).writeAsString(jsonPretty(jsonEncode(data))!);
       } catch (e) {
         if (isDebug) {
           print(e);
@@ -61,53 +64,60 @@ void main() {
       // print(utf8.encode(csv));
       try {
         expect(
-            csv,
-            'one_column_with_line_feed\r\n'
-            '"Hello\n'
-            'World"');
+          csv,
+          'one_column_with_line_feed\r\n'
+          '"Hello\n'
+          'World"',
+        );
       } catch (_) {
         if (Platform.isWindows) {
           // git issue!
           expect(
-              csv,
-              'one_column_with_line_feed\r\n'
-              '"Hello\r\n'
-              'World"');
+            csv,
+            'one_column_with_line_feed\r\n'
+            '"Hello\r\n'
+            'World"',
+          );
         } else {
           // git issue!
           expect(
-              csv,
-              'one_column_with_line_feed\n'
-              '"Hello\n'
-              'World"');
+            csv,
+            'one_column_with_line_feed\n'
+            '"Hello\n'
+            'World"',
+          );
         }
       }
       if (Platform.isWindows) {
         expect(csvToMapList(csv), [
           {
-            'one_column_with_line_feed': 'Hello\r\n'
-                'World'
-          }
+            'one_column_with_line_feed':
+                'Hello\r\n'
+                'World',
+          },
         ]);
         expect(csvToMapList(csv, converter: CsvToListConverter(eol: '\n')), [
           {
-            'one_column_with_line_feed\r': 'Hello\r\n'
-                'World'
-          }
+            'one_column_with_line_feed\r':
+                'Hello\r\n'
+                'World',
+          },
         ]);
       } else {
         expect(csvToMapList(csv), [
           {
-            'one_column_with_line_feed': 'Hello\n'
-                'World'
-          }
+            'one_column_with_line_feed':
+                'Hello\n'
+                'World',
+          },
         ]);
         expect(csvToMapList(csv, converter: CsvToListConverter()), isEmpty);
         expect(csvToMapList(csv, converter: CsvToListConverter(eol: '\n')), [
           {
-            'one_column_with_line_feed': 'Hello\n'
-                'World'
-          }
+            'one_column_with_line_feed':
+                'Hello\n'
+                'World',
+          },
         ]);
       }
     });
@@ -118,7 +128,7 @@ void main() {
         expect(csvToMapList(csv, converter: CsvToListConverter()), isEmpty);
       }
       expect(csvToMapList(csv), [
-        {'a': 1, 'b': 2}
+        {'a': 1, 'b': 2},
       ]);
     });
     test('complex1', () async {
@@ -127,45 +137,54 @@ void main() {
         expect(csvToMapList(csv), [
           {
             'L1\n'
-                'L2': 'C1',
+                    'L2':
+                'C1',
             'N': 0,
-            'Name': 'L1\n'
+            'Name':
+                'L1\n'
                 'L2 ',
             'With space ': 12345,
             'YES = 1\n'
-                '/\n'
-                'NO = 0': 1
+                    '/\n'
+                    'NO = 0':
+                1,
           },
           {
             'L1\n'
-                'L2': '',
+                    'L2':
+                '',
             'N': 0,
             'Name': 'P',
             'With space ': '',
             'YES = 1\n'
-                '/\n'
-                'NO = 0': ''
+                    '/\n'
+                    'NO = 0':
+                '',
           },
           {
             'L1\n'
-                'L2': 'C1',
+                    'L2':
+                'C1',
             'N': 'C2',
             'Name': 'C3',
             'With space ': 'C4',
             'YES = 1\n'
-                '/\n'
-                'NO = 0': 'C5'
+                    '/\n'
+                    'NO = 0':
+                'C5',
           },
           {
             'L1\n'
-                'L2': '',
+                    'L2':
+                '',
             'N': '',
             'Name': '',
             'With space ': '',
             'YES = 1\n'
-                '/\n'
-                'NO = 0': 86
-          }
+                    '/\n'
+                    'NO = 0':
+                86,
+          },
         ]);
       }
     });
@@ -173,9 +192,9 @@ void main() {
     test('local', () async {
       var src = Directory(join('test', 'data', '.local'));
       if (src.existsSync()) {
-        for (var file in src
-            .listSync()
-            .where((element) => extension(element.path) == '.csv')) {
+        for (var file in src.listSync().where(
+          (element) => extension(element.path) == '.csv',
+        )) {
           var csv = (file as File).readAsStringSync();
           await writeLocalResult(basename(file.path), csv);
         }

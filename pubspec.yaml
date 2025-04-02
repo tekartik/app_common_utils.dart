@@ -1,7 +1,7 @@
 name: _
 publish_to: none
 environment:
-  sdk: ^3.6.0
+  sdk: ^3.7.0
 workspace:
   - app
   - app_archive
@@ -31,3 +31,4 @@ workspace:
   - repo_support
   - app_firebase_local
   - app_dev_menu
+  - app_text

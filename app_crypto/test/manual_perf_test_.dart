@@ -33,7 +33,7 @@ void main() {
         for (var data in [
           textWithLength(10),
           textWithLength(1000),
-          textWithLength(10000)
+          textWithLength(10000),
         ]) {
           var encryptedData = encrypter.encrypt(data);
           expect(encrypter.decrypt(encryptedData), data);
@@ -76,16 +76,21 @@ void main() {
               var msTest = actionsDurationMs(countTest, action).boundedMin(1);
               countPerMs = countTest / msTest;
               print(
-                  '$name ${data.length} ${testAction.name}: (${(countPerMs * 1000).toInt()} per/s)');
+                '$name ${data.length} ${testAction.name}: (${(countPerMs * 1000).toInt()} per/s)',
+              );
             }
           }
 
-          execute(_TestAction('encrypt', () {
-            encrypter.encrypt(data);
-          }));
-          execute(_TestAction('decrypt', () {
-            encrypter.decrypt(encryptedData);
-          }));
+          execute(
+            _TestAction('encrypt', () {
+              encrypter.encrypt(data);
+            }),
+          );
+          execute(
+            _TestAction('decrypt', () {
+              encrypter.decrypt(encryptedData);
+            }),
+          );
         }
       });
     }

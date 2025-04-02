@@ -8,8 +8,10 @@ Complex complexFromMap(Map<String, dynamic> map, {Complex? complex}) {
   return complex;
 }
 
-Map<String, dynamic> complexToMap(Complex complex,
-    {Map<String, Object?>? map}) {
+Map<String, dynamic> complexToMap(
+  Complex complex, {
+  Map<String, Object?>? map,
+}) {
   map ??= <String, dynamic>{};
 
   map['value'] = complex.value;

@@ -21,10 +21,12 @@ void main() {
     test('no date compress bigbytes', () {
       var allBytes = List.generate(256, (index) => index);
 
-      var bigBytes = asUint8List(listFlatten(
-          List.generate(50000, (i) => allBytes..shuffle()).toList()));
+      var bigBytes = asUint8List(
+        listFlatten(List.generate(50000, (i) => allBytes..shuffle()).toList()),
+      );
       print(
-          'bigUint8List ${bigBytes.length} ${toHexString(bigBytes.sublist(0, 128))}');
+        'bigUint8List ${bigBytes.length} ${toHexString(bigBytes.sublist(0, 128))}',
+      );
       var sw = Stopwatch()..start();
 
       var compressed = gzipBytes(bigBytes, noDate: true);
@@ -34,24 +36,32 @@ void main() {
 
       expect(gzipBytes(bigBytes, noDate: true), compressed);
       var result = ungzipBytes(compressed);
-      expect(result, bigBytes,
-          reason: '${logFormat(result)} != ${logFormat(bigBytes)}');
+      expect(
+        result,
+        bigBytes,
+        reason: '${logFormat(result)} != ${logFormat(bigBytes)}',
+      );
     });
     test('compress bigbytes', () {
       var allBytes = List.generate(256, (index) => index);
 
-      var bigBytes = asUint8List(listFlatten(
-          List.generate(50000, (i) => allBytes..shuffle()).toList()));
+      var bigBytes = asUint8List(
+        listFlatten(List.generate(50000, (i) => allBytes..shuffle()).toList()),
+      );
       print(
-          'bigUint8List ${bigBytes.length} ${toHexString(bigBytes.sublist(0, 128))}');
+        'bigUint8List ${bigBytes.length} ${toHexString(bigBytes.sublist(0, 128))}',
+      );
       var sw = Stopwatch()..start();
 
       var compressed = gzipBytes(bigBytes);
       sw.stop();
       print('compressed ${compressed.length} ${sw.elapsed}');
       var result = ungzipBytes(compressed);
-      expect(result, bigBytes,
-          reason: '${logFormat(result)} != ${logFormat(bigBytes)}');
+      expect(
+        result,
+        bigBytes,
+        reason: '${logFormat(result)} != ${logFormat(bigBytes)}',
+      );
     });
     test('compress bigtext', () {
       var text = 'abcdedfghijklmnopqrstuvwxyz';
@@ -63,8 +73,11 @@ void main() {
       print('compressed ${compressed.length} ${sw.elapsed}');
       expect(gzipText(bigText, noDate: true), compressed);
       var result = ungzipText(compressed);
-      expect(result, bigText,
-          reason: '${logFormat(result)} != ${logFormat(bigText)}');
+      expect(
+        result,
+        bigText,
+        reason: '${logFormat(result)} != ${logFormat(bigText)}',
+      );
     });
     String generateBigText(int alphabetCount) {
       var text = 'abcdedfghijklmnopqrstuvwxyz';
@@ -80,20 +93,30 @@ void main() {
       sw.stop();
       print('compressed ${compressed.length} ${sw.elapsed}');
       var result = ungzipText(compressed);
-      expect(result, bigText,
-          reason: '${logFormat(result)} != ${logFormat(bigText)}');
+      expect(
+        result,
+        bigText,
+        reason: '${logFormat(result)} != ${logFormat(bigText)}',
+      );
     });
 
     test('compress latest', () {
       expect(
-          gzipText('étoile',
-              noDate: true, operatingSystem: gzipOperatingSystemLinux),
-          gzipBytesV2Linux);
+        gzipText(
+          'étoile',
+          noDate: true,
+          operatingSystem: gzipOperatingSystemLinux,
+        ),
+        gzipBytesV2Linux,
+      );
 
       void roundTrip(String text) {
         var result = ungzipText(gzipText(text));
-        expect(result, text,
-            reason: '${logFormat(result)} != ${logFormat(text)}');
+        expect(
+          result,
+          text,
+          reason: '${logFormat(result)} != ${logFormat(text)}',
+        );
       }
 
       roundTrip('étoile');

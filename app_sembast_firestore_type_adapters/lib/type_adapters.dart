@@ -16,15 +16,17 @@ export 'src/timestamp.dart' show sembastFirestoreTimestampAdapter;
 final sembastFirestoreDefaultTypeAdapters = [
   sembastFirestoreTimestampAdapter,
   sembastFirestoreBlobAdapter,
-  sembastFirestoreGeoPointAdapter
+  sembastFirestoreGeoPointAdapter,
 ];
 
 /// Default Firestore types jsonEncodableCodec
-final sembastFirestoreDefaultJsonEncodableCodec =
-    JsonEncodableCodec(adapters: sembastFirestoreDefaultTypeAdapters);
+final sembastFirestoreDefaultJsonEncodableCodec = JsonEncodableCodec(
+  adapters: sembastFirestoreDefaultTypeAdapters,
+);
 
 /// Firestore types support codec for sembast to use when opening the database.
 final sembastFirestoreCodec = SembastCodec(
-    signature: 'firestore',
-    codec: json,
-    jsonEncodableCodec: sembastFirestoreDefaultJsonEncodableCodec);
+  signature: 'firestore',
+  codec: json,
+  jsonEncodableCodec: sembastFirestoreDefaultJsonEncodableCodec,
+);

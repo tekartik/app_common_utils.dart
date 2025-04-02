@@ -11,7 +11,8 @@ var _random = Random.secure();
 /// Random bytes generator
 Uint8List _randBytes(int length) {
   return Uint8List.fromList(
-      List<int>.generate(length, (i) => _random.nextInt(256)));
+    List<int>.generate(length, (i) => _random.nextInt(256)),
+  );
 }
 
 /// Generate an encryption password based on a user input password
@@ -112,16 +113,19 @@ const _encryptCodecSignature = 'encrypt';
 /// // ...your database is ready to use
 /// ```
 SembastCodec getEncryptSembastCodec({required String password}) => SembastCodec(
-    signature: _encryptCodecSignature,
-    codec: _EncryptCodec(_generateEncryptPassword(password)));
+  signature: _encryptCodecSignature,
+  codec: _EncryptCodec(_generateEncryptPassword(password)),
+);
 
 /// Wrap a factory to always use the codec
 class EncryptedDatabaseFactory implements DatabaseFactory {
   final DatabaseFactory databaseFactory;
   late final SembastCodec codec;
 
-  EncryptedDatabaseFactory(
-      {required this.databaseFactory, required String password}) {
+  EncryptedDatabaseFactory({
+    required this.databaseFactory,
+    required String password,
+  }) {
     codec = getEncryptSembastCodec(password: password);
   }
 
@@ -134,17 +138,21 @@ class EncryptedDatabaseFactory implements DatabaseFactory {
 
   /// To use with codec, null
   @override
-  Future<Database> openDatabase(String path,
-      {int? version,
-      OnVersionChangedFunction? onVersionChanged,
-      DatabaseMode? mode,
-      SembastCodec? codec}) {
+  Future<Database> openDatabase(
+    String path, {
+    int? version,
+    OnVersionChangedFunction? onVersionChanged,
+    DatabaseMode? mode,
+    SembastCodec? codec,
+  }) {
     assert(codec == null);
-    return databaseFactory.openDatabase(path,
-        version: version,
-        onVersionChanged: onVersionChanged,
-        mode: mode,
-        codec: this.codec);
+    return databaseFactory.openDatabase(
+      path,
+      version: version,
+      onVersionChanged: onVersionChanged,
+      mode: mode,
+      codec: this.codec,
+    );
   }
 
   @override

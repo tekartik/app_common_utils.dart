@@ -31,11 +31,14 @@ void main() {
     var encrypter = AesWithIVEntrypter(password, IV.allZerosOfLength(16));
 
     expect(encrypt('test', password), 'amGhyRRLUIoE59IiEys5Vw==');
-    expect(encrypter.encrypt('test'),
-        'AAAAAAAAAAAAAAAAAAAAAA==amGhyRRLUIoE59IiEys5Vw==');
     expect(
-        encrypter.decrypt('AAAAAAAAAAAAAAAAAAAAAA==amGhyRRLUIoE59IiEys5Vw=='),
-        'test');
+      encrypter.encrypt('test'),
+      'AAAAAAAAAAAAAAAAAAAAAA==amGhyRRLUIoE59IiEys5Vw==',
+    );
+    expect(
+      encrypter.decrypt('AAAAAAAAAAAAAAAAAAAAAA==amGhyRRLUIoE59IiEys5Vw=='),
+      'test',
+    );
   });
 
   test('aes decrypt', () {
@@ -43,22 +46,25 @@ void main() {
     var encrypter = aesEncrypterFromPassword(password);
 
     expect(
-        encrypter.encrypt('test'),
-        isNot(
-            'kEH3mkatSK4yiDu95hZj3Q==0aN1ouMw1HhKY6L8sibkgA==')); // - different each time
+      encrypter.encrypt('test'),
+      isNot('kEH3mkatSK4yiDu95hZj3Q==0aN1ouMw1HhKY6L8sibkgA=='),
+    ); // - different each time
     expect(
-        encrypter.decrypt('kEH3mkatSK4yiDu95hZj3Q==0aN1ouMw1HhKY6L8sibkgA=='),
-        'test');
+      encrypter.decrypt('kEH3mkatSK4yiDu95hZj3Q==0aN1ouMw1HhKY6L8sibkgA=='),
+      'test',
+    );
     expect(
-        aesDecrypt(
-            'kEH3mkatSK4yiDu95hZj3Q==0aN1ouMw1HhKY6L8sibkgA==', password),
-        'test');
-    expect(aesEncrypt('test', password),
-        isNot('19/EiVx5ICKR/IpS05DYmA==rqLU4PjkNP8W/SiI1dVgAA=='));
+      aesDecrypt('kEH3mkatSK4yiDu95hZj3Q==0aN1ouMw1HhKY6L8sibkgA==', password),
+      'test',
+    );
     expect(
-        aesDecrypt(
-            '19/EiVx5ICKR/IpS05DYmA==rqLU4PjkNP8W/SiI1dVgAA==', password),
-        'test');
+      aesEncrypt('test', password),
+      isNot('19/EiVx5ICKR/IpS05DYmA==rqLU4PjkNP8W/SiI1dVgAA=='),
+    );
+    expect(
+      aesDecrypt('19/EiVx5ICKR/IpS05DYmA==rqLU4PjkNP8W/SiI1dVgAA==', password),
+      'test',
+    );
     expect(aesDecrypt(aesEncrypt('test', password), password), 'test');
   });
   test('aes', () {
@@ -74,11 +80,15 @@ void main() {
     aesRoundTrip('test', encryptTextPassword16FromText('test'));
     //aesRoundTrip('', '');
     aesRoundTrip('1', encryptTextPassword16FromText('2'));
-    aesRoundTrip(textWithLength(4096),
-        encryptTextPassword16FromText(textWithLength(4096)));
+    aesRoundTrip(
+      textWithLength(4096),
+      encryptTextPassword16FromText(textWithLength(4096)),
+    );
     // _salsa20RoundTrip(textWithLength(40960), textWithLength(40960));
-    aesRoundTrip(textWithLength(4096000),
-        encryptTextPassword16FromText(textWithLength(4096000)));
+    aesRoundTrip(
+      textWithLength(4096000),
+      encryptTextPassword16FromText(textWithLength(4096000)),
+    );
 
     var password = generatePassword();
     aes = aesEncrypterFromPassword(password);

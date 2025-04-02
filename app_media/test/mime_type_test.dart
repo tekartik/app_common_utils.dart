@@ -9,10 +9,14 @@ void main() {
         mimeTypeApplicationJson,
         mimeTypeImagePng,
         mimeTypeImageJpg,
-        mimeTypeImageWebp
+        mimeTypeImageWebp,
       ];
-      expect(
-          types, ['application/json', 'image/png', 'image/jpeg', 'image/webp']);
+      expect(types, [
+        'application/json',
+        'image/png',
+        'image/jpeg',
+        'image/webp',
+      ]);
       const extensions = [
         extensionApplicationJson,
         extensionImagePng,
@@ -22,13 +26,17 @@ void main() {
       expect(extensions, ['.json', '.png', '.jpg', '.webp']);
     });
     test('extensionFromMimeType', () {
-      expect(extensionFromMimeType(mimeTypeApplicationJson),
-          extensionApplicationJson);
+      expect(
+        extensionFromMimeType(mimeTypeApplicationJson),
+        extensionApplicationJson,
+      );
       expect(extensionFromMimeType(mimeTypeImagePng), extensionImagePng);
       expect(extensionFromMimeType(mimeTypeImageJpg), extensionImageJpg);
       expect(extensionFromMimeType(mimeTypeImageWebp), extensionImageWebp);
-      expect(extensionFromMimeType(mimeTypeApplicationZip),
-          extensionApplicationZip);
+      expect(
+        extensionFromMimeType(mimeTypeApplicationZip),
+        extensionApplicationZip,
+      );
     });
   });
 }

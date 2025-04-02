@@ -19,7 +19,7 @@ Future<void> main() async {
 
   await bookStore.addAll(db, [
     {'code': 'BOOK001', 'title': 'The great book'},
-    {'code': 'BOOK002', 'title': 'The simple book'}
+    {'code': 'BOOK002', 'title': 'The simple book'},
   ]);
 
   /// Access a book by code
@@ -31,9 +31,10 @@ Future<void> main() async {
   /// You can also read in a transaction.
   await db.transaction((transaction) async {
     /// Access a book by code
-    var book = (await dbCodeIndex
-        .transactionRecord(transaction, 'BOOK002')
-        .getSnapshot())!;
+    var book =
+        (await dbCodeIndex
+            .transactionRecord(transaction, 'BOOK002')
+            .getSnapshot())!;
 
     /// Should print the simple book!
     print(book['title']);

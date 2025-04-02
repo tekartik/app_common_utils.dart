@@ -10,7 +10,8 @@ T infoJsonToDocument<T extends CvFirestoreDocument>(Model infoJson) {
 
 /// info json list to document list
 List<T> infoJsonListToDocumentList<T extends CvFirestoreDocument>(
-    List<Model> infoJsonList) {
+  List<Model> infoJsonList,
+) {
   return infoJsonList
       .map((infoJson) => infoJsonToDocument<T>(infoJson))
       .toList();
@@ -20,17 +21,20 @@ List<T> infoJsonListToDocumentList<T extends CvFirestoreDocument>(
 extension TekartikCvFirestoreDocumentSnapshotListInfoJsonListExt
     on List<DocumentSnapshot> {
   List<Model> toInfoJsonList() {
-    return map((snapshot) =>
-            FirestoreDocumentInfo.fromDocumentSnapshot(snapshot).toJsonMap())
-        .toList();
+    return map(
+      (snapshot) =>
+          FirestoreDocumentInfo.fromDocumentSnapshot(snapshot).toJsonMap(),
+    ).toList();
   }
 }
 
 /// Helpers
 extension TekartikCvFirestoreCvDocumentInfoJsonExt on CvFirestoreDocument {
   Model toInfoJson() {
-    return FirestoreDocumentInfo(path: ref.path, data: DocumentData(toMap()))
-        .toJsonMap();
+    return FirestoreDocumentInfo(
+      path: ref.path,
+      data: DocumentData(toMap()),
+    ).toJsonMap();
   }
 }
 

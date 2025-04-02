@@ -44,27 +44,30 @@ class CvDocumentReference<T extends CvFirestoreDocument>
       firestore.doc(path).cvOnSnapshot();
 
   /// Document changed
-  Stream<T> onSnapshotSupport(Firestore firestore,
-          {TrackChangesPullOptions? options}) =>
-      firestore.doc(path).cvOnSnapshotSupport(options: options);
+  Stream<T> onSnapshotSupport(
+    Firestore firestore, {
+    TrackChangesPullOptions? options,
+  }) => firestore.doc(path).cvOnSnapshotSupport(options: options);
 
-  T cv() => cvBuildModel<T>({})
-    ..path = path
-    // ignore: invalid_use_of_visible_for_testing_member
-    ..prvExists = false;
+  T cv() =>
+      cvBuildModel<T>({})
+        ..path = path
+        // ignore: invalid_use_of_visible_for_testing_member
+        ..prvExists = false;
 
-  T cvType(Type type) => cvTypeBuildModel<T>(type, {})
-    ..path = path
-    // ignore: invalid_use_of_visible_for_testing_member
-    ..prvExists = false;
+  T cvType(Type type) =>
+      cvTypeBuildModel<T>(type, {})
+        ..path = path
+        // ignore: invalid_use_of_visible_for_testing_member
+        ..prvExists = false;
 
   /// Delete
   Future<void> delete(Firestore firestore) => firestore.doc(path).delete();
 
   /// Sub collection reference (different type!)
   CvCollectionReference<U> collection<U extends CvFirestoreDocument>(
-          String path) =>
-      CvCollectionReference<U>(url.join(this.path, path));
+    String path,
+  ) => CvCollectionReference<U>(url.join(this.path, path));
 
   /// Raw document reference
   DocumentReference raw(Firestore firestore) => firestore.doc(path);

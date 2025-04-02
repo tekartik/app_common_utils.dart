@@ -10,9 +10,9 @@ void main() {
     });
     test('simple', () async {
       // If this fails, it is because the file has been removed from firebase storage
-      var response = await httpClientFactoryUniversal
-          .newClient()
-          .get(Uri.parse(simleJsonUrl));
+      var response = await httpClientFactoryUniversal.newClient().get(
+        Uri.parse(simleJsonUrl),
+      );
       print(response.body);
       expect(response.statusCode, httpStatusCodeOk);
     });

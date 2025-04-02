@@ -44,10 +44,15 @@ extension SembastDatabaseIndexExtension on Database {
   /// If [throwOnConflict] is true, a StateError is thrown in case of duplicates.
   ///
   /// Otherwise you must read and write in a transaction to avoid duplicates
-  DatabaseIndex<K, PK> index<K, PK>(IndexRef<K, PK> indexRef,
-      {bool throwOnConflict = false}) {
-    return _SembastDatabaseUniqueIndex(this, indexRef,
-        throwOnConflict: throwOnConflict);
+  DatabaseIndex<K, PK> index<K, PK>(
+    IndexRef<K, PK> indexRef, {
+    bool throwOnConflict = false,
+  }) {
+    return _SembastDatabaseUniqueIndex(
+      this,
+      indexRef,
+      throwOnConflict: throwOnConflict,
+    );
   }
 }
 
@@ -58,7 +63,9 @@ abstract class DatabaseIndex<K, PK> {
 
   /// Get an index record object to access/maninpulate the record in transaction.
   DatabaseClientIndexRecord<K, PK> transactionRecord(
-      Transaction transaction, K key);
+    Transaction transaction,
+    K key,
+  );
 
   void dispose();
 }
@@ -166,8 +173,11 @@ class _SembastDatabaseUniqueIndex<K, PK> implements DatabaseIndex<K, PK> {
   String get path => indexRef.path;
   final bool throwOnConflict;
 
-  _SembastDatabaseUniqueIndex(this.database, this.indexRef,
-      {this.throwOnConflict = false}) {
+  _SembastDatabaseUniqueIndex(
+    this.database,
+    this.indexRef, {
+    this.throwOnConflict = false,
+  }) {
     // Call ready right away to fill the index and so that it is
     // not called in a transaction
     // ignore: unnecessary_statements
@@ -182,8 +192,9 @@ class _SembastDatabaseUniqueIndex<K, PK> implements DatabaseIndex<K, PK> {
       _SembastDatabaseIndexRecord(this, key, database);
   @override
   DatabaseClientIndexRecord<K, PK> transactionRecord(
-          Transaction transaction, K key) =>
-      _SembastDatabaseIndexRecord(this, key, transaction);
+    Transaction transaction,
+    K key,
+  ) => _SembastDatabaseIndexRecord(this, key, transaction);
   Future<RecordRef<PK, Model>?> _storeRecord(K key) async {
     await _ready;
     var pk = pkMap[key];
@@ -195,7 +206,8 @@ class _SembastDatabaseUniqueIndex<K, PK> implements DatabaseIndex<K, PK> {
 
   void _throwConflict(RecordSnapshot snapshot) {
     throw StateError(
-        'Index conflict for key $path = ${key(snapshot.cast())} for $snapshot}');
+      'Index conflict for key $path = ${key(snapshot.cast())} for $snapshot}',
+    );
   }
 
   void _addNewKey(K? indexKey, PK pk, RecordSnapshot snapshot) {
@@ -220,7 +232,9 @@ class _SembastDatabaseUniqueIndex<K, PK> implements DatabaseIndex<K, PK> {
   }
 
   FutureOr<void> _onChange(
-      Transaction transaction, List<RecordChange<PK, Model>> changes) async {
+    Transaction transaction,
+    List<RecordChange<PK, Model>> changes,
+  ) async {
     await indexLock.synchronized(() {
       // Change in map
       for (var change in changes) {
@@ -265,7 +279,9 @@ class _SembastDatabaseUniqueIndex<K, PK> implements DatabaseIndex<K, PK> {
 
   // Get the snapshot
   Future<RecordSnapshot<PK, Model>?> _clientGetSnapshot(
-      DatabaseClient client, K key) async {
+    DatabaseClient client,
+    K key,
+  ) async {
     return (await _storeRecord(key))?.getSnapshot(client);
   }
 
@@ -284,18 +300,26 @@ class _SembastDatabaseUniqueIndex<K, PK> implements DatabaseIndex<K, PK> {
   ///
   /// Returns the key if inserted, null otherwise.
   Future<PK?> _clientAdd(
-          DatabaseClient databaseClient, K key, Model value) async =>
-      (await (await _storeRecord(key))?.add(databaseClient, value));
+    DatabaseClient databaseClient,
+    K key,
+    Model value,
+  ) async => (await (await _storeRecord(key))?.add(databaseClient, value));
 
   /// Save a record, create if needed.
   ///
   /// if [merge] is true and the field exists, data is merged
   ///
   /// Returns the updated value.
-  Future<Model> _clientPut(DatabaseClient databaseClient, K key, Model value,
-          {bool? merge}) async =>
-      (await (await _storeRecord(key))
-          ?.put(databaseClient, value, merge: merge)) as Model;
+  Future<Model> _clientPut(
+    DatabaseClient databaseClient,
+    K key,
+    Model value, {
+    bool? merge,
+  }) async =>
+      (await (await _storeRecord(
+            key,
+          ))?.put(databaseClient, value, merge: merge))
+          as Model;
 
   /// Update a record.
   ///
@@ -304,8 +328,10 @@ class _SembastDatabaseUniqueIndex<K, PK> implements DatabaseIndex<K, PK> {
   ///
   /// Returns the updated value.
   Future<Model?> _clientUpdate(
-          DatabaseClient databaseClient, K key, Model value) async =>
-      (await (await _storeRecord(key))?.update(databaseClient, value));
+    DatabaseClient databaseClient,
+    K key,
+    Model value,
+  ) async => (await (await _storeRecord(key))?.update(databaseClient, value));
 
   /// Delete the record.
   Future _clientDelete(DatabaseClient databaseClient, K key) async =>

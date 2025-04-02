@@ -19,7 +19,8 @@ void initBuilders() {
   cvFirestoreAddBuilder<CvFsEmpty>((_) => CvFsEmpty());
   cvFirestoreAddBuilder<CvFsSingleString>((_) => CvFsSingleString());
   cvFirestoreAddBuilder<CvFirestoreMapDocument>(
-      (_) => CvFirestoreMapDocument());
+    (_) => CvFirestoreMapDocument(),
+  );
 }
 
 void main() {
@@ -106,8 +107,10 @@ void main() {
     });
 
     test('build', () {
-      expect(cvTypeBuildModel(CvFsSingleString, newModel()),
-          isA<CvFsSingleString>());
+      expect(
+        cvTypeBuildModel(CvFsSingleString, newModel()),
+        isA<CvFsSingleString>(),
+      );
     });
     test('model', () async {
       var doc = CvFsSingleString();
@@ -146,9 +149,10 @@ void main() {
         expect(doc.toMap(), {'text': 'value'});
       }
 
-      var doc = CvFsSingleString()
-        ..path = 'test/single_string'
-        ..text.v = 'value';
+      var doc =
+          CvFsSingleString()
+            ..path = 'test/single_string'
+            ..text.v = 'value';
 
       expect(doc.path, 'test/single_string');
       expect(doc.toMap(), {'text': 'value'});
@@ -176,9 +180,10 @@ void main() {
         //transaction.pathDelete(doc.path);
         transaction.docDelete(readDoc);
       });
-      doc = CvFsSingleString()
-        ..path = 'test/single_string'
-        ..text.v = 'value2';
+      doc =
+          CvFsSingleString()
+            ..path = 'test/single_string'
+            ..text.v = 'value2';
 
       await firestore.cvRunTransaction((transaction) async {
         readDoc = await transaction.cvGet(doc.path);
@@ -186,13 +191,15 @@ void main() {
 
         transaction.cvSet(doc);
       });
-      doc = CvFsSingleString()
-        ..path = 'test/single_string'
-        ..text.v = 'value3';
+      doc =
+          CvFsSingleString()
+            ..path = 'test/single_string'
+            ..text.v = 'value3';
       await firestore.cvRunTransaction((transaction) async {
-        var doc = CvFsSingleString()
-          ..path = 'test/single_string'
-          ..text.v = 'value3';
+        var doc =
+            CvFsSingleString()
+              ..path = 'test/single_string'
+              ..text.v = 'value3';
         readDoc = await transaction.cvGet(doc.path);
         expect(readDoc.exists, isTrue);
         transaction.cvUpdate(doc);
@@ -215,9 +222,10 @@ void main() {
     });
 
     test('batch', () async {
-      var doc = CvFsSingleString()
-        ..path = 'batch/single_string'
-        ..text.v = 'value';
+      var doc =
+          CvFsSingleString()
+            ..path = 'batch/single_string'
+            ..text.v = 'value';
       var batch = firestore.cvBatch();
       batch.cvSet(doc);
       await batch.commit();
@@ -248,26 +256,30 @@ void main() {
     });
 
     test('onSnapshot', () async {
-      var doc = CvFsSingleString()
-        ..path = 'test/single_string'
-        ..text.v = 'value';
+      var doc =
+          CvFsSingleString()
+            ..path = 'test/single_string'
+            ..text.v = 'value';
 
       await firestore.cvSet(doc);
       expect(
-          await firestore.doc(doc.path).cvOnSnapshot<CvFsSingleString>().first,
-          doc);
+        await firestore.doc(doc.path).cvOnSnapshot<CvFsSingleString>().first,
+        doc,
+      );
       expect(
-          await firestore
-              .collection(url.dirname(doc.path))
-              .cvOnSnapshots<CvFsSingleString>()
-              .first,
-          [doc]);
+        await firestore
+            .collection(url.dirname(doc.path))
+            .cvOnSnapshots<CvFsSingleString>()
+            .first,
+        [doc],
+      );
       expect(
-          await firestore
-              .doc(doc.path)
-              .cvOnSnapshotSupport<CvFsSingleString>()
-              .first,
-          doc);
+        await firestore
+            .doc(doc.path)
+            .cvOnSnapshotSupport<CvFsSingleString>()
+            .first,
+        doc,
+      );
     });
 
     test('Collection reference', () {
@@ -279,8 +291,10 @@ void main() {
     test('collection', () async {
       var collection = CvCollectionReference<CvFsSingleString>('test');
       expect(collection.type, CvFsSingleString);
-      expect(collection.toString(),
-          'CvCollectionReference<CvFsSingleString>(test)');
+      expect(
+        collection.toString(),
+        'CvCollectionReference<CvFsSingleString>(test)',
+      );
       var docRef = collection.doc('1');
       expect(docRef.path, 'test/1');
       expect(await collection.get(firestore), isEmpty);
@@ -324,13 +338,17 @@ void main() {
 
       expect(docRef.parent.withId('other').path, 'other');
       expect(
-          docRef.parent.withPath('other/2/sub').withId('4').path, 'other/2/4');
+        docRef.parent.withPath('other/2/sub').withId('4').path,
+        'other/2/4',
+      );
     });
     test('document', () async {
       var docRef = CvDocumentReference<CvFsSingleString>('test/1');
       expect(docRef.type, CvFsSingleString);
       expect(
-          docRef.toString(), 'CvDocumentReference<CvFsSingleString>(test/1)');
+        docRef.toString(),
+        'CvDocumentReference<CvFsSingleString>(test/1)',
+      );
       expect(docRef.path, 'test/1');
       expect(docRef.cvType(CvFsSingleString), isA<CvFsSingleString>());
       var doc = docRef.cv();
@@ -421,14 +439,18 @@ void main() {
 
     test('extension', () {
       expect(
-          asModel({'test': 1, 'value': 2})..withDelete(CvField<String>('test')),
-          {'value': 2, 'test': FieldValue.delete});
+        asModel({'test': 1, 'value': 2})..withDelete(CvField<String>('test')),
+        {'value': 2, 'test': FieldValue.delete},
+      );
       expect(
-          asModel({'test': 1, 'value': 2})
-            ..withServerTimestamp(CvField<Timestamp>('test')),
-          {'value': 2, 'test': FieldValue.serverTimestamp});
-      expect((FsTestWithTimestamp()..value.v = 1).toMapWithServerTimestamp(),
-          {'value': 1, 'timestamp': FieldValue.serverTimestamp});
+        asModel({'test': 1, 'value': 2})
+          ..withServerTimestamp(CvField<Timestamp>('test')),
+        {'value': 2, 'test': FieldValue.serverTimestamp},
+      );
+      expect((FsTestWithTimestamp()..value.v = 1).toMapWithServerTimestamp(), {
+        'value': 1,
+        'timestamp': FieldValue.serverTimestamp,
+      });
     });
 
     test('jsonInfoList', () async {
@@ -443,19 +465,22 @@ void main() {
       expect(infoJsonList, [
         {
           'path': 'test/1',
-          'data': {'text': 'value'}
-        }
+          'data': {'text': 'value'},
+        },
       ]);
       expect((await collection.get(firestore)).toInfoJsonList(), infoJsonList);
       expect(
-          infoJsonListToDocumentList<CvFsSingleString>(infoJsonList)
-              .toInfoJsonList(),
-          infoJsonList);
+        infoJsonListToDocumentList<CvFsSingleString>(
+          infoJsonList,
+        ).toInfoJsonList(),
+        infoJsonList,
+      );
     });
     test('root', () {
       expect(cvRootDocumentReference.path, '');
-      var collection =
-          cvRootDocumentReference.collection<CvFsSingleString>('single');
+      var collection = cvRootDocumentReference.collection<CvFsSingleString>(
+        'single',
+      );
       expect(collection.path, 'single');
     });
     test('dirname', () {
@@ -468,21 +493,25 @@ void main() {
       expect(doc.parent.parent?.parent.parent, isNull);
     });
     test('List to Map', () {
-      var doc1 = CvFsSingleString()
-        ..path = 'test/1'
-        ..text.v = '1';
-      var doc2 = CvFsSingleString()
-        ..path = 'test/2'
-        ..text.v = '2';
+      var doc1 =
+          CvFsSingleString()
+            ..path = 'test/1'
+            ..text.v = '1';
+      var doc2 =
+          CvFsSingleString()
+            ..path = 'test/2'
+            ..text.v = '2';
       expect([doc1, doc2].toMap(), {'1': doc1, '2': doc2});
     });
     test('toMap', () {
-      var doc1 = CvFsSingleString()
-        ..path = 'test/1'
-        ..text.v = '1';
-      var doc2 = CvFsSingleString()
-        ..path = 'test/2'
-        ..text.v = '2';
+      var doc1 =
+          CvFsSingleString()
+            ..path = 'test/1'
+            ..text.v = '1';
+      var doc2 =
+          CvFsSingleString()
+            ..path = 'test/2'
+            ..text.v = '2';
       expect([doc1, doc2].toMap(), {'1': doc1, '2': doc2});
     });
     test('ref', () async {
@@ -494,7 +523,10 @@ void main() {
       expect(doc.ref, docRef);
       expect(doc.toMap(), {'v1': 1});
       await firestore.refSet(
-          docRef, TwoFields()..v2.v = 'value2', SetOptions(merge: true));
+        docRef,
+        TwoFields()..v2.v = 'value2',
+        SetOptions(merge: true),
+      );
       doc = await firestore.refGet(docRef);
       expect(doc.toMap(), {'v1': 1, 'v2': 'value2'});
       await firestore.refSet(docRef, TwoFields()..v2.v = 'value3');
@@ -513,7 +545,10 @@ void main() {
         expect(doc.path, docRef.path);
         expect(doc.toMap(), {'v1': 1});
         txn.refSet(
-            docRef, TwoFields()..v2.v = 'value2', SetOptions(merge: true));
+          docRef,
+          TwoFields()..v2.v = 'value2',
+          SetOptions(merge: true),
+        );
       });
 
       // update
@@ -579,17 +614,17 @@ class CvFsAllFields extends CvFirestoreDocumentBase {
 
   @override
   List<CvField> get fields => [
-        intValue,
-        doubleValue,
-        boolValue,
-        stringValue,
-        timestampValue,
-        intListValue,
-        model,
-        modelList,
-        map,
-        blob
-      ];
+    intValue,
+    doubleValue,
+    boolValue,
+    stringValue,
+    timestampValue,
+    intListValue,
+    model,
+    modelList,
+    map,
+    blob,
+  ];
 }
 
 class FsTestWithTimestamp extends CvFirestoreDocumentBase

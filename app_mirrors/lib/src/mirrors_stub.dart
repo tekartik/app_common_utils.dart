@@ -22,6 +22,8 @@ abstract class MirrorSystem {
   ///
   /// Using this method may result in larger output.  If possible, use
   /// [MirrorsUsed] to specify which symbols must be retained in clear text.
-  static String getName(Symbol symbol) => throw UnsupportedError(
-      'Cannot MirrorSystem.getName() without dart:mirrors');
+  static String getName(Symbol symbol) =>
+      throw UnsupportedError(
+        'Cannot MirrorSystem.getName() without dart:mirrors',
+      );
 }

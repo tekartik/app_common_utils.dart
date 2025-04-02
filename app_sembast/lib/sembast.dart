@@ -17,7 +17,12 @@ DatabaseFactory get databaseFactoryMemory =>
 ///
 /// autoInit is for sqflite_ffi on Windows
 /// On the web the parameters are ignored.
-DatabaseFactory getDatabaseFactory(
-        {String? packageName, String? rootPath, bool autoInit = true}) =>
-    src.getDatabaseFactory(
-        packageName: packageName, rootPath: rootPath, autoInit: autoInit);
+DatabaseFactory getDatabaseFactory({
+  String? packageName,
+  String? rootPath,
+  bool autoInit = true,
+}) => src.getDatabaseFactory(
+  packageName: packageName,
+  rootPath: rootPath,
+  autoInit: autoInit,
+);

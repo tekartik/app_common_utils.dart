@@ -21,8 +21,10 @@ void main() {
   group('Schema Tests', () {
     // Test basic constructors and toJson() for primitive types
     test('Schema.boolean', () {
-      final schema =
-          Schema.boolean(description: 'A boolean value', nullable: true);
+      final schema = Schema.boolean(
+        description: 'A boolean value',
+        nullable: true,
+      );
       expect(schema.type, SchemaType.boolean);
       expect(schema.description, 'A boolean value');
       expect(schema.nullable, true);
@@ -37,10 +39,7 @@ void main() {
       final schema = Schema.integer(format: 'int32');
       expect(schema.type, SchemaType.integer);
       expect(schema.format, 'int32');
-      expect(schema.toJson(), {
-        'type': 'INTEGER',
-        'format': 'int32',
-      });
+      expect(schema.toJson(), {'type': 'INTEGER', 'format': 'int32'});
     });
 
     test('Schema.number', () {
@@ -86,10 +85,7 @@ void main() {
     });
 
     test('Schema.object', () {
-      final properties = {
-        'name': Schema.string(),
-        'age': Schema.integer(),
-      };
+      final properties = {'name': Schema.string(), 'age': Schema.integer()};
       final schema = Schema.object(
         properties: properties,
         optionalProperties: ['age'],
@@ -108,13 +104,8 @@ void main() {
     });
 
     test('Schema.object with empty optionalProperties', () {
-      final properties = {
-        'name': Schema.string(),
-        'age': Schema.integer(),
-      };
-      final schema = Schema.object(
-        properties: properties,
-      );
+      final properties = {'name': Schema.string(), 'age': Schema.integer()};
+      final schema = Schema.object(properties: properties);
       expect(schema.type, SchemaType.object);
       expect(schema.properties, properties);
       expect(schema.toJson(), {

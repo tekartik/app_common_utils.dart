@@ -114,8 +114,8 @@ void main() {
       expect(list.ids, [1, 3]);
     });
     test('clone', () async {
-      var original = cvIntStoreFactory.store<DbTest>('test').record(1).cv()
-        ..value.v = 2;
+      var original =
+          cvIntStoreFactory.store<DbTest>('test').record(1).cv()..value.v = 2;
       var record = original.dbClone();
       expect(record, original);
       expect(record, isNot(same(original)));
@@ -130,14 +130,15 @@ void main() {
       expect(record.idOrNull, isNull);
     });
     test('cast', () async {
-      var store = cvIntStoreFactory
-          .store<DbTest>('test')
-          .cast<String, DbStringTest>()
-          .castV<DbStringTest>();
+      var store =
+          cvIntStoreFactory
+              .store<DbTest>('test')
+              .cast<String, DbStringTest>()
+              .castV<DbStringTest>();
       var record = store.record('test').cv()..value.v = 1;
       expect(record.toMap(), {'value': 1});
-      var record2 = store.record('test').castV<DbString2Test>().cv()
-        ..value2.v = 2;
+      var record2 =
+          store.record('test').castV<DbString2Test>().cv()..value2.v = 2;
       expect(record2.toMap(), {'value2': 2});
     });
     test('int store', () async {
@@ -310,7 +311,7 @@ void main() {
         'model': {'value': 7},
         'modelList': {'value': 8},
         'map': {'value': 9},
-        'blob': Blob.fromList([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+        'blob': Blob.fromList([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]),
       });
     });
     test('toJsonEncodable', () async {
@@ -325,36 +326,42 @@ void main() {
         'model': {'value': 7},
         'modelList': {'value': 8},
         'map': {'value': 9},
-        'blob': {'@Blob': 'AAECAwQFBgcICQ=='}
+        'blob': {'@Blob': 'AAECAwQFBgcICQ=='},
       });
       var tests = [DbTest()..value.v = 1, DbTest()..value.v = 2];
       expect(tests.toJsonEncodable(), [
         {'value': 1},
-        {'value': 2}
+        {'value': 2},
       ]);
     });
     test('json', () async {
       var record = CvDbAllFields()..timestampValue.v = Timestamp(1, 2000);
-      expect(record.dbToJson(),
-          '{"timestamp":{"@Timestamp":"1970-01-01T00:00:01.000002Z"}}');
       expect(
-          record.dbToJsonPretty(),
-          '{\n'
-          '  "timestamp": {\n'
-          '    "@Timestamp": "1970-01-01T00:00:01.000002Z"\n'
-          '  }\n'
-          '}');
-      expect([record].dbToJson(),
-          '[{"timestamp":{"@Timestamp":"1970-01-01T00:00:01.000002Z"}}]');
+        record.dbToJson(),
+        '{"timestamp":{"@Timestamp":"1970-01-01T00:00:01.000002Z"}}',
+      );
       expect(
-          [record].dbToJsonPretty(),
-          '[\n'
-          '  {\n'
-          '    "timestamp": {\n'
-          '      "@Timestamp": "1970-01-01T00:00:01.000002Z"\n'
-          '    }\n'
-          '  }\n'
-          ']');
+        record.dbToJsonPretty(),
+        '{\n'
+        '  "timestamp": {\n'
+        '    "@Timestamp": "1970-01-01T00:00:01.000002Z"\n'
+        '  }\n'
+        '}',
+      );
+      expect(
+        [record].dbToJson(),
+        '[{"timestamp":{"@Timestamp":"1970-01-01T00:00:01.000002Z"}}]',
+      );
+      expect(
+        [record].dbToJsonPretty(),
+        '[\n'
+        '  {\n'
+        '    "timestamp": {\n'
+        '      "@Timestamp": "1970-01-01T00:00:01.000002Z"\n'
+        '    }\n'
+        '  }\n'
+        ']',
+      );
     });
 
     group('CvQueryRef', () {
@@ -404,7 +411,8 @@ void main() {
           await cvStore.record(2).cv().put(txn);
           await cvStore.record(3).cv().put(txn);
           var query = cvStore.query(
-              finder: Finder(sortOrders: [SortOrder(Field.key)], offset: 1));
+            finder: Finder(sortOrders: [SortOrder(Field.key)], offset: 1),
+          );
           expect(await query.delete(txn), 2);
           expect(cvStore.query().getKeysSync(txn), [1]);
         });
@@ -427,15 +435,15 @@ class CvDbAllFields extends DbIntRecordBase {
 
   @override
   List<CvField> get fields => [
-        intValue,
-        doubleValue,
-        boolValue,
-        stringValue,
-        timestampValue,
-        intListValue,
-        model,
-        modelList,
-        map,
-        blob
-      ];
+    intValue,
+    doubleValue,
+    boolValue,
+    stringValue,
+    timestampValue,
+    intListValue,
+    model,
+    modelList,
+    map,
+    blob,
+  ];
 }

@@ -10,8 +10,9 @@ extension AnalysisOptionsFileIo on AnalysisOptionsFile {
     final file = File(path);
     try {
       final content = await file.readAsString();
-      final options = (jsonDecode(content) as Map)
-          .cv<CvAnalysisOptions>(builder: (_) => CvAnalysisOptions());
+      final options = (jsonDecode(content) as Map).cv<CvAnalysisOptions>(
+        builder: (_) => CvAnalysisOptions(),
+      );
       this.options = options;
     } on Exception catch (e) {
       print(e);

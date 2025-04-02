@@ -15,8 +15,10 @@ void _ensurePathSet(CvFirestoreDocument document) {
 /// Easy extension
 extension CvFirestoreExt on Firestore {
   /// Add a document
-  Future<void> cvSet<T extends CvFirestoreDocument>(T document,
-      [SetOptions? options]) async {
+  Future<void> cvSet<T extends CvFirestoreDocument>(
+    T document, [
+    SetOptions? options,
+  ]) async {
     _ensurePathSet(document);
     await doc(document.path).set(document.toMap(), options);
   }
@@ -39,26 +41,32 @@ extension CvFirestoreExt on Firestore {
 
   /// Add a document to collection, [document.path] is ignored.
   Future<T> cvAdd<T extends CvFirestoreDocument>(
-      String path, T document) async {
+    String path,
+    T document,
+  ) async {
     return await collection(path).cvAdd(document);
   }
 
   /// Returns non-null [Future] of the read data in a [DocumentSnapshot].
   Future<void> refDelete<T extends CvFirestoreDocument>(
-      CvDocumentReference<T> ref) async {
+    CvDocumentReference<T> ref,
+  ) async {
     await pathDelete(ref.path);
   }
 
   /// Returns non-null [Future] of the read data in a [DocumentSnapshot].
   Future<T> refGet<T extends CvFirestoreDocument>(
-      CvDocumentReference<T> ref) async {
+    CvDocumentReference<T> ref,
+  ) async {
     return await cvGet<T>(ref.path);
   }
 
   /// Set
   Future<void> refSet<T extends CvFirestoreDocument>(
-      CvDocumentReference<T> ref, T document,
-      [SetOptions? options]) async {
+    CvDocumentReference<T> ref,
+    T document, [
+    SetOptions? options,
+  ]) async {
     await doc(ref.path).set(document.toMap(), options);
   }
 
@@ -74,7 +82,8 @@ extension CvFirestoreExt on Firestore {
 
   /// Transaction
   Future<T> cvRunTransaction<T>(
-      FutureOr<T> Function(CvFirestoreTransaction transaction) action) {
+    FutureOr<T> Function(CvFirestoreTransaction transaction) action,
+  ) {
     return runTransaction<T>((transaction) async {
       return action(CvFirestoreTransaction(this, transaction));
     });
@@ -107,21 +116,26 @@ class CvFirestoreTransaction extends Transaction {
 
   /// Returns non-null [Future] of the read data in a [DocumentSnapshot].
   Future<T> refGet<T extends CvFirestoreDocument>(
-      CvDocumentReference<T> ref) async {
+    CvDocumentReference<T> ref,
+  ) async {
     return await cvGet<T>(ref.path);
   }
 
   /// Set
   void refSet<T extends CvFirestoreDocument>(
-      CvDocumentReference<T> ref, T document,
-      [SetOptions? options]) async {
+    CvDocumentReference<T> ref,
+    T document, [
+    SetOptions? options,
+  ]) async {
     refSetMap(ref, document.toMap(), options);
   }
 
   /// Set
   void refSetMap<T extends CvFirestoreDocument>(
-      CvDocumentReference<T> ref, Model map,
-      [SetOptions? options]) async {
+    CvDocumentReference<T> ref,
+    Model map, [
+    SetOptions? options,
+  ]) async {
     set(_firestore.doc(ref.path), map, options);
   }
 
@@ -131,13 +145,17 @@ class CvFirestoreTransaction extends Transaction {
 
   /// Update
   void refUpdate<T extends CvFirestoreDocument>(
-      CvDocumentReference<T> ref, T document) async {
+    CvDocumentReference<T> ref,
+    T document,
+  ) async {
     refUpdateMap(ref, document.toMap());
   }
 
   /// Update
   void refUpdateMap<T extends CvFirestoreDocument>(
-      CvDocumentReference<T> ref, Model map) async {
+    CvDocumentReference<T> ref,
+    Model map,
+  ) async {
     update(ref.raw(_firestore), map);
   }
 
@@ -173,8 +191,11 @@ class CvFirestoreTransaction extends Transaction {
   }
 
   @override
-  void set(DocumentReference documentRef, Map<String, Object?> data,
-      [SetOptions? options]) {
+  void set(
+    DocumentReference documentRef,
+    Map<String, Object?> data, [
+    SetOptions? options,
+  ]) {
     _transaction.set(documentRef, data, options);
   }
 
@@ -201,17 +222,24 @@ extension CvFirestoreQueryExt on Query {
     return querySnapshot.cv<T>();
   }
 
-  Stream<List<T>> cvOnSnapshots<T extends CvFirestoreDocument>() => onSnapshot()
-          .transform(StreamTransformer.fromHandlers(handleData: (data, sink) {
-        sink.add(data.docs.cv<T>());
-      }));
+  Stream<List<T>> cvOnSnapshots<T extends CvFirestoreDocument>() =>
+      onSnapshot().transform(
+        StreamTransformer.fromHandlers(
+          handleData: (data, sink) {
+            sink.add(data.docs.cv<T>());
+          },
+        ),
+      );
 
-  Stream<List<T>> cvOnSnapshotsSupport<T extends CvFirestoreDocument>(
-          {TrackChangesPullOptions? options}) =>
-      onSnapshotSupport(options: options)
-          .transform(StreamTransformer.fromHandlers(handleData: (data, sink) {
+  Stream<List<T>> cvOnSnapshotsSupport<T extends CvFirestoreDocument>({
+    TrackChangesPullOptions? options,
+  }) => onSnapshotSupport(options: options).transform(
+    StreamTransformer.fromHandlers(
+      handleData: (data, sink) {
         sink.add(data.docs.cv<T>());
-      }));
+      },
+    ),
+  );
 }
 
 /// Easy extension
@@ -267,28 +295,30 @@ extension CvFirestoreDocumentReferenceExt on DocumentReference {
   }
 
   StreamTransformer<DocumentSnapshot, T>
-      _snapshotTransformer<T extends CvFirestoreDocument>() =>
-          StreamTransformer<DocumentSnapshot, T>.fromHandlers(
-              handleData: (data, sink) {
-            try {
-              var converted = data.cv<T>();
-              sink.add(converted);
-              // devPrint('cvOnSnapshot $converted');
-            } catch (e) {
-              if (kDebugMode) {
-                print('cvOnSnapshot.error: $e');
-              }
-              rethrow;
+  _snapshotTransformer<T extends CvFirestoreDocument>() =>
+      StreamTransformer<DocumentSnapshot, T>.fromHandlers(
+        handleData: (data, sink) {
+          try {
+            var converted = data.cv<T>();
+            sink.add(converted);
+            // devPrint('cvOnSnapshot $converted');
+          } catch (e) {
+            if (kDebugMode) {
+              print('cvOnSnapshot.error: $e');
             }
-          });
+            rethrow;
+          }
+        },
+      );
 
   /// on snapshots
   Stream<T> cvOnSnapshot<T extends CvFirestoreDocument>() =>
       onSnapshot().transform(_snapshotTransformer<T>());
 
   /// on snapshots
-  Stream<T> cvOnSnapshotSupport<T extends CvFirestoreDocument>(
-          {TrackChangesPullOptions? options}) =>
+  Stream<T> cvOnSnapshotSupport<T extends CvFirestoreDocument>({
+    TrackChangesPullOptions? options,
+  }) =>
       onSnapshotSupport(options: options).transform(_snapshotTransformer<T>());
 }
 
@@ -316,9 +346,11 @@ class CvFirestoreWriteBatch extends WriteBatch {
   Future commit() => _writeBatch.commit();
 
   @override
-  void set(DocumentReference ref, Map<String, Object?> data,
-          [SetOptions? options]) =>
-      _writeBatch.set(ref, data, options);
+  void set(
+    DocumentReference ref,
+    Map<String, Object?> data, [
+    SetOptions? options,
+  ]) => _writeBatch.set(ref, data, options);
 
   /// set document
   void cvSet(CvFirestoreDocument document, [SetOptions? options]) {
@@ -327,15 +359,19 @@ class CvFirestoreWriteBatch extends WriteBatch {
   }
 
   void refSet<T extends CvFirestoreDocument>(
-      CvDocumentReference<T> ref, T document,
-      [SetOptions? options]) {
+    CvDocumentReference<T> ref,
+    T document, [
+    SetOptions? options,
+  ]) {
     refSetMap<T>(ref, document.toMap(), options);
   }
 
   /// Set
   void refSetMap<T extends CvFirestoreDocument>(
-      CvDocumentReference<T> ref, Model map,
-      [SetOptions? options]) async {
+    CvDocumentReference<T> ref,
+    Model map, [
+    SetOptions? options,
+  ]) async {
     set(ref.raw(_firestore), map, options);
   }
 
@@ -349,12 +385,16 @@ class CvFirestoreWriteBatch extends WriteBatch {
   }
 
   void refUpdate<T extends CvFirestoreDocument>(
-      CvDocumentReference<T> ref, T document) {
+    CvDocumentReference<T> ref,
+    T document,
+  ) {
     refUpdateMap(ref, document.toMap());
   }
 
   void refUpdateMap<T extends CvFirestoreDocument>(
-      CvDocumentReference<T> ref, Model map) {
+    CvDocumentReference<T> ref,
+    Model map,
+  ) {
     update(ref.raw(_firestore), map);
   }
 

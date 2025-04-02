@@ -70,9 +70,10 @@ abstract class DbRecordBase<K> extends CvModelBase
     with _WithRef<K>
     implements DbRecord<K> {
   @override
-  String toString() => _ref == null
-      ? '<null> ${super.toString()}'
-      : '$rawRef ${super.toString()}';
+  String toString() =>
+      _ref == null
+          ? '<null> ${super.toString()}'
+          : '$rawRef ${super.toString()}';
 
   /// Put(add/update) inner data
   ///
@@ -202,7 +203,8 @@ extension DbRecordCloneExt<T extends DbRecord> on T {
 extension DatabaseClientSembastExt on DatabaseClient {
   /// Transaction helper
   Future<T> transaction<T>(
-      Future<T> Function(Transaction transaction) action) async {
+    Future<T> Function(Transaction transaction) action,
+  ) async {
     var dbOrTxn = this;
     if (dbOrTxn is Database) {
       return await dbOrTxn.transaction(action);
@@ -239,7 +241,7 @@ extension DbRecordListExt<K, V> on List<DbRecord<K>> {
     });
   }
 
-/*
+  /*
   /// Weird, this reads onto an existing record...
   Future<bool> get(DatabaseClient db) async {
 
@@ -348,7 +350,7 @@ class CvRecordsRef<K, V extends DbRecord<K>> {
 
   /// Constructor
   CvRecordsRef(this.store, Iterable<K> keys)
-      : rawRefs = store.rawRef.records(keys);
+    : rawRefs = store.rawRef.records(keys);
 
   /// Get
   Future<List<V?>> get(DatabaseClient db) async =>

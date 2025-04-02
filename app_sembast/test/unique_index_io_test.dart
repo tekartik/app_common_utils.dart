@@ -27,9 +27,9 @@ void main() {
       expect((await dbIndex.record(2).getSnapshot())!.key, 1);
       await db.transaction((transaction) async {
         expect(
-            (await dbIndex.transactionRecord(transaction, 2).getSnapshot())!
-                .key,
-            1);
+          (await dbIndex.transactionRecord(transaction, 2).getSnapshot())!.key,
+          1,
+        );
       });
 
       await db.close();

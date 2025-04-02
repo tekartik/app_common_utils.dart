@@ -89,6 +89,7 @@ Future genSerializer({required String src, required Type type}) async {
   // print(sb);
   var formatted = formatter.format(sb.toString(), uri: Uri.file(src));
   // print(formatted);
-  await File(join(dirname(src), '${basenameWithoutExtension(src)}.g.dart'))
-      .writeAsString(_fixLinesStringForIoGit(formatted));
+  await File(
+    join(dirname(src), '${basenameWithoutExtension(src)}.g.dart'),
+  ).writeAsString(_fixLinesStringForIoGit(formatted));
 }

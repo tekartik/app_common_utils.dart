@@ -10,8 +10,8 @@ void main() {
       'String': 'text',
       'bool': true,
       'Uint8List': Uint8List.fromList([1, 2, 3]),
-      'null': null
-    }
+      'null': null,
+    },
   ];
   var csv = mapListToCsv(list);
   print(csv);

@@ -6,7 +6,9 @@ String generatePassword({int length = 32}) {
   Iterable<String> generate(String startCharacter, int count) {
     var codeUnit = startCharacter.codeUnits.first;
     return List<String>.generate(
-        count, (index) => codeUnitToString(codeUnit + index));
+      count,
+      (index) => codeUnitToString(codeUnit + index),
+    );
   }
 
   var digits = generate('0', 10);

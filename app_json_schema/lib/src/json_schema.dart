@@ -40,12 +40,12 @@ final class JsonSchema {
     String? description,
     bool? nullable,
   }) : this(
-          JsonSchemaType.object,
-          properties: properties,
-          optionalProperties: optionalProperties,
-          description: description,
-          nullable: nullable,
-        );
+         JsonSchemaType.object,
+         properties: properties,
+         optionalProperties: optionalProperties,
+         description: description,
+         nullable: nullable,
+       );
 
   /// Construct a schema for an array of values with a specified type.
   JsonSchema.array({
@@ -53,49 +53,41 @@ final class JsonSchema {
     String? description,
     bool? nullable,
   }) : this(
-          JsonSchemaType.array,
-          description: description,
-          nullable: nullable,
-          items: items,
-        );
+         JsonSchemaType.array,
+         description: description,
+         nullable: nullable,
+         items: items,
+       );
 
   /// Construct a schema for bool value.
-  JsonSchema.boolean({
-    String? description,
-    bool? nullable,
-  }) : this(
-          JsonSchemaType.boolean,
-          description: description,
-          nullable: nullable,
-        );
+  JsonSchema.boolean({String? description, bool? nullable})
+    : this(
+        JsonSchemaType.boolean,
+        description: description,
+        nullable: nullable,
+      );
 
   /// Construct a schema for an integer number.
   ///
   /// The [format] may be "int32" or "int64".
-  JsonSchema.integer({
-    String? description,
-    bool? nullable,
-    String? format,
-  }) : this(
-          JsonSchemaType.integer,
-          description: description,
-          nullable: nullable,
-          format: format,
-        );
+  JsonSchema.integer({String? description, bool? nullable, String? format})
+    : this(
+        JsonSchemaType.integer,
+        description: description,
+        nullable: nullable,
+        format: format,
+      );
 
   /// Construct a schema for a non-integer number.
   ///
   /// The [format] may be "float" or "double".
-  JsonSchema.number({
-    String? description,
-    bool? nullable,
-    String? format,
-  }) : this(
-          JsonSchemaType.number,
-          description: description,
-          nullable: nullable,
-          format: format,
-        );
+  JsonSchema.number({String? description, bool? nullable, String? format})
+    : this(
+        JsonSchemaType.number,
+        description: description,
+        nullable: nullable,
+        format: format,
+      );
 
   /// Construct a schema for String value with enumerated possible values.
   JsonSchema.enumString({
@@ -103,20 +95,21 @@ final class JsonSchema {
     String? description,
     bool? nullable,
   }) : this(
-          JsonSchemaType.string,
-          enumValues: enumValues,
-          description: description,
-          nullable: nullable,
-          format: 'enum',
-        );
+         JsonSchemaType.string,
+         enumValues: enumValues,
+         description: description,
+         nullable: nullable,
+         format: 'enum',
+       );
 
   /// Construct a schema for a String value.
-  JsonSchema.string({
-    String? description,
-    bool? nullable,
-    String? format,
-  }) : this(JsonSchemaType.string,
-            description: description, nullable: nullable, format: format);
+  JsonSchema.string({String? description, bool? nullable, String? format})
+    : this(
+        JsonSchemaType.string,
+        description: description,
+        nullable: nullable,
+        format: format,
+      );
 
   /// The type of this value.
   JsonSchemaType type;
@@ -158,25 +151,26 @@ final class JsonSchema {
 
   /// Convert to json object.
   Map<String, Object> toJson() => {
-        'type': type.toJson(),
-        if (format case final format?) 'format': format,
-        if (description case final description?) 'description': description,
-        if (nullable case final nullable?) 'nullable': nullable,
-        if (enumValues case final enumValues?) 'enum': enumValues,
-        if (items case final items?) 'items': items.toJson(),
-        if (properties case final properties?)
-          'properties': {
-            for (final MapEntry(:key, :value) in properties.entries)
-              key: value.toJson()
-          },
-        // Calculate required properties based on optionalProperties
-        if (properties != null)
-          'required': optionalProperties != null
+    'type': type.toJson(),
+    if (format case final format?) 'format': format,
+    if (description case final description?) 'description': description,
+    if (nullable case final nullable?) 'nullable': nullable,
+    if (enumValues case final enumValues?) 'enum': enumValues,
+    if (items case final items?) 'items': items.toJson(),
+    if (properties case final properties?)
+      'properties': {
+        for (final MapEntry(:key, :value) in properties.entries)
+          key: value.toJson(),
+      },
+    // Calculate required properties based on optionalProperties
+    if (properties != null)
+      'required':
+          optionalProperties != null
               ? properties!.keys
                   .where((key) => !optionalProperties!.contains(key))
                   .toList()
               : properties!.keys.toList(),
-      };
+  };
 }
 
 /// The value type of a [JsonSchema].
@@ -201,11 +195,11 @@ enum JsonSchemaType {
 
   /// Convert to json object.
   String toJson() => switch (this) {
-        string => 'STRING',
-        number => 'NUMBER',
-        integer => 'INTEGER',
-        boolean => 'BOOLEAN',
-        array => 'ARRAY',
-        object => 'OBJECT',
-      };
+    string => 'STRING',
+    number => 'NUMBER',
+    integer => 'INTEGER',
+    boolean => 'BOOLEAN',
+    array => 'ARRAY',
+    object => 'OBJECT',
+  };
 }

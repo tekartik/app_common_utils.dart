@@ -17,8 +17,9 @@ Future<List<String>> readContent(FileSystem fs, String filePath) {
       .bind(fs.file(filePath).openRead())
       .transform(const LineSplitter())
       .listen((String line) {
-    content.add(line);
-  }).asFuture(content);
+        content.add(line);
+      })
+      .asFuture(content);
 }
 
 void main() {
@@ -32,7 +33,9 @@ void main() {
   test('EncryptedDatabaseFactory', () async {
     var dbPath = 'test';
     var encryptedFactory = EncryptedDatabaseFactory(
-        databaseFactory: factory, password: 'user_password');
+      databaseFactory: factory,
+      password: 'user_password',
+    );
     var db = await encryptedFactory.openDatabase(dbPath);
     var store = StoreRef<int, String>.main();
     await store.add(db, 'test');
@@ -41,8 +44,9 @@ void main() {
     // print(lines);
     expect(lines.length, 2);
     var codec = encryptedFactory.codec.codec!;
-    expect(codec.decode((json.decode(lines.first) as Map)['codec'] as String),
-        {'signature': 'encrypt'});
+    expect(codec.decode((json.decode(lines.first) as Map)['codec'] as String), {
+      'signature': 'encrypt',
+    });
     expect(codec.decode(lines[1]), {'key': 1, 'value': 'test'});
   });
 }

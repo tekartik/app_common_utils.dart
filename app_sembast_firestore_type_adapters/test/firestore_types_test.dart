@@ -18,7 +18,7 @@ void main() {
         'String': 'text',
         'firestoreTimestamp': Timestamp(1234, 5678),
         'firestoreBlob': Blob(Uint8List.fromList([1, 2, 3])),
-        'firestoreGeoPoint': const GeoPoint(1.1, 2.2)
+        'firestoreGeoPoint': const GeoPoint(1.1, 2.2),
       };
       await record.add(db, data);
       expect(await record.get(db), data);
@@ -40,22 +40,26 @@ void main() {
                 'int': 1,
                 'String': 'text',
                 'firestoreTimestamp': {
-                  '@FirestoreTimestamp': {'seconds': 1234, 'nanoseconds': 5678}
+                  '@FirestoreTimestamp': {'seconds': 1234, 'nanoseconds': 5678},
                 },
                 'firestoreBlob': {'@FirestoreBlob': 'AQID'},
                 'firestoreGeoPoint': {
-                  '@FirestoreGeoPoint': {'latitude': 1.1, 'longitude': 2.2}
-                }
-              }
-            ]
-          }
-        ]
+                  '@FirestoreGeoPoint': {'latitude': 1.1, 'longitude': 2.2},
+                },
+              },
+            ],
+          },
+        ],
       };
       expect(await exportDatabase(db), export);
       await db.close();
 
-      db = await importDatabase(export, factory, 'imported',
-          codec: sembastFirestoreCodec);
+      db = await importDatabase(
+        export,
+        factory,
+        'imported',
+        codec: sembastFirestoreCodec,
+      );
       expect(await record.get(db), data);
       await db.close();
     });

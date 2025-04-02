@@ -43,7 +43,7 @@ mixin _WithPath implements CvFirestoreDocument {
 
 /// common helper
 extension CvFirestoreDocumentExt<T extends CvFirestoreDocument> on T {
-// extension CvFirestoreDocumentExt on CvFirestoreDocument {
+  // extension CvFirestoreDocumentExt on CvFirestoreDocument {
   /// Id or null
   String? get idOrNull => hasId ? id : null;
 

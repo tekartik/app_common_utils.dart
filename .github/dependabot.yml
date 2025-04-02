@@ -6,6 +6,10 @@ enable-beta-ecosystems: true
 
 updates:
   - package-ecosystem: "pub"
+    directory: "."
+    schedule:
+      interval: "monthly"
+  - package-ecosystem: "pub"
     directory: "app"
     schedule:
       interval: "monthly"
@@ -38,7 +42,15 @@ updates:
     schedule:
       interval: "monthly"
   - package-ecosystem: "pub"
+    directory: "app_dev_menu"
+    schedule:
+      interval: "monthly"
+  - package-ecosystem: "pub"
     directory: "app_emit"
+    schedule:
+      interval: "monthly"
+  - package-ecosystem: "pub"
+    directory: "app_firebase_local"
     schedule:
       interval: "monthly"
   - package-ecosystem: "pub"
@@ -99,6 +111,10 @@ updates:
       interval: "monthly"
   - package-ecosystem: "pub"
     directory: "app_sqflite"
+    schedule:
+      interval: "monthly"
+  - package-ecosystem: "pub"
+    directory: "app_text"
     schedule:
       interval: "monthly"
   - package-ecosystem: "pub"

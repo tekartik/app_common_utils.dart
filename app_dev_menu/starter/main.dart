@@ -12,7 +12,8 @@ void main(List<String> arguments) async {
       });
       item('prompt', () async {
         write(
-            'RESULT prompt: ${await prompt('Some text please then [ENTER]')}');
+          'RESULT prompt: ${await prompt('Some text please then [ENTER]')}',
+        );
       });
 
       item('print hi', () {

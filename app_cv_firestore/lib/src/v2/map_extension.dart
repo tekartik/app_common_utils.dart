@@ -17,8 +17,10 @@ mixin WithServerTimestampMixin implements CvModel {
 
   List<CvField> get timedMixinFields => [timestamp];
 
-  Model toMapWithServerTimestamp(
-          {List<String>? columns, bool includeMissingValue = false}) =>
+  Model toMapWithServerTimestamp({
+    List<String>? columns,
+    bool includeMissingValue = false,
+  }) =>
       toMap(columns: columns, includeMissingValue: includeMissingValue)
         ..withServerTimestamp(timestamp);
 }

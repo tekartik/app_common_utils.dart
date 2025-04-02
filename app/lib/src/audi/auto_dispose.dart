@@ -32,11 +32,13 @@ extension AutoDisposeDisposableExt on AutoDispose {
 abstract class AutoDispose {
   /// Add a StreamSubscription to the auto dispose list
   StreamSubscription<T> audiAddStreamSubscription<T>(
-      StreamSubscription<T> subscription);
+    StreamSubscription<T> subscription,
+  );
 
   /// Add a StreamController to the auto dispose list
   StreamController<T> audiAddStreamController<T>(
-      StreamController<T> controller);
+    StreamController<T> controller,
+  );
 
   /// Add a disposer to the auto dispose list, if object is null.
   T audiAdd<T extends Object>(T object, AutoDisposeFunction dispose);
@@ -66,13 +68,15 @@ mixin AutoDisposeMixin implements AutoDispose {
 
   @override
   StreamSubscription<T> audiAddStreamSubscription<T>(
-      StreamSubscription<T> subscription) {
+    StreamSubscription<T> subscription,
+  ) {
     return audiAdd(subscription, subscription.cancel);
   }
 
   @override
   StreamController<T> audiAddStreamController<T>(
-      StreamController<T> controller) {
+    StreamController<T> controller,
+  ) {
     return audiAdd(controller, controller.close);
   }
 
@@ -89,9 +93,12 @@ mixin AutoDisposeMixin implements AutoDispose {
 
   @override
   T audiAddSelf<T extends Object>(
-      T object, AutoDisposeSelfFunction<T> dispose) {
+    T object,
+    AutoDisposeSelfFunction<T> dispose,
+  ) {
     return _audiAdd<T>(
-        _AutoDisposer(object: object, dispose: () => dispose(object)));
+      _AutoDisposer(object: object, dispose: () => dispose(object)),
+    );
   }
 
   @override

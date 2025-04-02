@@ -3,6 +3,7 @@ import 'package:cv/cv.dart';
 
 /// Add builder
 void cvFirestoreAddBuilder<T extends CvModel>(
-    T Function(Map contextData) builder) {
+  T Function(Map contextData) builder,
+) {
   cvAddBuilder(builder);
 }

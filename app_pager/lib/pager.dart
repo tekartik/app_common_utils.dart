@@ -28,16 +28,17 @@ class Pager<T> {
   /// key is the page
   final LruMap<int, PagerData<T>> _pageCache;
 
-  Pager(
-      {required PagerDataProvider<T> provider,
-      int? pageSize,
-      int? cachePageCount,
-      int? poolSize})
-      : _provider = provider,
-        _pageSize = pageSize ?? defaultPageSize,
-        _pageCache = LruMap<int, PagerData<T>>(
-            maximumSize: cachePageCount ?? defaultCachePageCount),
-        _pool = Pool(poolSize ?? defaultPoolSize);
+  Pager({
+    required PagerDataProvider<T> provider,
+    int? pageSize,
+    int? cachePageCount,
+    int? poolSize,
+  }) : _provider = provider,
+       _pageSize = pageSize ?? defaultPageSize,
+       _pageCache = LruMap<int, PagerData<T>>(
+         maximumSize: cachePageCount ?? defaultCachePageCount,
+       ),
+       _pool = Pool(poolSize ?? defaultPoolSize);
 
   /// Get the page from a given item index
   int _getItemIndexPage(int index) {
@@ -77,21 +78,25 @@ class Pager<T> {
         return !(controller.isCompleted) && (data!.needFetch);
       }
 
-      unawaited(_pool.withResource(() async {
-        // Don't fetch if not needed
-        if (needFetch()) {
-          await data!.lock.synchronized(() async {
-            if (needFetch()) {
-              data!.items = await _provider.getData(
-                  _getPageProviderOffset(page), _pageSize);
-              // Complete if needed too
-            }
-          });
-        }
-        if (!controller.isCompleted && data!.items != null) {
-          controller.complete(data.getItem(inPageIndex));
-        }
-      }));
+      unawaited(
+        _pool.withResource(() async {
+          // Don't fetch if not needed
+          if (needFetch()) {
+            await data!.lock.synchronized(() async {
+              if (needFetch()) {
+                data!.items = await _provider.getData(
+                  _getPageProviderOffset(page),
+                  _pageSize,
+                );
+                // Complete if needed too
+              }
+            });
+          }
+          if (!controller.isCompleted && data!.items != null) {
+            controller.complete(data.getItem(inPageIndex));
+          }
+        }),
+      );
 
       return controller.futureOr;
     } else {

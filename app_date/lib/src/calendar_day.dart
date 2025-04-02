@@ -72,7 +72,8 @@ class CalendarDay implements Comparable<CalendarDay> {
   /// Previous day
   CalendarDay previousDay() {
     return CalendarDay.fromTimestamp(
-        _dateTime.subtract(const Duration(days: 1)));
+      _dateTime.subtract(const Duration(days: 1)),
+    );
   }
 
   @override

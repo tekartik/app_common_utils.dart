@@ -15,8 +15,10 @@ void main() {
     test('state', () {
       var bloc = TestBloc();
       expect(bloc.state.hasValue, isFalse);
-      expect(() => bloc.state.value,
-          throwsA(const TypeMatcher<ValueStreamError>()));
+      expect(
+        () => bloc.state.value,
+        throwsA(const TypeMatcher<ValueStreamError>()),
+      );
       bloc.add('test');
       expect(bloc.state.hasValue, isTrue);
       expect(bloc.state.value, 'test');

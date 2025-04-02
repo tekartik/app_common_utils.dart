@@ -34,9 +34,10 @@ class CalendarTime implements Comparable<CalendarTime> {
   int get minutes => (_seconds ~/ 60);
 
   /// Minutes in the hour (>=0 <60)
-  int get hourMinutes => isFullMinutes
-      ? (minutes % 60)
-      : (isNegative ? ((minutes % 60) - 1) : (minutes % 60));
+  int get hourMinutes =>
+      isFullMinutes
+          ? (minutes % 60)
+          : (isNegative ? ((minutes % 60) - 1) : (minutes % 60));
 
   /// Seconds in the minute (>=0 <60)
   int get minuteSeconds => seconds % 60;
@@ -96,7 +97,8 @@ class CalendarTime implements Comparable<CalendarTime> {
   /// From any date time, pick the correct one
   factory CalendarTime.fromDateTime(DateTime dateTime) {
     return CalendarTime.fromSeconds(
-        ((dateTime.hour * 60) + dateTime.minute) * 60 + dateTime.second);
+      ((dateTime.hour * 60) + dateTime.minute) * 60 + dateTime.second,
+    );
   }
   CalendarTime.zero() {
     _seconds = 0;

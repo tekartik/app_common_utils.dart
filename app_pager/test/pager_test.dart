@@ -127,7 +127,7 @@ void main() {
       var item1 = pager.getItemFutureOr(0);
       var item2 = pager.getItemFutureOr(1);
 
-// onError needed to prevent unit test failure
+      // onError needed to prevent unit test failure
       var subscription1 = item1.listen(null, onError: (_) => null);
       subscription1.cancel();
       expect(provider.actions.map((action) => action.text), isEmpty);

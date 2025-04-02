@@ -14,8 +14,11 @@ const gzipOperatingSystemLinux = 3;
 
 /// GZip some text
 Uint8List gzipText(String text, {bool? noDate, int? operatingSystem}) {
-  return gzipBytes(utf8.encode(text),
-      noDate: noDate, operatingSystem: operatingSystem);
+  return gzipBytes(
+    utf8.encode(text),
+    noDate: noDate,
+    operatingSystem: operatingSystem,
+  );
 }
 
 /// Un Gzip some data into text

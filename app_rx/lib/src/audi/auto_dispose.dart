@@ -10,7 +10,8 @@ extension AutoDisposeRxExtension on AutoDispose {
 
   /// Add a BehaviorSubject to the auto dispose list
   BroadcastValueStream<T> audiAddBroadcastValueStream<T>(
-      BroadcastValueStream<T> subject) {
+    BroadcastValueStream<T> subject,
+  ) {
     return audiAdd(subject, subject.close);
   }
 }

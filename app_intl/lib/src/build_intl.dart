@@ -35,10 +35,7 @@ class LocalizationProject {
 
   /// [u18nPath] default to assets/i18n
   /// posix [path] ok
-  LocalizationProject(
-    String path, {
-    String? i18nPath,
-  }) {
+  LocalizationProject(String path, {String? i18nPath}) {
     this.path = toNativePath(path);
     this.i18nPath = i18nPath ?? _i18nPath;
   }
@@ -58,23 +55,25 @@ class LocalizationProject {
 
   Future<Map<String, String>> intlLoadLocaleMap(TextLocale locale) async {
     return (jsonDecode(
-                await File(intlGetAbsoluteAssetFilePath(locale)).readAsString())
+              await File(intlGetAbsoluteAssetFilePath(locale)).readAsString(),
+            )
             as Map)
         .cast<String, String>();
   }
 
-// Read local from json files
+  // Read local from json files
   Future<List<TextLocale>> intlGetLocales() async {
     try {
-      var jsonFilenames =
-          (await Directory(getAbsolutePathFromRelative(i18nPath))
-                  .list()
-                  .toList())
-              .map((e) => basename(e.path))
-              .where((element) =>
-                  withoutExtension(element).split('_').length == 2 &&
-                  extension(element) == '.json')
-              .map((e) => basenameWithoutExtension(e));
+      var jsonFilenames = (await Directory(
+            getAbsolutePathFromRelative(i18nPath),
+          ).list().toList())
+          .map((e) => basename(e.path))
+          .where(
+            (element) =>
+                withoutExtension(element).split('_').length == 2 &&
+                extension(element) == '.json',
+          )
+          .map((e) => basenameWithoutExtension(e));
       return jsonFilenames.map((e) => TextLocale(e)).toList();
     } catch (e) {
       stderr.writeln('intlGetLocales error $e');
@@ -92,8 +91,9 @@ class LocalizationProject {
   }
 
   Future<void> writeJson(TextLocale locale, Map<String, String> map) async {
-    await File(intlGetAbsoluteAssetFilePath(locale))
-        .writeAsString(_fixLinesStringForIoGit(jsonPretty(intlFixMap(map))!));
+    await File(
+      intlGetAbsoluteAssetFilePath(locale),
+    ).writeAsString(_fixLinesStringForIoGit(jsonPretty(intlFixMap(map))!));
   }
 
   // Default to
@@ -136,8 +136,9 @@ class LocalizationProject {
       var dartKey = fixKeyName(key);
       if (params != null) {
         sb.writeln(
-            '  String $dartKey({${params.map((e) => 'required String $e').join(', ')}}) '
-            '=> t(\'$key\', {${params.map((e) => '\'$e\': $e').join(', ')}});');
+          '  String $dartKey({${params.map((e) => 'required String $e').join(', ')}}) '
+          '=> t(\'$key\', {${params.map((e) => '\'$e\': $e').join(', ')}});',
+        );
       } else {
         sb.writeln('  String get $dartKey => t(\'$key\');');
       }

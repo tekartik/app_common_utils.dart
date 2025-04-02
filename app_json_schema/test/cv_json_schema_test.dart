@@ -19,18 +19,17 @@ typedef SchemaType = JsonSchemaType;
 typedef Schema = JsonSchema;
 
 void _checkToJsonSchema(CvJsonSchema schema) {
-  expect(
-    schema.toJsonSchema().toJson(),
-    schema.toSchemaJsonMap(),
-  );
+  expect(schema.toJsonSchema().toJson(), schema.toSchemaJsonMap());
 }
 
 void main() {
   group('Schema Tests', () {
     // Test basic constructors and toJson() for primitive types
     test('Schema.boolean', () {
-      final schema =
-          CvJsonSchemaBool(description: 'A boolean value', nullable: true);
+      final schema = CvJsonSchemaBool(
+        description: 'A boolean value',
+        nullable: true,
+      );
       expect(schema.type.v, SchemaType.boolean);
       expect(schema.description.v, 'A boolean value');
       expect(schema.nullable.v, true);
@@ -46,10 +45,7 @@ void main() {
       final schema = CvJsonSchemaInt(format: 'int32');
       expect(schema.type.v, SchemaType.integer);
       expect(schema.format.v, 'int32');
-      expect(schema.toSchemaJsonMap(), {
-        'type': 'INTEGER',
-        'format': 'int32',
-      });
+      expect(schema.toSchemaJsonMap(), {'type': 'INTEGER', 'format': 'int32'});
       _checkToJsonSchema(schema);
     });
 
@@ -127,9 +123,7 @@ void main() {
         'name': CvJsonSchemaString(),
         'age': CvJsonSchemaInt(),
       };
-      final schema = CvJsonSchemaMap(
-        properties: properties,
-      );
+      final schema = CvJsonSchemaMap(properties: properties);
       expect(schema.type.v, SchemaType.object);
       expect(schema.properties.v, properties);
       expect(schema.toSchemaJsonMap(), {

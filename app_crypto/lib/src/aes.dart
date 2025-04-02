@@ -7,8 +7,9 @@ import 'encrypt.dart';
 
 /// Simple md5 hash
 String encryptTextPassword16FromText(String password) {
-  return base64Encode(md5.convert(utf8.encode(password)).bytes)
-      .substring(0, 16);
+  return base64Encode(
+    md5.convert(utf8.encode(password)).bytes,
+  ).substring(0, 16);
 }
 
 /// aes encrypted using any password (use MD5), random data prepended
@@ -64,7 +65,7 @@ class AesWithIVEntrypter extends _AesStringEncrypter {
   /// Must be 16 bytes
   final String password;
   AesWithIVEntrypter(this.password, this.iv)
-      : super(_aesEncrypterFromPassword(password));
+    : super(_aesEncrypterFromPassword(password));
   @override
   IV _generateIv() {
     return iv;

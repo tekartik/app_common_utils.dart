@@ -51,8 +51,9 @@ extension CvJsonSchemaExt on CvJsonSchema {
         return JsonSchema.object(
           description: description.v,
           nullable: nullable.v,
-          properties: def.properties.v!
-              .map((key, value) => MapEntry(key, value.toJsonSchema())),
+          properties: def.properties.v!.map(
+            (key, value) => MapEntry(key, value.toJsonSchema()),
+          ),
           optionalProperties: def.optionalProperties,
         );
       default:
@@ -69,14 +70,12 @@ extension CvJsonSchemaExt on CvJsonSchema {
 /// Boolean JSON schema
 abstract class CvJsonSchemaBool implements CvJsonSchema {
   /// Constructor
-  factory CvJsonSchemaBool({
-    String? description,
-    bool? nullable,
-  }) =>
+  factory CvJsonSchemaBool({String? description, bool? nullable}) =>
       _CvJsonSchemaBool(
-          type: JsonSchemaType.boolean,
-          description: description,
-          nullable: nullable);
+        type: JsonSchemaType.boolean,
+        description: description,
+        nullable: nullable,
+      );
 }
 
 /// Integer JSON schema
@@ -86,12 +85,12 @@ abstract class CvJsonSchemaInt implements CvJsonSchema, CvJsonSchemaNum {
     String? description,
     bool? nullable,
     String? format,
-  }) =>
-      _CvJsonSchemaInt(
-          type: JsonSchemaType.integer,
-          description: description,
-          nullable: nullable,
-          format: format);
+  }) => _CvJsonSchemaInt(
+    type: JsonSchemaType.integer,
+    description: description,
+    nullable: nullable,
+    format: format,
+  );
 }
 
 /// Number JSON schema
@@ -101,12 +100,12 @@ abstract class CvJsonSchemaNum implements CvJsonSchema, CvJsonSchemaWithFormat {
     String? description,
     bool? nullable,
     String? format,
-  }) =>
-      _CvJsonSchemaNum(
-          type: JsonSchemaType.number,
-          description: description,
-          nullable: nullable,
-          format: format);
+  }) => _CvJsonSchemaNum(
+    type: JsonSchemaType.number,
+    description: description,
+    nullable: nullable,
+    format: format,
+  );
 }
 
 /// String JSON schema
@@ -117,12 +116,12 @@ abstract class CvJsonSchemaString
     String? description,
     bool? nullable,
     String? format,
-  }) =>
-      _CvJsonSchemaString(
-          type: JsonSchemaType.string,
-          description: description,
-          nullable: nullable,
-          format: format);
+  }) => _CvJsonSchemaString(
+    type: JsonSchemaType.string,
+    description: description,
+    nullable: nullable,
+    format: format,
+  );
 }
 
 /// Enum String JSON schema
@@ -135,13 +134,13 @@ abstract class CvJsonSchemaEnumString implements CvJsonSchemaString {
     String? description,
     bool? nullable,
     required List<String> enumValues,
-  }) =>
-      _CvJsonSchemaEnumString(
-          type: JsonSchemaType.string,
-          description: description,
-          nullable: nullable,
-          format: jsonSchemaFormatEnum,
-          enumValues: enumValues);
+  }) => _CvJsonSchemaEnumString(
+    type: JsonSchemaType.string,
+    description: description,
+    nullable: nullable,
+    format: jsonSchemaFormatEnum,
+    enumValues: enumValues,
+  );
 }
 
 /// List JSON schema
@@ -154,12 +153,12 @@ abstract class CvJsonSchemaList implements CvJsonSchema {
     String? description,
     bool? nullable,
     required CvJsonSchema items,
-  }) =>
-      _CvJsonSchemaList(
-          type: JsonSchemaType.array,
-          description: description,
-          nullable: nullable,
-          items: items);
+  }) => _CvJsonSchemaList(
+    type: JsonSchemaType.array,
+    description: description,
+    nullable: nullable,
+    items: items,
+  );
 }
 
 /// Map (Object) JSON schema
@@ -176,13 +175,13 @@ abstract class CvJsonSchemaMap implements CvJsonSchema {
     bool? nullable,
     required Map<String, CvJsonSchema> properties,
     List<String>? optionalProperties,
-  }) =>
-      _CvJsonSchemaMap(
-          type: JsonSchemaType.object,
-          description: description,
-          nullable: nullable,
-          properties: properties,
-          optionalProperties: optionalProperties);
+  }) => _CvJsonSchemaMap(
+    type: JsonSchemaType.object,
+    description: description,
+    nullable: nullable,
+    properties: properties,
+    optionalProperties: optionalProperties,
+  );
 
   /// Optional properties getter
   List<String>? get optionalProperties;
@@ -195,11 +194,8 @@ abstract class CvJsonSchemaWithFormat implements CvJsonSchema {
 }
 
 abstract class _CvJsonSchemaBase extends CvModelBase implements CvJsonSchema {
-  _CvJsonSchemaBase({
-    JsonSchemaType? type,
-    String? description,
-    bool? nullable,
-  }) : super() {
+  _CvJsonSchemaBase({JsonSchemaType? type, String? description, bool? nullable})
+    : super() {
     this.type.v = type;
     this.description.setValue(description);
     this.nullable.setValue(nullable);
@@ -215,12 +211,16 @@ abstract class _CvJsonSchemaBase extends CvModelBase implements CvJsonSchema {
   CvFields get fields => [type, description, nullable];
 
   @override
-  Map<String, Object?> toMap(
-      {List<String>? columns, bool includeMissingValue = false}) {
+  Map<String, Object?> toMap({
+    List<String>? columns,
+    bool includeMissingValue = false,
+  }) {
     var columnsNoType = List.of(columns ?? fields.map((field) => field.name))
       ..remove(_typeKey);
     final map = super.toMap(
-        columns: columnsNoType, includeMissingValue: includeMissingValue);
+      columns: columnsNoType,
+      includeMissingValue: includeMissingValue,
+    );
     if (type.v != null) {
       map[_typeKey] = type.v!.toJson();
     }
@@ -233,11 +233,7 @@ mixin _CvJsonSchemaWithFormatMixin implements _CvJsonSchemaBase {
 }
 
 class _CvJsonSchemaBool extends _CvJsonSchemaBase implements CvJsonSchemaBool {
-  _CvJsonSchemaBool({
-    super.type,
-    super.description,
-    super.nullable,
-  });
+  _CvJsonSchemaBool({super.type, super.description, super.nullable});
 }
 
 class _CvJsonSchemaInt extends _CvJsonSchemaNum

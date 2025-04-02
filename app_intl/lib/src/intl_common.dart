@@ -19,8 +19,12 @@ Map<String, String> intlSafeLocalizationMap(Map map) {
 }
 
 /// Localization map must be a safe localization map
-String intlText(Map<String, String> localizationMap, String key,
-    {Map<String, String?>? data, Map<String, String>? defaultLocalizationMap}) {
+String intlText(
+  Map<String, String> localizationMap,
+  String key, {
+  Map<String, String?>? data,
+  Map<String, String>? defaultLocalizationMap,
+}) {
   var text = localizationMap[key] ?? defaultLocalizationMap?[key] ?? '[$key]';
 
   return intlRender(text, data: data);

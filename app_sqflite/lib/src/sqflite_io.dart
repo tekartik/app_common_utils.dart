@@ -7,24 +7,28 @@ import 'package:sqflite_common/sqflite.dart' as sqflite;
 import 'package:sqflite_common_ffi/sqflite_ffi.dart' as ffi;
 
 sqflite.DatabaseFactory get _defaultDatabaseFactory =>
-// ignore: invalid_use_of_visible_for_testing_member
+    // ignore: invalid_use_of_visible_for_testing_member
     sqflite.databaseFactoryOrNull ?? ffi.databaseFactoryFfi;
 
 /// All but Linux/Windows
 sqflite.DatabaseFactory get databaseFactory => _defaultDatabaseFactory;
 
 /// Use sqflite on any platform
-sqflite.DatabaseFactory getDatabaseFactory(
-    {String? packageName, String? rootPath, bool autoInit = true}) {
+sqflite.DatabaseFactory getDatabaseFactory({
+  String? packageName,
+  String? rootPath,
+  bool autoInit = true,
+}) {
   if (autoInit) {
     sqfliteWindowsFfiInit();
   }
   if ((Platform.isMacOS || Platform.isLinux || Platform.isWindows) &&
       (packageName != null || rootPath != null)) {
     return _DatabaseFactory(
-        packageName: packageName,
-        rootPath: rootPath,
-        delegate: databaseFactory);
+      packageName: packageName,
+      rootPath: rootPath,
+      delegate: databaseFactory,
+    );
   } else {
     return databaseFactory;
   }
@@ -37,13 +41,15 @@ class _DatabaseFactory implements sqflite.DatabaseFactory {
   final String? rootPath;
   final sqflite.DatabaseFactory delegate;
   late final String databasesPath;
-  _DatabaseFactory(
-      {required this.packageName,
-      required this.rootPath,
-      required this.delegate}) {
-    databasesPath = packageName != null
-        ? join(userAppDataPath, packageName, 'databases')
-        : rootPath!;
+  _DatabaseFactory({
+    required this.packageName,
+    required this.rootPath,
+    required this.delegate,
+  }) {
+    databasesPath =
+        packageName != null
+            ? join(userAppDataPath, packageName, 'databases')
+            : rootPath!;
   }
 
   String _fixPath(String path) {
@@ -76,9 +82,10 @@ class _DatabaseFactory implements sqflite.DatabaseFactory {
   Future<String> getDatabasesPath() async => databasesPath;
 
   @override
-  Future<sqflite.Database> openDatabase(String path,
-          {sqflite.OpenDatabaseOptions? options}) =>
-      delegate.openDatabase(_fixAndCreatePath(path), options: options);
+  Future<sqflite.Database> openDatabase(
+    String path, {
+    sqflite.OpenDatabaseOptions? options,
+  }) => delegate.openDatabase(_fixAndCreatePath(path), options: options);
 
   @override
   Future<Uint8List> readDatabaseBytes(String path) =>

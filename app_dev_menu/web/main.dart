@@ -13,8 +13,9 @@ void main(List<String> arguments) {
     });
     item('write lorem lipsum', () async {
       write(
-          'Sed gravida iaculis lectus, vel suscipit turpis malesuada sit amet. In maximus rutrum libero, eu porta nulla vehicula eu. Donec vel dictum neque, vitae aliquet velit. Fusce nec orci non diam dignissim tristique non sed est. Quisque venenatis a orci et venenatis.\n'
-          'Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.');
+        'Sed gravida iaculis lectus, vel suscipit turpis malesuada sit amet. In maximus rutrum libero, eu porta nulla vehicula eu. Donec vel dictum neque, vitae aliquet velit. Fusce nec orci non diam dignissim tristique non sed est. Quisque venenatis a orci et venenatis.\n'
+        'Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.',
+      );
     });
     item('prompt', () async {
       write('RESULT prompt: ${await prompt()}');
@@ -39,9 +40,11 @@ void main(List<String> arguments) {
     menu('prompt', () {
       item('prompt twice', () async {
         write(
-            'RESULT prompt: ${await prompt('Some text please then [ENTER]')}');
+          'RESULT prompt: ${await prompt('Some text please then [ENTER]')}',
+        );
         write(
-            'RESULT2 prompt: ${await prompt('Some text 2 please then [ENTER]')}');
+          'RESULT2 prompt: ${await prompt('Some text 2 please then [ENTER]')}',
+        );
       });
     });
     keyValuesMenu('vars', [kvTestValue, kvOtherTestValue]);

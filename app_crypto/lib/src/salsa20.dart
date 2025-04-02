@@ -27,7 +27,8 @@ var _random = Random.secure();
 /// Random bytes generator
 Uint8List _randBytes(int length) {
   return Uint8List.fromList(
-      List<int>.generate(length, (i) => _random.nextInt(256)));
+    List<int>.generate(length, (i) => _random.nextInt(256)),
+  );
 }
 
 class _Salsa20StringEncrypter implements StringEncrypter {
