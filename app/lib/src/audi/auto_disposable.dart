@@ -5,7 +5,8 @@ abstract class AutoDisposable {
 }
 
 /// no op Auto dispose interface
-mixin AutoDisposableMixin {
+mixin AutoDisposableMixin implements AutoDisposable {
   /// Dispose function
+  @override
   void selfDispose() {}
 }
