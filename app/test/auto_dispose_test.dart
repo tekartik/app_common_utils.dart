@@ -15,12 +15,18 @@ class _TestDisposable {
 class _TestAutoDisposable implements AutoDisposable {
   var disposed = false;
   @override
-  void audiDispose() {
+  void selfDispose() {
     disposed = true;
   }
 }
 
 /// Test mixin
+class _TestAutoDisposerableMain extends AutoDisposerableBase {
+  late final sub = audiAddDisposable(_TestAutoDisposerableSub());
+}
+
+class _TestAutoDisposerableSub extends AutoDisposerableBase {}
+
 class _AutoDisposer with AutoDisposeMixin {}
 
 void main() {
@@ -114,6 +120,14 @@ void main() {
       expect(controller.isClosed, isFalse);
       disposer.audiDispose(controller);
       expect(controller.isClosed, isTrue);
+    });
+    test('disposerable', () async {
+      var disposer = _TestAutoDisposerableMain();
+      var disposable = _TestAutoDisposable();
+      disposer.sub.audiAddDisposable(disposable);
+      expect(disposable.disposed, false);
+      disposer.selfDispose();
+      expect(disposable.disposed, true);
     });
   });
 }
