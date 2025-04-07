@@ -1,6 +1,5 @@
 import 'package:tekartik_app_common_utils/lazy_runner.dart';
 import 'package:tekartik_common_utils/async_utils.dart';
-
 import 'package:test/test.dart';
 
 void main() {
@@ -22,9 +21,12 @@ void main() {
         duration: const Duration(milliseconds: 10),
         action: (count) async {},
       );
-      await sleep(50);
+      await sleep(150);
       runner.dispose();
-      expect(runner.count, lessThan(6));
+
+      /// 6 on windows
+      /// print('count: ${runner.count}');
+      expect(runner.count, lessThan(17));
       expect(runner.count, greaterThan(2));
     });
     test('trigger', () async {
