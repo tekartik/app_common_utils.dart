@@ -71,21 +71,42 @@ class _LazyRunner<T> implements LazyRunner<T> {
   var _disposed = false;
   final _lock = Lock();
   var _triggerCompleter = Completer<void>();
-  Completer<T?>? _actionCompleter;
+  final _actionCompleters = <Completer<T?>>[];
+
+  void _completeActionResult(T? result) {
+    for (var actionCompleter in _actionCompleters) {
+      actionCompleter.complete(result);
+    }
+    _actionCompleters.clear();
+  }
+
+  void _completeActionError(Object error) {
+    for (var actionCompleter in _actionCompleters) {
+      actionCompleter.completeError(error);
+    }
+    _actionCompleters.clear();
+  }
 
   /// Trigger the action
   @override
   void trigger() {
+    _trigger();
+  }
+
+  /// Trigger the action
+
+  Future<void> _trigger() async {
     if (_debug) {
       _log('manual trigger');
     }
-
-    _triggerCompleter.safeComplete();
+    await _lock.synchronized(() async {
+      _triggerCompleter.safeComplete();
+    });
   }
 
   Future<T?> _callAction() async {
     if (_disposed) {
-      _actionCompleter?.safeComplete(null);
+      _completeActionResult(null);
       return null;
     }
     return await _lock.synchronized(() async {
@@ -95,10 +116,10 @@ class _LazyRunner<T> implements LazyRunner<T> {
       }
       try {
         var result = await action(actionIndex);
-        _actionCompleter?.safeComplete(result);
+        _completeActionResult(result);
         return result;
       } catch (e) {
-        _actionCompleter?.safeCompleteError(e);
+        _completeActionError(e);
         rethrow;
       } finally {
         if (_debug) {
@@ -114,8 +135,6 @@ class _LazyRunner<T> implements LazyRunner<T> {
     }
     await _triggerCompleter.future;
 
-    /// Create a new action completer
-    _actionCompleter = Completer<T>();
     if (_debug) {
       _log('triggered');
     }
@@ -149,13 +168,15 @@ class _LazyRunner<T> implements LazyRunner<T> {
   }
 
   @override
-  Future<Object?> triggerAndWait() async {
-    trigger();
-    await _waitTrigger();
-    var actionCompleter = _actionCompleter;
-    if (actionCompleter == null) {
-      return null;
+  Future<T?> triggerAndWait() async {
+    if (_debug) {
+      _log('manual trigger');
     }
-    return await actionCompleter.future;
+    var completer = Completer<T?>();
+    await _lock.synchronized(() async {
+      _triggerCompleter.safeComplete();
+      _actionCompleters.add(completer);
+    });
+    return await completer.future;
   }
 }

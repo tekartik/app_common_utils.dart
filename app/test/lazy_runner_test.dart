@@ -5,12 +5,25 @@ import 'package:test/test.dart';
 
 void main() {
   group('Lazy runner', () {
+    // debugLazyRunner = true;
+    test('once', () async {
+      var i = 0;
+      var runner = LazyRunner(
+        action: (count) async {
+          await sleep(20);
+          i++;
+        },
+      );
+      await runner.triggerAndWait();
+      expect(i, 1);
+    });
     test('periodic', () async {
       var runner = LazyRunner.periodic(
         duration: const Duration(milliseconds: 10),
         action: (count) async {},
       );
       await sleep(50);
+      runner.dispose();
       expect(runner.count, lessThan(6));
       expect(runner.count, greaterThan(2));
     });
