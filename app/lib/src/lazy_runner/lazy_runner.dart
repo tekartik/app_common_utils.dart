@@ -34,7 +34,10 @@ abstract class LazyRunner<T> {
     required LazyRunnerFunction<T> action,
   }) => _PeriodicLazyRunner<T>(duration: duration, action: action);
 
-  /// Dispose
+  /// dispose and wait for current action to finish
+  Future<void> close();
+
+  /// Dispose, current action might terminate later
   void dispose();
 }
 
@@ -105,11 +108,11 @@ class _LazyRunner<T> implements LazyRunner<T> {
   }
 
   Future<T?> _callAction() async {
-    if (_disposed) {
-      _completeActionResult(null);
-      return null;
-    }
     return await _lock.synchronized(() async {
+      if (_disposed) {
+        _completeActionResult(null);
+        return null;
+      }
       var actionIndex = count++;
       if (_debug) {
         _log('start action $actionIndex');
@@ -158,13 +161,28 @@ class _LazyRunner<T> implements LazyRunner<T> {
     }();
   }
 
-  /// Dispose
+  /// Dispose (prefer close)
   @override
   void dispose() {
     if (_debug) {
       _log('dispose');
     }
     _disposed = true;
+    _lock.synchronized(() async {
+      _triggerCompleter.safeComplete();
+    });
+  }
+
+  /// Dispose
+  @override
+  Future<void> close() async {
+    if (_debug) {
+      _log('close');
+    }
+    _disposed = true;
+    await _lock.synchronized(() async {
+      _triggerCompleter.safeComplete();
+    });
   }
 
   @override

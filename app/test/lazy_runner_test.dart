@@ -22,7 +22,7 @@ void main() {
         action: (count) async {},
       );
       await sleep(150);
-      runner.dispose();
+      await runner.close();
 
       /// 6 on windows
       /// print('count: ${runner.count}');
