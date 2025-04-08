@@ -1,19 +1,57 @@
+import 'package:tekartik_app_common_utils/common_utils_import.dart';
 import 'package:tekartik_app_common_utils/lazy_runner.dart';
-import 'package:tekartik_common_utils/async_utils.dart';
 import 'package:test/test.dart';
 
+const kTestTimeout = Duration(milliseconds: 10);
 void main() {
+  // debugLazyRunner = devTrue;
   group('Lazy runner', () {
+    test('waitTriggered', () async {
+      var completer = Completer<void>();
+      var runner = LazyRunner(
+        action: (count) async {
+          await completer.future;
+        },
+      );
+      runner.trigger();
+      await expectLater(
+        runner.waitTriggered().timeout(kTestTimeout),
+        throwsA(isA<TimeoutException>()),
+      );
+      completer.complete();
+      await runner.waitTriggered();
+    });
+    test('close', () async {
+      var completer = Completer<void>();
+      var actionStarted = Completer<void>();
+      var runner = LazyRunner(
+        action: (count) async {
+          actionStarted.complete();
+          await completer.future;
+        },
+      );
+      runner.trigger();
+      await actionStarted.future;
+      await expectLater(
+        runner.close().timeout(kTestTimeout),
+        throwsA(isA<TimeoutException>()),
+      );
+      completer.complete();
+      await runner.close();
+    });
     // debugLazyRunner = true;
     test('once', () async {
       var i = 0;
       var runner = LazyRunner(
         action: (count) async {
           await sleep(20);
-          i++;
+          return ++i;
         },
       );
-      await runner.triggerAndWait();
+      expect((await runner.triggerAndWait()), 1);
+      expect((await runner.waitCurrent()), 1);
+      expect((await runner.waitTriggered()), 1);
+      expect((runner.lastResult), 1);
       expect(i, 1);
     });
     test('periodic', () async {

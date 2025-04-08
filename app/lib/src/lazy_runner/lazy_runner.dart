@@ -21,7 +21,7 @@ abstract class LazyRunner<T> {
   void trigger();
 
   /// Trigger the action and wait for it to finish and returns its future (error or success)
-  Future<void> triggerAndWait();
+  Future<T?> triggerAndWait();
 
   /// Create a lazy runner controller
   factory LazyRunner({required LazyRunnerFunction<T> action}) =>
@@ -34,8 +34,17 @@ abstract class LazyRunner<T> {
     required LazyRunnerFunction<T> action,
   }) => _PeriodicLazyRunner<T>(duration: duration, action: action);
 
+  /// Wait for current action to finish or returns the last result
+  Future<T?> waitCurrent();
+
+  /// Wait for current and triggered action to finish
+  Future<T?> waitTriggered();
+
   /// dispose and wait for current action to finish
   Future<void> close();
+
+  /// Get the last result
+  T? get lastResult;
 
   /// Dispose, current action might terminate later
   void dispose();
@@ -50,9 +59,9 @@ class _PeriodicLazyRunner<T> extends _LazyRunner<T> {
   final Duration duration;
 
   @override
-  Future<void> _waitTrigger() async {
+  Future<void> _waitForTrigger() async {
     try {
-      await super._waitTrigger().timeout(duration);
+      await super._waitForTrigger().timeout(duration);
     } on TimeoutException catch (_) {
       if (_debug) {
         _log('duration timeout $duration');
@@ -72,9 +81,13 @@ class _LazyRunner<T> implements LazyRunner<T> {
   final LazyRunnerFunction<T> action;
 
   var _disposed = false;
+
   final _lock = Lock();
   var _triggerCompleter = Completer<void>();
   final _actionCompleters = <Completer<T?>>[];
+
+  /// Saved last result
+  T? _lastResult;
 
   void _completeActionResult(T? result) {
     for (var actionCompleter in _actionCompleters) {
@@ -109,6 +122,8 @@ class _LazyRunner<T> implements LazyRunner<T> {
 
   Future<T?> _callAction() async {
     return await _lock.synchronized(() async {
+      /// Create new trigger now!
+      _triggerCompleter = Completer<void>();
       if (_disposed) {
         _completeActionResult(null);
         return null;
@@ -118,7 +133,8 @@ class _LazyRunner<T> implements LazyRunner<T> {
         _log('start action $actionIndex');
       }
       try {
-        var result = await action(actionIndex);
+        /// Save last result
+        var result = _lastResult = await action(actionIndex);
         _completeActionResult(result);
         return result;
       } catch (e) {
@@ -132,7 +148,8 @@ class _LazyRunner<T> implements LazyRunner<T> {
     });
   }
 
-  Future<void> _waitTrigger() async {
+  /// Wait for the trigger to be done
+  Future<void> _waitForTrigger() async {
     if (_debug) {
       _log('wait trigger');
     }
@@ -141,20 +158,23 @@ class _LazyRunner<T> implements LazyRunner<T> {
     if (_debug) {
       _log('triggered');
     }
-    _triggerCompleter = Completer<void>();
   }
 
   /// Create a lazy runner controller
   _LazyRunner({required this.action}) {
     () async {
       while (!_disposed) {
-        await _waitTrigger();
+        await _waitForTrigger();
         try {
           await _callAction();
-        } catch (e) {
+        } catch (e, st) {
           if (_debug || isDebug) {
             // ignore: avoid_print
             print('/LazyRunner: error in triggered action $count $e');
+            if (debugLazyRunner) {
+              // ignore: avoid_print
+              print(st);
+            }
           }
         }
       }
@@ -180,6 +200,7 @@ class _LazyRunner<T> implements LazyRunner<T> {
       _log('close');
     }
     _disposed = true;
+
     await _lock.synchronized(() async {
       _triggerCompleter.safeComplete();
     });
@@ -197,4 +218,27 @@ class _LazyRunner<T> implements LazyRunner<T> {
     });
     return await completer.future;
   }
+
+  @override
+  Future<T?> waitCurrent() async {
+    await _lock.synchronized(() async {});
+    return _lastResult;
+  }
+
+  bool get _lockedIsTriggered => _triggerCompleter.isCompleted && !_disposed;
+  @override
+  Future<T?> waitTriggered() async {
+    var completer = Completer<T?>();
+    await _lock.synchronized(() async {
+      if (_lockedIsTriggered) {
+        _actionCompleters.add(completer);
+      } else {
+        completer.complete(_lastResult);
+      }
+    });
+    return await completer.future;
+  }
+
+  @override
+  T? get lastResult => _lastResult;
 }
