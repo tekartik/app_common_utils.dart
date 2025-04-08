@@ -20,6 +20,8 @@ void main() {
       expect(myVar.get(), 'test1');
       await myVar.set(null);
       expect(myVar.get(), isNull);
-    });
+
+      /// Might involve process run setup...
+    }, timeout: const Timeout(Duration(minutes: 2)));
   });
 }
