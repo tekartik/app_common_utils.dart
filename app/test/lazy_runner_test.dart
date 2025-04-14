@@ -95,5 +95,20 @@ void main() {
       await runner.triggerAndWait();
       expect(i, 2);
     });
+
+    test('throws', () async {
+      var runner = LazyRunner(
+        action: (count) async {
+          throw StateError('error');
+        },
+      );
+      expect(await runner.waitCurrent(), null);
+
+      await expectLater(
+        () => runner.triggerAndWait(),
+        throwsA(isA<StateError>()),
+      );
+      runner.dispose();
+    });
   });
 }

@@ -3,7 +3,7 @@ import 'package:tekartik_common_utils/env_utils.dart';
 
 /// Count the number of times the function is called
 /// Could be ignored, but potentially useful for debugging
-typedef LazyRunnerFunction<T> = Future<T?> Function(int count);
+typedef LazyRunnerFunction<T> = Future<T> Function(int count);
 
 /// Turn on debug
 bool debugLazyRunner = false; // devWarning(true);
@@ -21,7 +21,7 @@ abstract class LazyRunner<T> {
   void trigger();
 
   /// Trigger the action and wait for it to finish and returns its future (error or success)
-  Future<T?> triggerAndWait();
+  Future<T> triggerAndWait();
 
   /// Create a lazy runner controller
   factory LazyRunner({required LazyRunnerFunction<T> action}) =>
@@ -38,7 +38,7 @@ abstract class LazyRunner<T> {
   Future<T?> waitCurrent();
 
   /// Wait for current and triggered action to finish
-  Future<T?> waitTriggered();
+  Future<T> waitTriggered();
 
   /// dispose and wait for current action to finish
   Future<void> close();
@@ -84,7 +84,7 @@ class _LazyRunner<T> implements LazyRunner<T> {
 
   final _lock = Lock();
   var _triggerCompleter = Completer<void>();
-  final _actionCompleters = <Completer<T?>>[];
+  final _actionCompleters = <Completer<T>>[];
 
   /// Saved last result
   T? _lastResult;
@@ -125,7 +125,7 @@ class _LazyRunner<T> implements LazyRunner<T> {
       /// Create new trigger now!
       _triggerCompleter = Completer<void>();
       if (_disposed) {
-        _completeActionResult(null);
+        _completeActionError(StateError('disposed'));
         return null;
       }
       var actionIndex = count++;
@@ -207,11 +207,11 @@ class _LazyRunner<T> implements LazyRunner<T> {
   }
 
   @override
-  Future<T?> triggerAndWait() async {
+  Future<T> triggerAndWait() async {
     if (_debug) {
       _log('manual trigger');
     }
-    var completer = Completer<T?>();
+    var completer = Completer<T>();
     await _lock.synchronized(() async {
       _triggerCompleter.safeComplete();
       _actionCompleters.add(completer);
@@ -227,8 +227,8 @@ class _LazyRunner<T> implements LazyRunner<T> {
 
   bool get _lockedIsTriggered => _triggerCompleter.isCompleted && !_disposed;
   @override
-  Future<T?> waitTriggered() async {
-    var completer = Completer<T?>();
+  Future<T> waitTriggered() async {
+    var completer = Completer<T>();
     await _lock.synchronized(() async {
       if (_lockedIsTriggered) {
         _actionCompleters.add(completer);
