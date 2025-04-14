@@ -117,6 +117,21 @@ void main() {
       expect((runner.lastResult), 1);
       expect(i, 1);
     });
+    // debugLazyRunner = true;
+    test('void', () async {
+      var i = 0;
+      late LazyRunner runner;
+      runner = LazyRunner(
+        action: (index) async {
+          i++;
+        },
+      );
+      expect((await runner.triggerAndWait()), isNull);
+      expect((await runner.waitCurrent()), isNull);
+      expect((await runner.waitTriggered()), isNull);
+      expect((runner.lastResult), isNull);
+      expect(i, 1);
+    });
     test('periodic', () async {
       late int lastIndex;
       var runner = LazyRunner.periodic(

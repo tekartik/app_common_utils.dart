@@ -237,7 +237,9 @@ class _LazyRunner<T> implements LazyRunner<T> {
       _triggerCompleter.safeComplete();
       _actionCompleters.add(completer);
     });
-    return (await completer.future)!;
+
+    /// T might be nullable so don't use `!` here
+    return (await completer.future) as T;
   }
 
   @override
