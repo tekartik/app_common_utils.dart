@@ -1,18 +1,35 @@
 import 'package:tekartik_common_utils/common_utils_import.dart';
 import 'package:tekartik_common_utils/env_utils.dart';
 
-/// Count the number of times the function is called
+/// index the number of times the function is called
+///
+/// Starts at 0. count matches index + 1 before the start of the action
 /// Could be ignored, but potentially useful for debugging
-typedef LazyRunnerFunction<T> = Future<T> Function(int count);
+typedef LazyRunnerFunction<T> = Future<T> Function(int index);
 
 /// Turn on debug
-bool debugLazyRunner = false; // devWarning(true);
+const bool debugLazyRunner = false; // devWarning(true);
+
+/// Lazy runner private extension
+@visibleForTesting
+extension LazyRunnerPrvExtension on LazyRunner {
+  _LazyRunner get _self => this as _LazyRunner;
+  bool get _locked => _self._lock.locked;
+
+  /// Is the action running
+  bool get isRunning => _locked && _self._lockedIsTriggered;
+
+  /// Is the action triggered
+  bool get isTriggered => _locked && _self._triggerCompleter.isCompleted;
+}
 
 /// Lazy runner extension
 extension LazyRunnerExtension on LazyRunner {
-  /// Count of action ran
-  @visibleForTesting
-  int get count => (this as _LazyRunner).count;
+  /// Count of action ran, updated before the action
+  int get count => _self.count;
+
+  /// Is the runner disposed
+  bool get disposed => _self._disposed;
 }
 
 /// Lazy runner
@@ -38,7 +55,9 @@ abstract class LazyRunner<T> {
   Future<T?> waitCurrent();
 
   /// Wait for current and triggered action to finish
-  Future<T> waitTriggered();
+  ///
+  /// like waitCurrent if never ran
+  Future<T?> waitTriggered();
 
   /// dispose and wait for current action to finish
   Future<void> close();
@@ -72,6 +91,8 @@ class _PeriodicLazyRunner<T> extends _LazyRunner<T> {
   _PeriodicLazyRunner({required this.duration, required super.action});
 }
 
+typedef _ActionCompleter<T> = Completer<T?>;
+
 /// Lazy runner
 class _LazyRunner<T> implements LazyRunner<T> {
   bool get _debug => debugLazyRunner;
@@ -84,7 +105,7 @@ class _LazyRunner<T> implements LazyRunner<T> {
 
   final _lock = Lock();
   var _triggerCompleter = Completer<void>();
-  final _actionCompleters = <Completer<T>>[];
+  final _actionCompleters = <_ActionCompleter<T>>[];
 
   /// Saved last result
   T? _lastResult;
@@ -211,12 +232,12 @@ class _LazyRunner<T> implements LazyRunner<T> {
     if (_debug) {
       _log('manual trigger');
     }
-    var completer = Completer<T>();
+    var completer = _ActionCompleter<T>();
     await _lock.synchronized(() async {
       _triggerCompleter.safeComplete();
       _actionCompleters.add(completer);
     });
-    return await completer.future;
+    return (await completer.future)!;
   }
 
   @override
@@ -226,13 +247,22 @@ class _LazyRunner<T> implements LazyRunner<T> {
   }
 
   bool get _lockedIsTriggered => _triggerCompleter.isCompleted && !_disposed;
+
+  _ActionCompleter<T> _newActionCompleter() {
+    var completer = _ActionCompleter<T>();
+    return completer;
+  }
+
+  /// Throws if never ran.
   @override
-  Future<T> waitTriggered() async {
-    var completer = Completer<T>();
+  Future<T?> waitTriggered() async {
+    var completer = _newActionCompleter();
     await _lock.synchronized(() async {
       if (_lockedIsTriggered) {
         _actionCompleters.add(completer);
       } else {
+        // If never ran yet
+        // No trigger yet
         completer.complete(_lastResult);
       }
     });
