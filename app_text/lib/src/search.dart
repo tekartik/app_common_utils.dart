@@ -9,15 +9,19 @@ abstract class SearchTextFinder {
   factory SearchTextFinder({required String searchText}) =>
       _SearchTextFinder(searchText: searchText);
 
-  /// Find in text
+  /// Find any in text
   bool findIn(String text);
+
+  /// Find all in text
+  bool findAllIn(String text);
 }
 
 class _SearchTextFinder implements SearchTextFinder {
   @override
   final String searchText;
-  late final sanitizedText = sanitizeText(searchText);
-  late final searchWords = sanitizedText.sanitizedWords;
+  late final sanitizedSearchText = sanitizeText(searchText);
+  String get sanitizeSearchString => sanitizedSearchText.sanitizedString;
+  late final searchWords = sanitizedSearchText.sanitizedWords;
   _SearchTextFinder({required this.searchText});
 
   @override
@@ -25,12 +29,22 @@ class _SearchTextFinder implements SearchTextFinder {
     var content = sanitizeText(text);
     var contentWords = content.sanitizedWords;
     for (var searchWord in searchWords) {
+      var found = false;
       for (var contentWord in contentWords) {
-        if (contentWord.toLowerCase().contains(searchWord)) {
-          return true;
+        if (contentWord.contains(searchWord)) {
+          found = true;
+          break;
         }
       }
+      if (!found) {
+        return false;
+      }
     }
-    return false;
+    return true;
+  }
+
+  @override
+  bool findAllIn(String text) {
+    return sanitizeString(text).contains(sanitizeSearchString);
   }
 }

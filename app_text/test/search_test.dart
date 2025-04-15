@@ -5,7 +5,10 @@ Future<void> main() async {
   test('splitByWhitespace', () {
     var finder = SearchTextFinder(searchText: '  Ma éL  ');
     expect(finder.findIn(''), isFalse);
-    expect(finder.findIn(' to ma'), isTrue);
+    expect(finder.findIn(' to ma'), isFalse);
+
     expect(finder.findIn('Elev   ma'), isTrue);
+    expect(finder.findAllIn('Elev   ma'), isFalse);
+    expect(finder.findAllIn('ma Elev   mca'), isTrue);
   });
 }
