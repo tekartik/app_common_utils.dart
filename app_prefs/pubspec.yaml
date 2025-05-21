@@ -7,7 +7,7 @@ environment:
   sdk: ^3.7.0
 
 dependencies:
-  sembast:
+  sembast: ">=3.7.4+3"
   sembast_web:
   tekartik_prefs_sembast:
     git:
