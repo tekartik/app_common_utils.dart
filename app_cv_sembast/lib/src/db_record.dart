@@ -10,7 +10,7 @@ mixin _WithRef<K extends RecordKeyBase> {
 
 /// DbRecord
 abstract class DbRecord<K extends RecordKeyBase> implements CvModel {
-  RecordRef<K, Map<String, Object?>>? _ref;
+  RecordRef<K, Model>? _ref;
 
   /// Put(add/update) inner data
   Future<void> put(DatabaseClient db, {bool merge});
@@ -268,50 +268,13 @@ typedef DbIntRecordRef<T extends DbIntRecord> = DbRecordRef<int, T>;
 /// Record reference
 class DbRecordRef<K extends RecordKeyBase, V extends DbRecord<K>> {
   /// Store
-  final CvStoreRef<K, V> store;
+  final DbStoreRef<K, V> store;
 
   /// Raw ref
   final RecordRef<K, Map<String, Object?>> rawRef;
 
-  /// Key
-  K get key => rawRef.key;
-
   /// Constructor
   DbRecordRef(this.store, K key) : rawRef = store.rawRef.record(key);
-
-  /// To build for write
-  V cv() => cvBuildModel<V>({})..rawRef = rawRef;
-
-  /// Get
-  Future<V?> get(DatabaseClient db) async =>
-      (await rawRef.getSnapshot(db))?.cv<V>();
-
-  /// Get synchronously
-  V? getSync(DatabaseClient db) => rawRef.getSnapshotSync(db)?.cv<V>();
-
-  /// Track changes
-  Stream<V?> onRecord(Database db) =>
-      rawRef.onSnapshot(db).map((event) => event?.cv<V>());
-
-  /// Track changes, first event is emitted synchronously.
-  Stream<V?> onRecordSync(Database db) =>
-      rawRef.onSnapshotSync(db).map((event) => event?.cv<V>());
-
-  /// Delete
-  Future<void> delete(DatabaseClient client) async {
-    await rawRef.delete(client);
-  }
-
-  /// Get
-  Future<V> put(DatabaseClient db, V value, {bool? merge}) async =>
-      (await rawRef.put(db, value.toMap(), merge: merge)).cv<V>()
-        ..rawRef = rawRef;
-
-  /// Check if exists.
-  Future<bool> exists(DatabaseClient client) => rawRef.exists(client);
-
-  /// Check if exists synchronously.
-  bool existsSync(DatabaseClient client) => rawRef.existsSync(client);
 
   @override
   int get hashCode => key.hashCode;
@@ -407,6 +370,43 @@ class DbRecordsRef<K extends RecordKeyBase, V extends DbRecord<K>> {
 /// Helper extension.
 extension DbRecordRefExt<K extends RecordKeyBase, V extends DbRecord<K>>
     on DbRecordRef<K, V> {
+  /// Key
+  K get key => rawRef.key;
+
+  /// To build for write
+  V cv() => cvBuildModel<V>({})..rawRef = rawRef;
+
+  /// Get
+  Future<V?> get(DatabaseClient db) async =>
+      (await rawRef.getSnapshot(db))?.cv<V>();
+
+  /// Get synchronously
+  V? getSync(DatabaseClient db) => rawRef.getSnapshotSync(db)?.cv<V>();
+
+  /// Track changes
+  Stream<V?> onRecord(Database db) =>
+      rawRef.onSnapshot(db).map((event) => event?.cv<V>());
+
+  /// Track changes, first event is emitted synchronously.
+  Stream<V?> onRecordSync(Database db) =>
+      rawRef.onSnapshotSync(db).map((event) => event?.cv<V>());
+
+  /// Delete
+  Future<void> delete(DatabaseClient client) async {
+    await rawRef.delete(client);
+  }
+
+  /// Get
+  Future<V> put(DatabaseClient db, V value, {bool? merge}) async =>
+      (await rawRef.put(db, value.toMap(), merge: merge)).cv<V>()
+        ..rawRef = rawRef;
+
+  /// Check if exists.
+  Future<bool> exists(DatabaseClient client) => rawRef.exists(client);
+
+  /// Check if exists synchronously.
+  bool existsSync(DatabaseClient client) => rawRef.existsSync(client);
+
   /// Cast if needed
   DbRecordRef<RK, RV>
   cast<RK extends RecordKeyBase, RV extends DbRecord<RK>>() {
