@@ -4,10 +4,6 @@ import 'package:tekartik_app_cv_sembast/src/logger_utils.dart';
 
 import 'cv_store_ref.dart';
 
-mixin _WithRef<K extends RecordKeyBase> {
-  RecordRef<K, Map<String, Object?>>? _ref;
-}
-
 /// DbRecord
 abstract class DbRecord<K extends RecordKeyBase> implements CvModel {
   RecordRef<K, Model>? _ref;
@@ -72,8 +68,9 @@ extension DbRecordToRefExt<K extends RecordKeyBase> on DbRecord<K> {
 /// Base record implementation. Protected fields:
 /// - ref
 abstract class DbRecordBase<K extends RecordKeyBase> extends CvModelBase
-    with _WithRef<K>
     implements DbRecord<K> {
+  @override
+  RecordRef<K, Model>? _ref;
   @override
   String toString() =>
       _ref == null
@@ -194,7 +191,7 @@ extension DbRecordExt<K extends RecordKeyBase, V> on DbRecord<K> {
   }
 }
 
-/// Public extension on CvModelWrite
+/// Public extension on DbRecord
 extension DbRecordCloneExt<T extends DbRecord> on T {
   /// Copy content and ref if not null
   T dbClone() {
@@ -368,14 +365,8 @@ class DbRecordsRef<K extends RecordKeyBase, V extends DbRecord<K>> {
 }
 
 /// Helper extension.
-extension DbRecordRefExt<K extends RecordKeyBase, V extends DbRecord<K>>
+extension DbRecordRefDbExt<K extends RecordKeyBase, V extends DbRecord<K>>
     on DbRecordRef<K, V> {
-  /// Key
-  K get key => rawRef.key;
-
-  /// To build for write
-  V cv() => cvBuildModel<V>({})..rawRef = rawRef;
-
   /// Get
   Future<V?> get(DatabaseClient db) async =>
       (await rawRef.getSnapshot(db))?.cv<V>();
@@ -406,6 +397,16 @@ extension DbRecordRefExt<K extends RecordKeyBase, V extends DbRecord<K>>
 
   /// Check if exists synchronously.
   bool existsSync(DatabaseClient client) => rawRef.existsSync(client);
+}
+
+/// Helper extension.
+extension DbRecordRefExt<K extends RecordKeyBase, V extends DbRecord<K>>
+    on DbRecordRef<K, V> {
+  /// Key
+  K get key => rawRef.key;
+
+  /// To build for write
+  V cv() => cvBuildModel<V>({})..rawRef = rawRef;
 
   /// Cast if needed
   DbRecordRef<RK, RV>

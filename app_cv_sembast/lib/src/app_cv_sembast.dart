@@ -28,6 +28,7 @@ export 'db_record.dart'
         DbIntRecordRef,
         DbRecordsRef,
         DbRecordRefExt,
+        DbRecordRefDbExt,
         DbRecordRefListExt,
         DbRecordsRefExt,
         CvRecordRef,

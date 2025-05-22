@@ -32,3 +32,4 @@ workspace:
   - app_firebase_local
   - app_dev_menu
   - app_text
+  - app_cv_sdb
