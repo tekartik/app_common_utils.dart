@@ -4,12 +4,49 @@ import 'package:tekartik_app_cv_sembast/src/logger_utils.dart';
 
 import 'cv_store_ref.dart';
 
-mixin _WithRef<K> {
+mixin _WithRef<K extends RecordKeyBase> {
+  RecordRef<K, Map<String, Object?>>? _ref;
+}
+
+/// DbRecord
+abstract class DbRecord<K extends RecordKeyBase> implements CvModel {
+  RecordRef<K, Map<String, Object?>>? _ref;
+
+  /// Put(add/update) inner data
+  Future<void> put(DatabaseClient db, {bool merge});
+
+  /// Update inner data.
+  Future<bool> update(DatabaseClient db);
+
+  /// Add data.
+  Future<bool> add(DatabaseClient db);
+
+  /// Delete data.
+  Future<bool> delete(DatabaseClient db);
+}
+
+/// Access to ref.
+extension DbRecordToRefExt<K extends RecordKeyBase> on DbRecord<K> {
+  /// Get the record ref
+  DbRecordRef<K, DbRecord<K>> get ref =>
+      CvStoreRef<K, DbRecord<K>>(rawRef.store.name).record(rawRef.key);
+
+  /// Get the record ref
+  DbRecordRef<K, DbRecord<K>>? get refOrNull => hasId ? ref : null;
+
+  /// Set the record ref
+  set ref(DbRecordRef<K, DbRecord<K>> ref) => rawRef = ref.rawRef;
+
+  /// Set the record ref
+  set refOrNull(DbRecordRef<K, DbRecord<K>>? ref) =>
+      ref == null ? _ref = null : this.ref = ref;
+
+  /// Get the raw record ref
   RecordRef<K, Map<String, Object?>> get rawRef => _ref!;
 
-  //@deprecated
+  /// set the raw record ref
+  ///@deprecated
   set rawRef(RecordRef<K, Map<String, Object?>> ref) => _ref = ref;
-  RecordRef<K, Map<String, Object?>>? _ref;
 
   /// Check hasId first
   K get id => rawRef.key;
@@ -32,41 +69,9 @@ mixin _WithRef<K> {
   set id(K id) => rawRef = rawRef.store.record(id);
 }
 
-/// DbRecord
-abstract class DbRecord<K> extends CvModelBase with _WithRef<K> {
-  /// Put(add/update) inner data
-  Future<void> put(DatabaseClient db, {bool merge});
-
-  /// Update inner data.
-  Future<bool> update(DatabaseClient db);
-
-  /// Add data.
-  Future<bool> add(DatabaseClient db);
-
-  /// Delete data.
-  Future<bool> delete(DatabaseClient db);
-}
-
-/// Access to ref.
-extension DbRecordToRefExt<K> on DbRecord<K> {
-  /// Get the record ref
-  CvRecordRef<K, DbRecord<K>> get ref =>
-      CvStoreRef<K, DbRecord<K>>(rawRef.store.name).record(rawRef.key);
-
-  /// Get the record ref
-  CvRecordRef<K, DbRecord<K>>? get refOrNull => hasId ? ref : null;
-
-  /// Set the record ref
-  set ref(CvRecordRef<K, DbRecord<K>> ref) => rawRef = ref.rawRef;
-
-  /// Set the record ref
-  set refOrNull(CvRecordRef<K, DbRecord<K>>? ref) =>
-      ref == null ? _ref = null : this.ref = ref;
-}
-
 /// Base record implementation. Protected fields:
 /// - ref
-abstract class DbRecordBase<K> extends CvModelBase
+abstract class DbRecordBase<K extends RecordKeyBase> extends CvModelBase
     with _WithRef<K>
     implements DbRecord<K> {
   @override
@@ -130,7 +135,7 @@ typedef DbStringRecord = DbRecord<String>;
 typedef DbIntRecord = DbRecord<int>;
 
 /// Generic map
-class DbRecordMap<K> extends DbRecordBase<K> {
+class DbRecordMap<K extends RecordKeyBase> extends DbRecordBase<K> {
   late CvMapModel _mapModel;
 
   @override
@@ -143,7 +148,8 @@ class DbRecordMap<K> extends DbRecordBase<K> {
 }
 
 /// Easy extension
-extension CvSembastRecordSnapshotExt<K> on RecordSnapshot<K, Model> {
+extension CvSembastRecordSnapshotExt<K extends RecordKeyBase>
+    on RecordSnapshot<K, Model> {
   /// Create a DbRecord from a snapshot
   T cv<T extends DbRecord<K>>() {
     return (cvBuildModel<T>(value)..rawRef = ref)..fromMap(value);
@@ -151,14 +157,15 @@ extension CvSembastRecordSnapshotExt<K> on RecordSnapshot<K, Model> {
 }
 
 /// Easy extension
-extension CvSembastRecordSnapshotsExt<K> on List<RecordSnapshot<K, Model>> {
+extension CvSembastRecordSnapshotsExt<K extends RecordKeyBase>
+    on List<RecordSnapshot<K, Model>> {
   /// Create a list of DbRecords from a snapshot
   List<T> cv<T extends DbRecord<K>>() =>
       map((snapshot) => snapshot.cv<T>()).toList();
 }
 
 /// Allow list with null values.
-extension CvSembastRecordSnapshotsOrNullExt<K>
+extension CvSembastRecordSnapshotsOrNullExt<K extends RecordKeyBase>
     on List<RecordSnapshot<K, Model>?> {
   /// Create a list of DbRecords from a snapshot
   List<T?> cvOrNull<T extends DbRecord<K>>() =>
@@ -166,7 +173,7 @@ extension CvSembastRecordSnapshotsOrNullExt<K>
 }
 
 /// Allow Stream with null values.
-extension CvSembastRecordSnapshotStreamExt<K>
+extension CvSembastRecordSnapshotStreamExt<K extends RecordKeyBase>
     on Stream<List<RecordSnapshot<K, Model>?>> {
   /// Create a list of DbRecords from a snapshot
   Stream<List<T?>> cvOrNull<T extends DbRecord<K>>() =>
@@ -174,7 +181,7 @@ extension CvSembastRecordSnapshotStreamExt<K>
 }
 
 /// Easy extension
-extension DbRecordExt<K, V> on DbRecord<K> {
+extension DbRecordExt<K extends RecordKeyBase, V> on DbRecord<K> {
   /// put
   Future<void> put(DatabaseClient db, {bool merge = false}) async {
     var data = await rawRef.put(db, toMap(), merge: merge);
@@ -215,7 +222,7 @@ extension DatabaseClientSembastExt on DatabaseClient {
 }
 
 /// Easy extension
-extension DbRecordListExt<K, V> on List<DbRecord<K>> {
+extension DbRecordListExt<K extends RecordKeyBase, V> on List<DbRecord<K>> {
   /// List of ifs
   List<K> get ids => map((record) => record.id).toList();
 
@@ -249,7 +256,8 @@ extension DbRecordListExt<K, V> on List<DbRecord<K>> {
 }
 
 /// Compat
-typedef CvRecordRef<K, V extends DbRecord<K>> = DbRecordRef<K, V>;
+typedef CvRecordRef<K extends RecordKeyBase, V extends DbRecord<K>> =
+    DbRecordRef<K, V>;
 
 /// String record ref
 typedef DbStringRecordRef<T extends DbStringRecord> = DbRecordRef<String, T>;
@@ -258,7 +266,7 @@ typedef DbStringRecordRef<T extends DbStringRecord> = DbRecordRef<String, T>;
 typedef DbIntRecordRef<T extends DbIntRecord> = DbRecordRef<int, T>;
 
 /// Record reference
-class DbRecordRef<K, V extends DbRecord<K>> {
+class DbRecordRef<K extends RecordKeyBase, V extends DbRecord<K>> {
   /// Store
   final CvStoreRef<K, V> store;
 
@@ -309,11 +317,11 @@ class DbRecordRef<K, V extends DbRecord<K>> {
   int get hashCode => key.hashCode;
 
   @override
-  String toString() => 'CvRecordRef(${store.name}, $key)';
+  String toString() => 'DbRecordRef(${store.name}, $key)';
 
   @override
   bool operator ==(Object other) {
-    if (other is CvRecordRef) {
+    if (other is DbRecordRef) {
       if (other.store != store) {
         return false;
       }
@@ -326,8 +334,12 @@ class DbRecordRef<K, V extends DbRecord<K>> {
   }
 }
 
+/// Compat
+typedef CvRecordsRef<K extends RecordKeyBase, V extends DbRecord<K>> =
+    DbRecordsRef<K, V>;
+
 /// Records helpers
-class CvRecordsRef<K, V extends DbRecord<K>> {
+class DbRecordsRef<K extends RecordKeyBase, V extends DbRecord<K>> {
   /// Store
   final CvStoreRef<K, V> store;
 
@@ -342,14 +354,14 @@ class CvRecordsRef<K, V extends DbRecord<K>> {
   List<K> get keys => rawRefs.keys;
 
   /// Record refs
-  List<CvRecordRef<K, V>> get refs =>
+  List<DbRecordRef<K, V>> get refs =>
       keys.map((key) => store.record(key)).toList();
 
   /// Direct access to a record ref.
-  CvRecordRef<K, V> operator [](int i) => store.record(keys[i]);
+  DbRecordRef<K, V> operator [](int i) => store.record(keys[i]);
 
   /// Constructor
-  CvRecordsRef(this.store, Iterable<K> keys)
+  DbRecordsRef(this.store, Iterable<K> keys)
     : rawRefs = store.rawRef.records(keys);
 
   /// Get
@@ -377,7 +389,7 @@ class CvRecordsRef<K, V extends DbRecord<K>> {
 
   @override
   bool operator ==(Object other) {
-    if (other is List<CvRecordRef>) {
+    if (other is List<DbRecordRef>) {
       for (var i = 0; i < keys.length; i++) {
         if (other[i].store != store) {
           return false;
@@ -393,28 +405,31 @@ class CvRecordsRef<K, V extends DbRecord<K>> {
 }
 
 /// Helper extension.
-extension CvRecordRefExt<K, V extends DbRecord<K>> on CvRecordRef<K, V> {
+extension DbRecordRefExt<K extends RecordKeyBase, V extends DbRecord<K>>
+    on DbRecordRef<K, V> {
   /// Cast if needed
-  CvRecordRef<RK, RV> cast<RK, RV extends DbRecord<RK>>() {
-    if (this is CvRecordRef<RK, RV>) {
-      return this as CvRecordRef<RK, RV>;
+  DbRecordRef<RK, RV>
+  cast<RK extends RecordKeyBase, RV extends DbRecord<RK>>() {
+    if (this is DbRecordRef<RK, RV>) {
+      return this as DbRecordRef<RK, RV>;
     }
     return store.cast<RK, RV>().record(key as RK);
   }
 
   /// Cast if needed
-  CvRecordRef<K, RV> castV<RV extends DbRecord<K>>() => cast<K, RV>();
+  DbRecordRef<K, RV> castV<RV extends DbRecord<K>>() => cast<K, RV>();
 }
 
 /// Helper extension.
-extension CvRecordRefListExt<K, V extends DbRecord<K>>
-    on List<CvRecordRef<K, V>> {
+extension DbRecordRefListExt<K extends RecordKeyBase, V extends DbRecord<K>>
+    on List<DbRecordRef<K, V>> {
   /// Create new objects.
   List<V> cv() => map((ref) => ref.cv()).toList();
 }
 
 /// Helper extension.
-extension CvRecordsRefExt<K, V extends DbRecord<K>> on CvRecordsRef<K, V> {
+extension DbRecordsRefExt<K extends RecordKeyBase, V extends DbRecord<K>>
+    on DbRecordsRef<K, V> {
   /// Create new objects.
   List<V> cv() => refs.map((ref) => ref.cv()).toList();
 }

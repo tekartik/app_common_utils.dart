@@ -1,7 +1,7 @@
 /// Sembast cv helpers
 library;
 
-export 'cv_query_ref.dart' show CvQueryRef, CvQueryRefExt;
+export 'cv_query_ref.dart' show DbQueryRef, DbQueryRefExt, CvQueryRef;
 export 'cv_store_ref.dart'
     show CvStoreRef, CvStoreRefExt, DbStoreRef, DbIntStoreRef, DbStringStoreRef;
 export 'cv_utils.dart'
@@ -26,11 +26,12 @@ export 'db_record.dart'
         DbRecordRef,
         DbStringRecordRef,
         DbIntRecordRef,
+        DbRecordsRef,
+        DbRecordRefExt,
+        DbRecordRefListExt,
+        DbRecordsRefExt,
         CvRecordRef,
-        CvRecordsRef,
-        CvRecordRefExt,
-        CvRecordRefListExt,
-        CvRecordsRefExt;
+        CvRecordsRef;
 export 'db_store.dart'
     show
         cvIntStoreFactory,

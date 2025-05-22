@@ -6,7 +6,8 @@ import 'db_record.dart';
 var _mainStore = intMapStoreFactory.store().name;
 
 /// compat
-typedef CvStoreRef<K, V extends DbRecord<K>> = DbStoreRef<K, V>;
+typedef CvStoreRef<K extends RecordKeyBase, V extends DbRecord<K>> =
+    DbStoreRef<K, V>;
 
 /// Int store key
 typedef DbIntStoreRef<V extends DbIntRecord> = DbStoreRef<int, V>;
@@ -15,7 +16,7 @@ typedef DbIntStoreRef<V extends DbIntRecord> = DbStoreRef<int, V>;
 typedef DbStringStoreRef<V extends DbStringRecord> = DbStoreRef<String, V>;
 
 /// Store helper
-class DbStoreRef<K, V extends DbRecord<K>> {
+class DbStoreRef<K extends RecordKeyBase, V extends DbRecord<K>> {
   /// Raw ref
   final StoreRef<K, Map<String, Object?>> rawRef;
 
@@ -44,20 +45,21 @@ class DbStoreRef<K, V extends DbRecord<K>> {
 }
 
 /// Common helpers
-extension CvStoreRefExt<K, V extends DbRecord<K>> on CvStoreRef<K, V> {
+extension CvStoreRefExt<K extends RecordKeyBase, V extends DbRecord<K>>
+    on CvStoreRef<K, V> {
   /// Name
   String get name => rawRef.name;
 
   /// Record ref
-  CvRecordRef<K, V> record(K key) => CvRecordRef<K, V>(this, key);
+  DbRecordRef<K, V> record(K key) => DbRecordRef<K, V>(this, key);
 
   /// Records
-  CvRecordsRef<K, V> records(Iterable<K> keys) =>
-      CvRecordsRef<K, V>(this, keys);
+  DbRecordsRef<K, V> records(Iterable<K> keys) =>
+      DbRecordsRef<K, V>(this, keys);
 
   /// Query
-  CvQueryRef<K, V> query({Finder? finder}) =>
-      CvQueryRef<K, V>(rawRef.query(finder: finder));
+  DbQueryRef<K, V> query({Finder? finder}) =>
+      DbQueryRef<K, V>(rawRef.query(finder: finder));
 
   /// Find
   Future<List<V>> find(DatabaseClient db, {Finder? finder}) =>
@@ -81,7 +83,7 @@ extension CvStoreRefExt<K, V extends DbRecord<K>> on CvStoreRef<K, V> {
   }
 
   /// Cast if needed
-  CvStoreRef<RK, RV> cast<RK, RV extends DbRecord<RK>>() {
+  CvStoreRef<RK, RV> cast<RK extends RecordKeyBase, RV extends DbRecord<RK>>() {
     if (this is CvStoreRef<RK, RV>) {
       return this as CvStoreRef<RK, RV>;
     }

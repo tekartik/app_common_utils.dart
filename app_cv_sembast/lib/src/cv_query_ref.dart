@@ -2,17 +2,22 @@ import 'package:sembast/sembast.dart';
 
 import 'db_record.dart';
 
+/// Compat
+typedef CvQueryRef<K extends RecordKeyBase, V extends DbRecord<K>> =
+    DbQueryRef<K, V>;
+
 /// Query ref
-class CvQueryRef<K, V extends DbRecord<K>> {
+class DbQueryRef<K extends RecordKeyBase, V extends DbRecord<K>> {
   /// Raw ref
   final QueryRef<K, Map<String, Object?>> rawRef;
 
   /// Constructor
-  CvQueryRef(this.rawRef);
+  DbQueryRef(this.rawRef);
 }
 
 /// Common helpers
-extension CvQueryRefExt<K, V extends DbRecord<K>> on CvQueryRef<K, V> {
+extension DbQueryRefExt<K extends RecordKeyBase, V extends DbRecord<K>>
+    on DbQueryRef<K, V> {
   /// Get a single record
   Future<V?> getRecord(DatabaseClient db) async {
     return (await rawRef.getSnapshot(db))?.cv();

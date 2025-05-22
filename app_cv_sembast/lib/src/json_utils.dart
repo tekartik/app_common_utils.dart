@@ -5,7 +5,7 @@ import 'package:sembast/utils/type_adapter.dart';
 import 'package:tekartik_app_cv_sembast/app_cv_sembast.dart';
 
 /// Easy extension
-extension DbRecordJsonExt<K, V> on DbRecord<K> {
+extension DbRecordJsonExt<K extends RecordKeyBase, V> on DbRecord<K> {
   /// to json encodable
   Model toJsonEncodable({
     List<String>? columns,
@@ -46,7 +46,7 @@ extension DbRecordJsonExt<K, V> on DbRecord<K> {
 }
 
 /// Easy extension
-extension DbRecordListJsonExt<K, V> on List<DbRecord<K>> {
+extension DbRecordListJsonExt<K extends RecordKeyBase, V> on List<DbRecord<K>> {
   /// to json encodable
   List<Model> toJsonEncodable({
     List<String>? columns,

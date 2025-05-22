@@ -47,9 +47,14 @@ void main() {
       // ignore: unnecessary_statements
       CvStoreRef;
       // ignore: unnecessary_statements
-      CvRecordRef;
+      DbRecordRef;
       // ignore: unnecessary_statements
       CvQueryRef;
+      // Compat
+      // ignore: unnecessary_statements
+      CvRecordRef;
+      // ignore: unnecessary_statements
+      CvRecordsRef;
     });
     test('toMap', () async {
       var store = cvIntStoreFactory.store<DbTest>('test');
@@ -148,21 +153,21 @@ void main() {
       var dbTest = DbTest()..value.v = 1;
       expect(dbTest.hasId, false);
       var recordRef = store.record(1);
-      var cvRecordRef = cvStore.record(1);
-      expect(cvRecordRef, isA<DbIntRecordRef<DbTest>>());
-      expect(cvRecordRef.key, 1);
+      var dbRecordRef = cvStore.record(1);
+      expect(dbRecordRef, isA<DbIntRecordRef<DbTest>>());
+      expect(dbRecordRef.key, 1);
       await store.record(1).put(db, {'value': 1});
       expect(await recordRef.get(db), {'value': 1});
       expect(recordRef.getSync(db), {'value': 1});
-      var readDbTest = (await cvRecordRef.get(db))!;
+      var readDbTest = (await dbRecordRef.get(db))!;
       expect(readDbTest, dbTest);
       expect(readDbTest.rawRef.key, 1);
       expect(readDbTest.ref.key, 1);
       expect(readDbTest.refOrNull?.key, 1);
       expect(readDbTest.idOrNull, 1);
-      var writeDbTest = cvRecordRef.cv()..value.v = 2;
+      var writeDbTest = dbRecordRef.cv()..value.v = 2;
       await writeDbTest.put(db);
-      readDbTest = (await cvRecordRef.get(db))!;
+      readDbTest = (await dbRecordRef.get(db))!;
       expect(readDbTest, writeDbTest);
       //expect(contentAndKeyEquals(await store.findFirst(db)), writeDbTest);
 
@@ -175,18 +180,18 @@ void main() {
       expect(cvStore, isA<DbStringStoreRef<DbStringTest>>());
       var dbTest = DbTest()..value.v = 1;
       var recordRef = store.record('1');
-      var cvRecordRef = cvStore.record('1');
-      expect(cvRecordRef, isA<DbStringRecordRef<DbStringTest>>());
+      var dbRecordRef = cvStore.record('1');
+      expect(dbRecordRef, isA<DbStringRecordRef<DbStringTest>>());
       await store.record('1').put(db, {'value': 1});
       expect(await recordRef.get(db), {'value': 1});
       expect(await recordRef.exists(db), true);
-      var readDbTest = await cvRecordRef.get(db);
+      var readDbTest = await dbRecordRef.get(db);
       expect(readDbTest, dbTest);
       expect(readDbTest!.rawRef.key, '1');
-      var writeDbTest = cvRecordRef.cv()..value.v = 2;
-      expect(writeDbTest.ref, cvRecordRef);
+      var writeDbTest = dbRecordRef.cv()..value.v = 2;
+      expect(writeDbTest.ref, dbRecordRef);
       await writeDbTest.put(db);
-      readDbTest = await cvRecordRef.get(db);
+      readDbTest = await dbRecordRef.get(db);
       expect(readDbTest, writeDbTest);
       //expect(contentAndKeyEquals(await store.findFirst(db)), writeDbTest);
 
@@ -230,9 +235,9 @@ void main() {
 
     test('onRecord', () async {
       var cvStore = cvIntStoreFactory.store<DbTest>('test');
-      var cvRecordRef = cvStore.record(1); //
+      var dbRecordRef = cvStore.record(1); //
       Future done() async {
-        await cvRecordRef
+        await dbRecordRef
             .onRecord(db)
             .firstWhere((record) => (record?.value.v ?? 0) > 2);
       }
@@ -248,7 +253,7 @@ void main() {
         // print(_);
       }
 
-      await (cvRecordRef.cv()..value.v = 1).put(db);
+      await (dbRecordRef.cv()..value.v = 1).put(db);
       try {
         await doneWithTimeOut();
         fail('should fail');
@@ -256,10 +261,10 @@ void main() {
         // print(_);
       }
 
-      await (cvRecordRef.cv()..value.v = 3).put(db);
+      await (dbRecordRef.cv()..value.v = 3).put(db);
       await done();
 
-      await (cvRecordRef.cv()..value.v = 1).put(db);
+      await (dbRecordRef.cv()..value.v = 1).put(db);
       try {
         await doneWithTimeOut();
         fail('should fail');
@@ -269,18 +274,18 @@ void main() {
 
       var doneFuture = done();
       Future<void>.delayed(const Duration(milliseconds: 2)).then((_) async {
-        await (cvRecordRef.cv()..value.v = 3).put(db);
+        await (dbRecordRef.cv()..value.v = 3).put(db);
       }).unawait();
       await doneFuture;
     });
 
     test('onRecordSync', () async {
       var cvStore = cvIntStoreFactory.store<DbTest>('test');
-      var cvRecordRef = cvStore.record(1); //
-      await (cvRecordRef.cv()..value.v = 2).put(db);
+      var dbRecordRef = cvStore.record(1); //
+      await (dbRecordRef.cv()..value.v = 2).put(db);
       DbTest? record;
       var completer = Completer<void>();
-      var subscription = cvRecordRef.onRecordSync(db).listen((event) {
+      var subscription = dbRecordRef.onRecordSync(db).listen((event) {
         record = event;
         if (event?.value.v == 3) {
           completer.complete();
@@ -292,7 +297,7 @@ void main() {
         firstCompleter.complete();
       });
       await firstCompleter.future;
-      await (cvRecordRef.cv()..value.v = 3).put(db);
+      await (dbRecordRef.cv()..value.v = 3).put(db);
       await completer.future;
       expect(record?.value.v, 3);
 
@@ -367,10 +372,10 @@ void main() {
     group('CvQueryRef', () {
       test('CvQueryRef.getRecord', () async {
         var cvStore = cvIntStoreFactory.store<DbTest>('test');
-        var cvRecordRef = cvStore.record(1); //
-        var cvRecordRef2 = cvStore.record(2); //
-        var record = cvRecordRef.cv()..value.v = 1;
-        var record2 = cvRecordRef2.cv()..value.v = 2;
+        var dbRecordRef = cvStore.record(1); //
+        var dbRecordRef2 = cvStore.record(2); //
+        var record = dbRecordRef.cv()..value.v = 1;
+        var record2 = dbRecordRef2.cv()..value.v = 2;
         await db.transaction((txn) async {
           await record.put(txn);
           await record2.put(txn);
@@ -382,9 +387,9 @@ void main() {
       });
       test('CvQueryRef.onRecordsSync', () async {
         var cvStore = cvIntStoreFactory.store<DbTest>('test');
-        var cvRecordRef = cvStore.record(1); //
-        var cvRecordRef2 = cvStore.record(2); //
-        await cvRecordRef.put(db, cvRecordRef.cv()..value.v = 1);
+        var dbRecordRef = cvStore.record(1); //
+        var dbRecordRef2 = cvStore.record(2); //
+        await dbRecordRef.put(db, dbRecordRef.cv()..value.v = 1);
         List<DbTest>? records;
         var completer = Completer<void>();
         var subscription = cvStore.query().onRecordsSync(db).listen((event) {
@@ -399,7 +404,7 @@ void main() {
           firstCompleter.complete();
         });
         await firstCompleter.future;
-        await cvRecordRef2.put(db, cvRecordRef.cv()..value.v = 2);
+        await dbRecordRef2.put(db, dbRecordRef.cv()..value.v = 2);
         await completer.future;
         expect(records, hasLength(2));
         await subscription.cancel();
