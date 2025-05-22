@@ -148,7 +148,7 @@ class DbRecordMap<K extends RecordKeyBase> extends DbRecordBase<K> {
 }
 
 /// Easy extension
-extension CvSembastRecordSnapshotExt<K extends RecordKeyBase>
+extension DbSembastRecordSnapshotExt<K extends RecordKeyBase>
     on RecordSnapshot<K, Model> {
   /// Create a DbRecord from a snapshot
   T cv<T extends DbRecord<K>>() {
@@ -157,7 +157,7 @@ extension CvSembastRecordSnapshotExt<K extends RecordKeyBase>
 }
 
 /// Easy extension
-extension CvSembastRecordSnapshotsExt<K extends RecordKeyBase>
+extension DbSembastRecordSnapshotsExt<K extends RecordKeyBase>
     on List<RecordSnapshot<K, Model>> {
   /// Create a list of DbRecords from a snapshot
   List<T> cv<T extends DbRecord<K>>() =>
@@ -165,7 +165,7 @@ extension CvSembastRecordSnapshotsExt<K extends RecordKeyBase>
 }
 
 /// Allow list with null values.
-extension CvSembastRecordSnapshotsOrNullExt<K extends RecordKeyBase>
+extension DbSembastRecordSnapshotsOrNullExt<K extends RecordKeyBase>
     on List<RecordSnapshot<K, Model>?> {
   /// Create a list of DbRecords from a snapshot
   List<T?> cvOrNull<T extends DbRecord<K>>() =>
@@ -173,7 +173,7 @@ extension CvSembastRecordSnapshotsOrNullExt<K extends RecordKeyBase>
 }
 
 /// Allow Stream with null values.
-extension CvSembastRecordSnapshotStreamExt<K extends RecordKeyBase>
+extension DbSembastRecordSnapshotStreamExt<K extends RecordKeyBase>
     on Stream<List<RecordSnapshot<K, Model>?>> {
   /// Create a list of DbRecords from a snapshot
   Stream<List<T?>> cvOrNull<T extends DbRecord<K>>() =>
@@ -207,7 +207,7 @@ extension DbRecordCloneExt<T extends DbRecord> on T {
 }
 
 /// transaction helper
-extension DatabaseClientSembastExt on DatabaseClient {
+extension DbDatabaseClientSembastExt on DatabaseClient {
   /// Transaction helper
   Future<T> transaction<T>(
     Future<T> Function(Transaction transaction) action,

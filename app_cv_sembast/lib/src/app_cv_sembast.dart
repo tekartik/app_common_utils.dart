@@ -9,7 +9,7 @@ export 'cv_utils.dart'
 export 'db_record.dart'
     show
         DbRecordListExt,
-        DatabaseClientSembastExt,
+        DbDatabaseClientSembastExt,
         DbRecord,
         DbStringRecordBase,
         DbStringRecord,
@@ -19,10 +19,10 @@ export 'db_record.dart'
         DbRecordCloneExt,
         DbRecordToRefExt,
         DbRecordMap,
-        CvSembastRecordSnapshotExt,
-        CvSembastRecordSnapshotsExt,
-        CvSembastRecordSnapshotsOrNullExt,
-        CvSembastRecordSnapshotStreamExt,
+        DbSembastRecordSnapshotExt,
+        DbSembastRecordSnapshotsExt,
+        DbSembastRecordSnapshotsOrNullExt,
+        DbSembastRecordSnapshotStreamExt,
         DbRecordRef,
         DbStringRecordRef,
         DbIntRecordRef,
@@ -34,14 +34,21 @@ export 'db_record.dart'
         CvRecordsRef;
 export 'db_store.dart'
     show
+        dbIntStoreFactory,
+        dbStringStoreFactory,
+        DbStoreFactory,
+        DbIntStoreFactory,
+        DbStringStoreFactory,
+        // Compat
+        CvIntStoreFactory,
+        CvStringStoreFactory,
+        CvStoreFactory,
         cvIntStoreFactory,
-        // ignore: deprecated_member_use_from_same_package
-        cvIntRecordFactory, // tmp
         cvStringStoreFactory,
         // ignore: deprecated_member_use_from_same_package
-        cvStringRecordFactory, // tmp
-        CvStoreFactory,
-        CvIntStoreFactory,
-        CvStringStoreFactory;
+        cvIntRecordFactory, // tmp
+        // ignore: deprecated_member_use_from_same_package
+        cvStringRecordFactory // tmp
+        ;
 export 'fill_options.dart' show cvSembastFillOptions1;
 export 'json_utils.dart' show DbRecordJsonExt, DbRecordListJsonExt;

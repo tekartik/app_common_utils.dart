@@ -5,7 +5,7 @@ import 'db_record.dart';
 
 /// Store factory mixin.
 mixin CvStoreFactoryMixin<K extends RecordKeyBase>
-    implements CvStoreFactory<K> {
+    implements DbStoreFactory<K> {
   @override
   CvStoreRef<K, V> store<V extends DbRecord<K>>([String? name]) {
     if (name == null) {
@@ -16,8 +16,11 @@ mixin CvStoreFactoryMixin<K extends RecordKeyBase>
   }
 }
 
+/// Compat.
+typedef CvStoreFactory<K extends RecordKeyBase> = DbStoreFactory<K>;
+
 /// Store factory interface
-abstract class CvStoreFactory<K extends RecordKeyBase> {
+abstract class DbStoreFactory<K extends RecordKeyBase> {
   /// Creates a reference to a store.
   CvStoreRef<K, V> store<V extends DbRecord<K>>([String? name]);
 }
@@ -27,23 +30,35 @@ abstract class CvStoreFactory<K extends RecordKeyBase> {
 
 /// common `<int, Map<String, Object?>>` factory
 @Deprecated('Use cvIntStoreFactory instead')
-final cvIntRecordFactory = cvIntStoreFactory;
+final cvIntRecordFactory = dbIntStoreFactory;
 
 /// common `<String, Map<String, Object?>>` factory
 @Deprecated('Use cvStringStoreFactory instead')
-final cvStringRecordFactory = cvStringStoreFactory;
+final cvStringRecordFactory = dbStringStoreFactory;
 
 /// common `<int, DbRecord<int>` factory
-final CvStoreFactory<int> cvIntStoreFactory = CvIntStoreFactory();
+final DbStoreFactory<int> dbIntStoreFactory = DbIntStoreFactory();
+
+/// Compat
+final cvIntStoreFactory = dbIntStoreFactory;
 
 /// common `<String, DbRecord<String>` factory
-final CvStoreFactory<String> cvStringStoreFactory = CvStringStoreFactory();
+final DbStoreFactory<String> dbStringStoreFactory = DbStringStoreFactory();
+
+/// Compat
+final cvStringStoreFactory = dbStringStoreFactory;
 
 /// Store with int key
-class CvIntStoreFactory extends CvStoreFactoryBase<int> {}
+class DbIntStoreFactory extends DbStoreFactoryBase<int> {}
+
+/// Compat
+typedef CvIntStoreFactory = DbIntStoreFactory;
 
 /// Store with string key
-class CvStringStoreFactory extends CvStoreFactoryBase<String> {}
+class DbStringStoreFactory extends DbStoreFactoryBase<String> {}
+
+/// Compat
+typedef CvStringStoreFactory = DbStringStoreFactory;
 
 /// Store factory base.
-class CvStoreFactoryBase<K extends RecordKeyBase> with CvStoreFactoryMixin<K> {}
+class DbStoreFactoryBase<K extends RecordKeyBase> with CvStoreFactoryMixin<K> {}

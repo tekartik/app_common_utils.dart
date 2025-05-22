@@ -57,27 +57,27 @@ void main() {
       CvRecordsRef;
     });
     test('toMap', () async {
-      var store = cvIntStoreFactory.store<DbTest>('test');
+      var store = dbIntStoreFactory.store<DbTest>('test');
       var record1 = store.record(1).cv();
       var record2 = store.record(2).cv();
       expect([record1, record2].toMap(), {1: record1, 2: record2});
     });
     test('ref', () async {
-      var store1 = cvIntStoreFactory.store('test');
-      var store2 = cvIntStoreFactory.store('test');
+      var store1 = dbIntStoreFactory.store('test');
+      var store2 = dbIntStoreFactory.store('test');
       expect(store1, store2);
       var record1 = store1.record(1);
       var record2 = store2.record(1);
       expect(record1, record2);
       record2 = store1.record(2);
       expect(record1, isNot(record2));
-      store2 = cvIntStoreFactory.store('tes2');
+      store2 = dbIntStoreFactory.store('tes2');
       expect(store1, isNot(store2));
       record2 = store2.record(1);
       expect(record1, isNot(record2));
     });
     test('int.ref', () async {
-      var store = cvIntStoreFactory.store<DbTest>('store');
+      var store = dbIntStoreFactory.store<DbTest>('store');
       var record = store.record(1);
       expect(record, isA<DbIntRecordRef<DbTest>>());
       var dbRecordRef = DbIntRecordRef(store, 1);
@@ -86,7 +86,7 @@ void main() {
       expect(dbRecordRef, isA<DbIntRecordRef<DbTest>>());
     });
     test('string.ref', () async {
-      var store = cvStringStoreFactory.store<DbStringTest>('store');
+      var store = dbStringStoreFactory.store<DbStringTest>('store');
       var record = store.record('test');
       expect(record, isA<DbStringRecordRef<DbStringTest>>());
       var dbRecordRef = DbStringRecordRef(store, 'test');
@@ -95,7 +95,7 @@ void main() {
       expect(dbRecordRef, isA<DbStringRecordRef<DbStringTest>>());
     });
     test('model.ref', () {
-      var store = cvIntStoreFactory.store<DbTest>('test');
+      var store = dbIntStoreFactory.store<DbTest>('test');
       var record = store.record(1);
       var dbRecord = record.cv();
       expect(dbRecord.ref, record);
@@ -120,7 +120,7 @@ void main() {
     });
     test('clone', () async {
       var original =
-          cvIntStoreFactory.store<DbTest>('test').record(1).cv()..value.v = 2;
+          dbIntStoreFactory.store<DbTest>('test').record(1).cv()..value.v = 2;
       var record = original.dbClone();
       expect(record, original);
       expect(record, isNot(same(original)));
@@ -136,7 +136,7 @@ void main() {
     });
     test('cast', () async {
       var store =
-          cvIntStoreFactory
+          dbIntStoreFactory
               .store<DbTest>('test')
               .cast<String, DbStringTest>()
               .castV<DbStringTest>();
@@ -148,7 +148,7 @@ void main() {
     });
     test('int store', () async {
       var store = intMapStoreFactory.store('test');
-      var cvStore = cvIntStoreFactory.store<DbTest>('test');
+      var cvStore = dbIntStoreFactory.store<DbTest>('test');
       expect(cvStore, isA<DbIntStoreRef<DbTest>>());
       var dbTest = DbTest()..value.v = 1;
       expect(dbTest.hasId, false);
@@ -176,7 +176,7 @@ void main() {
 
     test('string store', () async {
       var store = stringMapStoreFactory.store('test');
-      var cvStore = cvStringStoreFactory.store<DbStringTest>('test');
+      var cvStore = dbStringStoreFactory.store<DbStringTest>('test');
       expect(cvStore, isA<DbStringStoreRef<DbStringTest>>());
       var dbTest = DbTest()..value.v = 1;
       var recordRef = store.record('1');
@@ -199,7 +199,7 @@ void main() {
     });
 
     test('update', () async {
-      var cvStore = cvStringStoreFactory.store<DbStringTest>('test');
+      var cvStore = dbStringStoreFactory.store<DbStringTest>('test');
       var cvRecord = cvStore.record('1').cv()..value.v = 1;
       expect(await cvRecord.update(db), false);
       expect(await cvRecord.delete(db), false);
@@ -210,14 +210,14 @@ void main() {
       expect(await cvRecord.delete(db), false);
     });
     test('document.add', () async {
-      var cvStore = cvStringStoreFactory.store<DbStringTest>('test');
+      var cvStore = dbStringStoreFactory.store<DbStringTest>('test');
       var record = DbStringTest()..value.v = 1;
       record = await cvStore.add(db, record);
       expect(record.idOrNull, isNotNull);
       expect(record.ref.store, cvStore);
     });
     test('document.put', () async {
-      var cvStore = cvStringStoreFactory.store<DbStringTest>('test');
+      var cvStore = dbStringStoreFactory.store<DbStringTest>('test');
       var record = DbStringTest()..value.v = 1;
       var docRef = cvStore.record('test');
       expect(await docRef.exists(db), isFalse);
@@ -234,7 +234,7 @@ void main() {
     });
 
     test('onRecord', () async {
-      var cvStore = cvIntStoreFactory.store<DbTest>('test');
+      var cvStore = dbIntStoreFactory.store<DbTest>('test');
       var dbRecordRef = cvStore.record(1); //
       Future done() async {
         await dbRecordRef
@@ -280,7 +280,7 @@ void main() {
     });
 
     test('onRecordSync', () async {
-      var cvStore = cvIntStoreFactory.store<DbTest>('test');
+      var cvStore = dbIntStoreFactory.store<DbTest>('test');
       var dbRecordRef = cvStore.record(1); //
       await (dbRecordRef.cv()..value.v = 2).put(db);
       DbTest? record;
@@ -371,7 +371,7 @@ void main() {
 
     group('CvQueryRef', () {
       test('CvQueryRef.getRecord', () async {
-        var cvStore = cvIntStoreFactory.store<DbTest>('test');
+        var cvStore = dbIntStoreFactory.store<DbTest>('test');
         var dbRecordRef = cvStore.record(1); //
         var dbRecordRef2 = cvStore.record(2); //
         var record = dbRecordRef.cv()..value.v = 1;
@@ -386,7 +386,7 @@ void main() {
         expect(cvStore.query().getRecordsSync(db), [record, record2]);
       });
       test('CvQueryRef.onRecordsSync', () async {
-        var cvStore = cvIntStoreFactory.store<DbTest>('test');
+        var cvStore = dbIntStoreFactory.store<DbTest>('test');
         var dbRecordRef = cvStore.record(1); //
         var dbRecordRef2 = cvStore.record(2); //
         await dbRecordRef.put(db, dbRecordRef.cv()..value.v = 1);
@@ -410,7 +410,7 @@ void main() {
         await subscription.cancel();
       });
       test('delete', () async {
-        var cvStore = cvIntStoreFactory.store<DbTest>('test');
+        var cvStore = dbIntStoreFactory.store<DbTest>('test');
         await db.transaction((txn) async {
           await cvStore.record(1).cv().put(txn);
           await cvStore.record(2).cv().put(txn);

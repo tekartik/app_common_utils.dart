@@ -83,7 +83,7 @@ extension CvStoreRefExt<K extends RecordKeyBase, V extends DbRecord<K>>
   }
 
   /// Cast if needed
-  CvStoreRef<RK, RV> cast<RK extends RecordKeyBase, RV extends DbRecord<RK>>() {
+  DbStoreRef<RK, RV> cast<RK extends RecordKeyBase, RV extends DbRecord<RK>>() {
     if (this is CvStoreRef<RK, RV>) {
       return this as CvStoreRef<RK, RV>;
     }
@@ -91,5 +91,5 @@ extension CvStoreRefExt<K extends RecordKeyBase, V extends DbRecord<K>>
   }
 
   /// Cast if needed
-  CvStoreRef<K, RV> castV<RV extends DbRecord<K>>() => cast<K, RV>();
+  DbStoreRef<K, RV> castV<RV extends DbRecord<K>>() => cast<K, RV>();
 }
