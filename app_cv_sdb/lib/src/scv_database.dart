@@ -1,7 +1,5 @@
-import 'package:cv/cv.dart';
-import 'package:idb_shim/sdb.dart';
-import 'scv_record.dart';
-import 'scv_store_ref.dart';
+import 'package:tekartik_app_cv_sdb/app_cv_sdb.dart';
+import 'package:tekartik_app_cv_sdb/src/scv_index_ref.dart';
 
 /// Open store reference.
 abstract class ScvOpenStoreRef<K extends SdbKey, V extends ScvRecord<K>> {}
@@ -15,6 +13,45 @@ class _ScvOpenStoreRef<K extends SdbKey, V extends ScvRecord<K>>
   final SdbOpenStoreRef<K, Model> store;
 
   _ScvOpenStoreRef(this._database, this.store);
+}
+
+/// Store reference open helper.
+extension ScvOpenStoreRefExt<K extends SdbKey, V extends ScvRecord<K>>
+    on ScvOpenStoreRef<K, V> {
+  /// Create an index.
+  ScvOpenIndexRef<K, V, I> createIndex<I extends SdbIndexKey>(
+    ScvIndex1Ref<K, V, I> index,
+    String indexKeyPath,
+  ) => _ScvOpenIndexRef<K, V, I>(
+    _impl,
+    _impl.store.createIndex<I>(index.rawRef1, indexKeyPath),
+  );
+}
+
+/// Private extension to access the implementation.
+extension ScvOpenStoreRefExtPrv<K extends SdbKey, V extends ScvRecord<K>>
+    on ScvOpenStoreRef<K, V> {
+  /// Get the implementation.
+  _ScvOpenStoreRef<K, V> get _impl => this as _ScvOpenStoreRef<K, V>;
+}
+
+/// Open index reference.
+abstract class ScvOpenIndexRef<
+  K extends SdbKey,
+  V extends ScvRecord<K>,
+  I extends SdbIndexKey
+> {}
+
+class _ScvOpenIndexRef<
+  K extends SdbKey,
+  V extends ScvRecord<K>,
+  I extends SdbIndexKey
+>
+    implements ScvOpenIndexRef<K, V, I> {
+  final ScvOpenStoreRef<K, V> store;
+  final SdbOpenIndexRef<K, Model, I> rawRef;
+
+  _ScvOpenIndexRef(this.store, this.rawRef);
 }
 
 /// Helper

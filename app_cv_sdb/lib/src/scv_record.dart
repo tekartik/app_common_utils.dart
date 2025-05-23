@@ -1,5 +1,6 @@
 import 'package:cv/cv.dart';
 import 'package:idb_shim/sdb.dart';
+import 'package:tekartik_common_utils/env_utils.dart';
 import 'scv_record_ref.dart';
 import 'scv_store_ref.dart';
 
@@ -20,6 +21,12 @@ abstract class ScvRecordBase<K extends SdbKey> extends CvModelBase
     implements ScvRecord<K> {
   @override
   SdbRecordRef<K, Model>? _ref;
+
+  @override
+  String toString() =>
+      _ref == null
+          ? '<null> ${super.toString()}'
+          : '$rawRef ${super.toString()}';
 }
 
 /// Record with a string key
@@ -83,6 +90,90 @@ extension ScvRecordExt<T extends ScvRecord> on T {
       newRecord.rawRef = rawRef;
     }
     return newRecord;
+  }
+}
+
+/// Private extension on DbRecord
+extension ScvRecordExtInternal<T extends ScvRecord> on T {
+  /// Copy content and ref if not null
+  Model toDbMap() {
+    return toMap();
+  }
+
+  /// return a list if keyPath is an array
+  ///
+  /// if [keyPath] is a, the list cannot contain null values and null is returned instead.
+  Object? getKeyValue(Object? keyPath) {
+    if (keyPath is String) {
+      return getFieldValue(keyPath);
+    } else if (keyPath is List) {
+      final keyList = keyPath;
+      var keys = List<Object?>.generate(
+        keyList.length,
+        (i) => getFieldValue(keyPath[i] as String),
+      );
+      if (keys.where((element) => element == null).isNotEmpty) {
+        /// the list cannot contain null values
+        return null;
+      }
+      return keys;
+    }
+    throw 'keyPath $keyPath not supported';
+  }
+
+  /// return a list if keyPath is an array
+  ///
+  /// if [keyPath] is a, the list cannot contain null values and null is returned instead.
+  void setKeyValue(Object? keyPath, Object value) {
+    if (keyPath is String) {
+      return setFieldValue(keyPath, value);
+    } else if (keyPath is List) {
+      final keyList = keyPath;
+      if (isDebug) {
+        if (value is! List) {
+          throw ArgumentError.value(value, 'key value', 'is not a list');
+        }
+        if (keyPath is! List<String>) {
+          throw ArgumentError.value(
+            keyPath,
+            'keyPath',
+            'is not a list of string',
+          );
+        }
+        if (value.length != keyList.length) {
+          throw ArgumentError.value(
+            '$keyPath: $value',
+            'keyPath: value',
+            'length do not match (${keyList.length} vs ${value.length}',
+          );
+        }
+      }
+
+      /// value must be a list
+
+      final valueList = value as List<Object?>;
+      assert(keyList.length == valueList.length);
+      for (var i = 0; i < keyList.length; i++) {
+        setFieldValue(keyList[i] as String, valueList[i]!);
+      }
+    } else {
+      throw 'keyPath $keyPath not supported';
+    }
+  }
+
+  /// Split a filed by its dot (.) to get a part
+  List<String> getFieldParts(String field) => field.split('.');
+
+  /// Get map field helper.
+  F? getFieldValue<F extends Object>(String field) {
+    var cvField = fieldAtPath<F>(getFieldParts(field));
+    return cvField?.value;
+  }
+
+  /// Set a field value.
+  void setFieldValue<F extends Object>(String field, F? value) {
+    var cvField = fieldAtPath<F>(getFieldParts(field));
+    cvField?.value = value;
   }
 }
 

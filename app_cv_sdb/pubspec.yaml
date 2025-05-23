@@ -1,6 +1,6 @@
 name: tekartik_app_cv_sdb
 description: SDB using cv helpers
-version: 1.0.0
+version: 1.0.1
 publish_to: none
 
 environment:
@@ -14,7 +14,8 @@ dependencies:
     git:
       url: https://github.com/tekartik/common_utils.dart
       ref: dart3a
-  idb_shim: ">=2.6.6+1"
+    version: '>=1.0.0'
+  idb_shim: ">=2.6.6+2"
 
 dev_dependencies:
   lints: ">=5.0.0"

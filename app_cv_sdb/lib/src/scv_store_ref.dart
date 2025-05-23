@@ -1,7 +1,7 @@
-import 'package:idb_shim/sdb.dart';
+import 'package:tekartik_app_cv_sdb/app_cv_sdb.dart';
 
+import 'scv_index_ref.dart';
 import 'scv_record.dart';
-import 'scv_record_ref.dart';
 
 /// Store helper
 class ScvStoreRef<K extends SdbKey, V extends ScvRecord<K>> {
@@ -44,6 +44,10 @@ extension ScvStoreRefExt<K extends SdbKey, V extends ScvRecord<K>>
 
   /// Record ref
   ScvRecordRef<K, V> record(K key) => ScvRecordRef<K, V>(this, key);
+
+  /// Index reference on 1 field
+  ScvIndex1Ref<K, V, I> index<I extends SdbIndexKey>(String name) =>
+      ScvIndex1RefImpl<K, V, I>(this, rawRef.index(name));
 
   /// Cast if needed
   ScvStoreRef<RK, RV> cast<RK extends SdbKey, RV extends ScvRecord<RK>>() {
