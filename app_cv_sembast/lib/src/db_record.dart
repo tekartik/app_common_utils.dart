@@ -1,21 +1,13 @@
 import 'package:cv/cv.dart';
 import 'package:sembast/sembast.dart';
 import 'package:tekartik_app_cv_sembast/src/logger_utils.dart';
+import 'package:tekartik_common_utils/list_utils.dart';
 
 import 'cv_store_ref.dart';
 
 /// DbRecord
 abstract class DbRecord<K extends RecordKeyBase> implements CvModel {
   RecordRef<K, Model>? _ref;
-
-  /// Update inner data.
-  Future<bool> update(DatabaseClient db);
-
-  /// Add data.
-  Future<bool> add(DatabaseClient db);
-
-  /// Delete data.
-  Future<bool> delete(DatabaseClient db);
 }
 
 /// Access to ref.
@@ -73,36 +65,6 @@ abstract class DbRecordBase<K extends RecordKeyBase> extends CvModelBase
       _ref == null
           ? '<null> ${super.toString()}'
           : '$rawRef ${super.toString()}';
-
-  /// Update inner data.
-  ///
-  /// return true if updated, false if not (missing)
-  @override
-  Future<bool> update(DatabaseClient db, {Model? value}) async {
-    var model = await rawRef.update(db, value ?? toMap());
-    if (model != null) {
-      fromMap(model);
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  /// Add data.
-  ///
-  /// return true if added, false if not (existing)
-  @override
-  Future<bool> add(DatabaseClient db, {Model? value}) async {
-    var key = await rawRef.add(db, value ?? toMap());
-    return (key != null);
-  }
-
-  /// Update inner data
-  @override
-  Future<bool> delete(DatabaseClient db) async {
-    var key = await rawRef.delete(db);
-    return (key != null);
-  }
 }
 
 /// Record with a string key
@@ -145,8 +107,7 @@ extension DbSembastRecordSnapshotExt<K extends RecordKeyBase>
 extension DbSembastRecordSnapshotsExt<K extends RecordKeyBase>
     on List<RecordSnapshot<K, Model>> {
   /// Create a list of DbRecords from a snapshot
-  List<T> cv<T extends DbRecord<K>>() =>
-      map((snapshot) => snapshot.cv<T>()).toList();
+  List<T> cv<T extends DbRecord<K>>() => lazy((snapshot) => snapshot.cv<T>());
 }
 
 /// Allow list with null values.
@@ -154,7 +115,7 @@ extension DbSembastRecordSnapshotsOrNullExt<K extends RecordKeyBase>
     on List<RecordSnapshot<K, Model>?> {
   /// Create a list of DbRecords from a snapshot
   List<T?> cvOrNull<T extends DbRecord<K>>() =>
-      map((snapshot) => snapshot?.cv<T>()).toList();
+      lazy((snapshot) => snapshot?.cv<T>());
 }
 
 /// Allow Stream with null values.
@@ -176,9 +137,31 @@ extension DbRecordDbExt<K extends RecordKeyBase, V> on DbRecord<K> {
     fromMap(data);
   }
 
-  /// delete
-  Future<void> delete(DatabaseClient db) async {
-    await rawRef.delete(db);
+  /// Update inner data.
+  ///
+  /// return true if updated, false if not (missing)
+  Future<bool> update(DatabaseClient db, {Model? value}) async {
+    var model = await rawRef.update(db, value ?? toMap());
+    if (model != null) {
+      fromMap(model);
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  /// Add data.
+  ///
+  /// return true if added, false if not (existing)
+  Future<bool> add(DatabaseClient db, {Model? value}) async {
+    var key = await rawRef.add(db, value ?? toMap());
+    return (key != null);
+  }
+
+  /// Update inner data
+  Future<bool> delete(DatabaseClient db) async {
+    var key = await rawRef.delete(db);
+    return (key != null);
   }
 }
 
@@ -378,7 +361,14 @@ extension DbRecordRefDbExt<K extends RecordKeyBase, V extends DbRecord<K>>
     await rawRef.delete(client);
   }
 
-  /// Get
+  /// Add a record.
+  ///
+  /// Returns the key if inserted, null otherwise.
+  Future<K?> add(DatabaseClient db, V value) {
+    return rawRef.add(db, value.toMap());
+  }
+
+  /// Put a record.
   Future<V> put(DatabaseClient db, V value, {bool? merge}) async =>
       (await rawRef.put(db, value.toMap(), merge: merge)).cv<V>()
         ..rawRef = rawRef;
@@ -423,5 +413,5 @@ extension DbRecordRefListExt<K extends RecordKeyBase, V extends DbRecord<K>>
 extension DbRecordsRefExt<K extends RecordKeyBase, V extends DbRecord<K>>
     on DbRecordsRef<K, V> {
   /// Create new objects.
-  List<V> cv() => refs.map((ref) => ref.cv()).toList();
+  List<V> cv() => refs.lazy((ref) => ref.cv());
 }
