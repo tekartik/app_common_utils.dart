@@ -8,9 +8,6 @@ import 'cv_store_ref.dart';
 abstract class DbRecord<K extends RecordKeyBase> implements CvModel {
   RecordRef<K, Model>? _ref;
 
-  /// Put(add/update) inner data
-  Future<void> put(DatabaseClient db, {bool merge});
-
   /// Update inner data.
   Future<bool> update(DatabaseClient db);
 
@@ -76,15 +73,6 @@ abstract class DbRecordBase<K extends RecordKeyBase> extends CvModelBase
       _ref == null
           ? '<null> ${super.toString()}'
           : '$rawRef ${super.toString()}';
-
-  /// Put(add/update) inner data
-  ///
-  /// [value] is by default toMap()
-  @override
-  Future<void> put(DatabaseClient db, {Model? value, bool? merge}) async {
-    var model = await rawRef.put(db, value ?? toMap(), merge: merge);
-    fromMap(model);
-  }
 
   /// Update inner data.
   ///
@@ -178,7 +166,10 @@ extension DbSembastRecordSnapshotStreamExt<K extends RecordKeyBase>
 }
 
 /// Easy extension
-extension DbRecordExt<K extends RecordKeyBase, V> on DbRecord<K> {
+extension DbRecordExt<K extends RecordKeyBase, V> on DbRecord<K> {}
+
+/// Easy extension
+extension DbRecordDbExt<K extends RecordKeyBase, V> on DbRecord<K> {
   /// put
   Future<void> put(DatabaseClient db, {bool merge = false}) async {
     var data = await rawRef.put(db, toMap(), merge: merge);

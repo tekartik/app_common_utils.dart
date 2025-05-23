@@ -16,6 +16,7 @@ export 'db_record.dart'
         DbIntRecordBase,
         DbIntRecord,
         DbRecordExt,
+        DbRecordDbExt,
         DbRecordCloneExt,
         DbRecordToRefExt,
         DbRecordMap,
