@@ -3,10 +3,9 @@ import 'package:idb_shim/sdb/sdb.dart';
 
 import 'scv_record.dart';
 import 'scv_store_ref.dart';
-import 'scv_types.dart';
 
 /// Record reference
-class ScvRecordRef<K extends ScvKey, V extends ScvRecord<K>> {
+class ScvRecordRef<K extends SdbKey, V extends ScvRecord<K>> {
   /// Store
   final ScvStoreRef<K, V> store;
 
@@ -44,7 +43,7 @@ typedef ScvStringRecordRef<T extends ScvStringRecord> = ScvRecordRef<String, T>;
 typedef ScvIntRecordRef<T extends ScvIntRecord> = ScvRecordRef<int, T>;
 
 /// Record reference extension
-extension ScvRecordRefExt<K extends ScvKey, V extends ScvRecord<K>>
+extension ScvRecordRefExt<K extends SdbKey, V extends ScvRecord<K>>
     on ScvRecordRef<K, V> {
   /// Key
   K get key => rawRef.key;
@@ -53,7 +52,7 @@ extension ScvRecordRefExt<K extends ScvKey, V extends ScvRecord<K>>
   V cv() => cvBuildModel<V>({})..rawRef = rawRef;
 
   /// Cast if needed
-  ScvRecordRef<RK, RV> cast<RK extends ScvKey, RV extends ScvRecord<RK>>() {
+  ScvRecordRef<RK, RV> cast<RK extends SdbKey, RV extends ScvRecord<RK>>() {
     if (this is ScvRecordRef<RK, RV>) {
       return this as ScvRecordRef<RK, RV>;
     }

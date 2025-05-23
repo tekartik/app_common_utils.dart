@@ -1,6 +1,5 @@
-import 'package:sembast/sembast_memory.dart';
+import 'package:sembast/sembast.dart' show disableSembastCooperator;
 import 'package:tekartik_app_cv_sdb/app_cv_sdb.dart';
-
 import 'package:test/test.dart';
 
 class DbTest extends ScvIntRecordBase {
@@ -10,12 +9,18 @@ class DbTest extends ScvIntRecordBase {
   List<CvField> get fields => [value];
 }
 
+final dbIntTestStore = scvIntStoreFactory.store<DbTest>('int_test');
+
 class DbStringTest extends ScvStringRecordBase {
   final value = CvField<int>('value');
 
   @override
   List<CvField> get fields => [value];
 }
+
+final dbStringTestStore = scvStringStoreFactory.store<DbStringTest>(
+  'string_test',
+);
 
 class DbString2Test extends ScvStringRecordBase {
   final value2 = CvField<int>('value2');
@@ -31,12 +36,21 @@ bool contentAndKeyEquals(ScvRecord? record1, ScvRecord? record2) {
 void main() {
   disableSembastCooperator();
   group('store', () {
-    late Database db;
+    late SdbDatabase db;
     setUpAll(() {
       cvAddConstructors([DbTest.new, DbStringTest.new, DbString2Test.new]);
     });
     setUp(() async {
-      db = await newDatabaseFactoryMemory().openDatabase('test');
+      var factory = newSdbFactoryMemory();
+      db = await factory.openDatabase(
+        'test',
+        version: 1,
+        onVersionChange: (e) {
+          var db = e.db;
+          db.scvCreateStore(dbIntTestStore);
+          db.scvCreateStore(dbStringTestStore);
+        },
+      );
     });
     tearDown(() {
       db.close();
@@ -131,10 +145,10 @@ void main() {
           store.record('test').castV<DbString2Test>().cv()..value2.v = 2;
       expect(record2.toMap(), {'value2': 2});
     });
-    /*
+
     test('int store', () async {
-      var store = intMapStoreFactory.store('test');
-      var cvStore = scvIntStoreFactory.store<DbTest>('test');
+      var store = SdbStoreRef<int, Model>(dbIntTestStore.name);
+      var cvStore = dbIntTestStore;
       expect(cvStore, isA<ScvIntStoreRef<DbTest>>());
       var dbTest = DbTest()..value.v = 1;
       expect(dbTest.hasId, false);
@@ -143,48 +157,41 @@ void main() {
       var scvRecordRef = cvStore.record(1);
       expect(scvRecordRef, isA<ScvIntRecordRef<DbTest>>());
       expect(scvRecordRef.key, 1);
-      /*
+
       await store.record(1).put(db, {'value': 1});
-      expect(await recordRef.get(scv), {'value': 1});
-      expect(recordRef.getSync(scv), {'value': 1});
-      var readDbTest = (await scvRecordRef.get(scv))!;
+      expect(await recordRef.getValue(db), {'value': 1});
+      var readDbTest = (await scvRecordRef.get(db))!;
       expect(readDbTest, dbTest);
       expect(readDbTest.rawRef.key, 1);
       expect(readDbTest.ref.key, 1);
       expect(readDbTest.refOrNull?.key, 1);
       expect(readDbTest.idOrNull, 1);
       var writeDbTest = scvRecordRef.cv()..value.v = 2;
-      await writeDbTest.put(scv);
-      readDbTest = (await scvRecordRef.get(scv))!;
+      await writeDbTest.put(db);
+      readDbTest = (await scvRecordRef.get(db))!;
       expect(readDbTest, writeDbTest);
-      //expect(contentAndKeyEquals(await store.findFirst(scv)), writeDbTest);
-
-      //cvStore.*/
     });
 
     test('string store', () async {
-      var store = stringMapStoreFactory.store('test');
-      var cvStore = scvStringStoreFactory.store<DbStringTest>('test');
+      var store = SdbStoreRef<String, Model>(dbStringTestStore.name);
+      var cvStore = dbStringTestStore;
       expect(cvStore, isA<ScvStringStoreRef<DbStringTest>>());
       var dbTest = DbTest()..value.v = 1;
       var recordRef = store.record('1');
       var scvRecordRef = cvStore.record('1');
       expect(scvRecordRef, isA<ScvStringRecordRef<DbStringTest>>());
-      /*
-      await store.record('1').put(scv, {'value': 1});
-      expect(await recordRef.get(scv), {'value': 1});
-      expect(await recordRef.exists(scv), true);
-      var readDbTest = await scvRecordRef.get(scv);
+
+      await store.record('1').put(db, {'value': 1});
+      expect(await recordRef.getValue(db), {'value': 1});
+      expect(await recordRef.exists(db), true);
+      var readDbTest = await scvRecordRef.get(db);
       expect(readDbTest, dbTest);
       expect(readDbTest!.rawRef.key, '1');
       var writeDbTest = scvRecordRef.cv()..value.v = 2;
       expect(writeDbTest.ref, scvRecordRef);
-      await writeDbTest.put(scv);
-      readDbTest = await scvRecordRef.get(scv);
+      await writeDbTest.put(db);
+      readDbTest = await scvRecordRef.get(db);
       expect(readDbTest, writeDbTest);
-      //expect(contentAndKeyEquals(await store.findFirst(scv)), writeDbTest);
-
-      //cvStore.*/
-    });*/
+    });
   });
 }

@@ -2,10 +2,9 @@ import 'package:idb_shim/sdb.dart';
 
 import 'scv_record.dart';
 import 'scv_record_ref.dart';
-import 'scv_types.dart';
 
 /// Store helper
-class ScvStoreRef<K extends ScvKey, V extends ScvRecord<K>> {
+class ScvStoreRef<K extends SdbKey, V extends ScvRecord<K>> {
   /// Raw ref
   final SdbStoreRef<K, Map<String, Object?>> rawRef;
 
@@ -38,7 +37,7 @@ typedef ScvIntStoreRef<V extends ScvIntRecord> = ScvStoreRef<int, V>;
 typedef ScvStringStoreRef<V extends ScvStringRecord> = ScvStoreRef<String, V>;
 
 /// Common helpers
-extension ScvStoreRefExt<K extends ScvKey, V extends ScvRecord<K>>
+extension ScvStoreRefExt<K extends SdbKey, V extends ScvRecord<K>>
     on ScvStoreRef<K, V> {
   /// Name
   String get name => rawRef.name;
@@ -47,7 +46,7 @@ extension ScvStoreRefExt<K extends ScvKey, V extends ScvRecord<K>>
   ScvRecordRef<K, V> record(K key) => ScvRecordRef<K, V>(this, key);
 
   /// Cast if needed
-  ScvStoreRef<RK, RV> cast<RK extends ScvKey, RV extends ScvRecord<RK>>() {
+  ScvStoreRef<RK, RV> cast<RK extends SdbKey, RV extends ScvRecord<RK>>() {
     if (this is ScvStoreRef<RK, RV>) {
       return this as ScvStoreRef<RK, RV>;
     }
@@ -59,7 +58,7 @@ extension ScvStoreRefExt<K extends ScvKey, V extends ScvRecord<K>>
 }
 
 /// Store factory interface
-abstract class ScvStoreFactory<K extends ScvKey> {
+abstract class ScvStoreFactory<K extends SdbKey> {
   /// Creates a reference to a store.
   ScvStoreRef<K, V> store<V extends ScvRecord<K>>(String name);
 }
@@ -71,7 +70,7 @@ class ScvIntStoreFactory extends ScvStoreFactoryBase<int> {}
 class ScvStringStoreFactory extends ScvStoreFactoryBase<String> {}
 
 /// Store factory base.
-class ScvStoreFactoryBase<K extends ScvKey> implements ScvStoreFactory<K> {
+class ScvStoreFactoryBase<K extends SdbKey> implements ScvStoreFactory<K> {
   @override
   ScvStoreRef<K, V> store<V extends ScvRecord<K>>(String name) {
     return ScvStoreRef<K, V>(name);

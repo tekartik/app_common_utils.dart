@@ -2,10 +2,9 @@ import 'package:cv/cv.dart';
 import 'package:idb_shim/sdb.dart';
 import 'scv_record_ref.dart';
 import 'scv_store_ref.dart';
-import 'scv_types.dart';
 
 /// Record with a key (int or String).
-abstract class ScvRecord<K extends ScvKey> implements CvModel {
+abstract class ScvRecord<K extends SdbKey> implements CvModel {
   SdbRecordRef<K, Model>? _ref;
 }
 
@@ -17,7 +16,7 @@ typedef ScvIntRecord = ScvRecord<int>;
 
 /// Base record implementation. Protected fields:
 /// - ref
-abstract class ScvRecordBase<K extends ScvKey> extends CvModelBase
+abstract class ScvRecordBase<K extends SdbKey> extends CvModelBase
     implements ScvRecord<K> {
   @override
   SdbRecordRef<K, Model>? _ref;
@@ -32,7 +31,7 @@ abstract class ScvIntRecordBase extends ScvRecordBase<int>
     implements ScvIntRecord {}
 
 /// Access to ref.
-extension ScvRecordToRefExt<K extends ScvKey> on ScvRecord<K> {
+extension ScvRecordToRefExt<K extends SdbKey> on ScvRecord<K> {
   /// Get the record ref
   ScvRecordRef<K, ScvRecord<K>> get ref =>
       ScvStoreRef<K, ScvRecord<K>>(rawRef.store.name).record(rawRef.key);
@@ -88,7 +87,16 @@ extension ScvRecordExt<T extends ScvRecord> on T {
 }
 
 /// Easy extension
-extension ScvRecordListExt<K extends ScvKey, V> on List<ScvRecord<K>> {
+extension ScvRecordListExt<K extends SdbKey, V> on List<ScvRecord<K>> {
   /// List of ifs
   List<K> get ids => map((record) => record.id).toList();
+}
+
+/// Easy extension
+extension ScvRecordSnapshotExt<K extends SdbKey>
+    on SdbRecordSnapshot<K, Model> {
+  /// Create a DbRecord from a snapshot
+  T cv<T extends ScvRecord<K>>() {
+    return (cvBuildModel<T>(value)..rawRef = this)..fromMap(value);
+  }
 }

@@ -14,7 +14,7 @@ dependencies:
     git:
       url: https://github.com/tekartik/common_utils.dart
       ref: dart3a
-  idb_shim: ">=2.6.6"
+  idb_shim: ">=2.6.6+1"
 
 dev_dependencies:
   lints: ">=5.0.0"
