@@ -37,6 +37,58 @@ extension TekartikRxStreamExt<T> on Stream<T> {
   /// when it is closed.
   BroadcastValueStream<T> toBroadcastValueStream() =>
       _BroadcastValueStream(this);
+
+  BroadcastStream<T> toBroadcastStream() => _BroadcastStream<T>(this);
+}
+
+/// Stream subscription is closed when then stream is closed.
+abstract class BroadcastStream<T> extends Stream<T> {
+  Future<void> close();
+}
+
+class _BroadcastStream<T> extends Stream<T> implements BroadcastStream<T> {
+  StreamSubscription<T>? subscription;
+  late final PublishSubject<T> _subject;
+  _BroadcastStream(Stream<T> stream) {
+    _subject = PublishSubject<T>(
+      onListen: () {
+        if (_debug) {
+          print('onListen $hashCode');
+        }
+        subscription ??= stream.listen((event) {
+          _subject.add(event);
+        });
+      },
+      onCancel: () {
+        if (_debug) {
+          print('onCancel $hashCode');
+        }
+      },
+      sync: true,
+    );
+  }
+
+  @override
+  StreamSubscription<T> listen(
+    void Function(T event)? onData, {
+    Function? onError,
+    void Function()? onDone,
+    bool? cancelOnError,
+  }) => _subject.listen(
+    onData,
+    onError: onError,
+    onDone: onDone,
+    cancelOnError: cancelOnError,
+  );
+
+  @override
+  Future<void> close() async {
+    if (_debug) {
+      print('close $hashCode');
+    }
+    subscription?.cancel().unawait();
+    await _subject.close();
+  }
 }
 
 /// Stream subscription is closed when then stream is closed.

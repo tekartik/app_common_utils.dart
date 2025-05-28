@@ -60,6 +60,31 @@ void main() {
       expect(subject.value, 3);
       await subject.close();
     });
+    test('toBroadcastStream', () async {
+      var subject = Stream.fromIterable([1, 2, 3]).toBroadcastStream();
+
+      var completer = Completer<void>();
+      subject.first.then((value) {
+        expect(value, 1);
+      }).unawait();
+
+      StreamSubscription? subscription1;
+      subscription1 = subject.listen((data) {
+        if (data == 1) {
+          subscription1?.cancel();
+          subscription1 = null;
+        }
+      });
+      subject.listen((data) {
+        if (data == 3) {
+          completer.complete();
+        }
+      });
+      await completer.future;
+      expect(subscription1, isNull);
+
+      await subject.close();
+    });
     test('cancel toBehaviorSubject', () async {
       var streamController = StreamController<int>(sync: true);
       var subject = streamController.stream.toBehaviorSubject();

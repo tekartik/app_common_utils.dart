@@ -1,2 +1,3 @@
 export 'rx.dart';
-export 'src/helpers.dart' show TekartikRxStreamExt, BroadcastValueStream;
+export 'src/helpers.dart'
+    show TekartikRxStreamExt, BroadcastValueStream, BroadcastStream;
