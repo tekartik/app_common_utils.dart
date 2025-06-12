@@ -5,11 +5,16 @@ import 'state_base_bloc.dart';
 
 /// Base bloc with auto dispose
 abstract class AutoDisposeStateBaseBloc<T> extends StateBaseBloc<T>
-    with AutoDisposeMixin {
+    with AutoDisposeMixin, AutoDisposableMixin {
   @override
   @mustCallSuper
   void dispose() {
     audiDisposeAll();
     super.dispose();
+  }
+
+  @override
+  void selfDispose() {
+    dispose();
   }
 }

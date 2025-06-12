@@ -5,6 +5,12 @@ class TestBloc extends AutoDisposeStateBaseBloc<String> {
   late var other = audiAddBehaviorSubject(BehaviorSubject.seeded(false));
 }
 
+class InnerBloc extends AutoDisposeStateBaseBloc<String> {}
+
+class OuterBloc extends AutoDisposeStateBaseBloc<String> {
+  late final innerBloc = audiAddDisposable(InnerBloc());
+}
+
 void main() {
   group('auto_dispose_base_bloc', () {
     test('disposed', () {
@@ -16,6 +22,14 @@ void main() {
       expect(bloc.disposed, isTrue);
       expect(bloc.other.isClosed, isTrue);
       expect(() => bloc.add('test2'), throwsA(isA<StateError>()));
+    });
+    test('inner bloc', () {
+      var outerBloc = OuterBloc();
+      expect(outerBloc.disposed, isFalse);
+      expect(outerBloc.innerBloc.disposed, isFalse);
+      outerBloc.dispose();
+      expect(outerBloc.disposed, isTrue);
+      expect(outerBloc.innerBloc.disposed, isTrue);
     });
   });
 }
