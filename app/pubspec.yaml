@@ -1,6 +1,6 @@
 name: tekartik_app_common_utils
 description: App utilities only dependend on platform, common and lints
-version: 0.2.1+1
+version: 1.0.0
 homepage: https://www.example.com
 
 publish_to: none
@@ -10,6 +10,8 @@ environment:
 
 dependencies:
   pub_semver: ">=2.1.4"
+  yaml:
+  cv:
   tekartik_common_utils:
     git:
       url: https://github.com/tekartik/common_utils.dart
