@@ -7,6 +7,9 @@ void main() {
       expect(decodeYamlMapOrNull(null), isNull);
       expect(decodeYamlMapOrNull('- test'), isNull);
       expect(decodeYamlMap('test:'), {'test': null});
+      expect(decodeYamlMap('test: 1'), {'test': 1});
+      expect(decodeYamlMap('test: "1"'), {'test': '1'});
+      expect(decodeYamlMap("test: '1'"), {'test': '1'});
       expect(decodeYamlMap('test:'), decodeYamlMapOrNull('test:'));
     });
   });
