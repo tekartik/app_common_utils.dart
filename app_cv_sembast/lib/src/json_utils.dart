@@ -52,14 +52,13 @@ extension DbRecordListJsonExt<K extends RecordKeyBase, V> on List<DbRecord<K>> {
     List<String>? columns,
     bool includeMissingValue = false,
     JsonEncodableCodec? codec,
-  }) =>
-      map(
-        (item) => item.toJsonEncodable(
-          columns: columns,
-          includeMissingValue: includeMissingValue,
-          codec: codec,
-        ),
-      ).toList();
+  }) => map(
+    (item) => item.toJsonEncodable(
+      columns: columns,
+      includeMissingValue: includeMissingValue,
+      codec: codec,
+    ),
+  ).toList();
 
   /// to json helper.
   String dbToJson({

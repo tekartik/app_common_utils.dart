@@ -111,8 +111,8 @@ void main() {
       expect(list.ids, [1, 3]);
     });
     test('clone', () async {
-      var original =
-          dbIntStoreFactory.store<DbTest>('test').record(1).cv()..value.v = 2;
+      var original = dbIntStoreFactory.store<DbTest>('test').record(1).cv()
+        ..value.v = 2;
       var record = original.dbClone();
       expect(record, original);
       expect(record, isNot(same(original)));
@@ -127,15 +127,14 @@ void main() {
       expect(record.idOrNull, isNull);
     });
     test('cast', () async {
-      var store =
-          dbIntStoreFactory
-              .store<DbTest>('test')
-              .cast<String, DbStringTest>()
-              .castV<DbStringTest>();
+      var store = dbIntStoreFactory
+          .store<DbTest>('test')
+          .cast<String, DbStringTest>()
+          .castV<DbStringTest>();
       var record = store.record('test').cv()..value.v = 1;
       expect(record.toMap(), {'value': 1});
-      var record2 =
-          store.record('test').castV<DbString2Test>().cv()..value2.v = 2;
+      var record2 = store.record('test').castV<DbString2Test>().cv()
+        ..value2.v = 2;
       expect(record2.toMap(), {'value2': 2});
     });
 

@@ -23,10 +23,9 @@ abstract class ScvRecordBase<K extends SdbKey> extends CvModelBase
   SdbRecordRef<K, Model>? _ref;
 
   @override
-  String toString() =>
-      _ref == null
-          ? '<null> ${super.toString()}'
-          : '$rawRef ${super.toString()}';
+  String toString() => _ref == null
+      ? '<null> ${super.toString()}'
+      : '$rawRef ${super.toString()}';
 }
 
 /// Record with a string key

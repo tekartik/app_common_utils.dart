@@ -61,10 +61,9 @@ abstract class DbRecordBase<K extends RecordKeyBase> extends CvModelBase
   @override
   RecordRef<K, Model>? _ref;
   @override
-  String toString() =>
-      _ref == null
-          ? '<null> ${super.toString()}'
-          : '$rawRef ${super.toString()}';
+  String toString() => _ref == null
+      ? '<null> ${super.toString()}'
+      : '$rawRef ${super.toString()}';
 }
 
 /// Record with a string key

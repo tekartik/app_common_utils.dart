@@ -21,11 +21,10 @@ void main() {
       'value': null,
       'overriden_text': null,
     });
-    simple =
-        Simple()
-          ..dontIncludeIfNull = 'test1'
-          ..text = 'test2'
-          ..value = 3;
+    simple = Simple()
+      ..dontIncludeIfNull = 'test1'
+      ..text = 'test2'
+      ..value = 3;
     expect(simpleToMap(simple), {
       'value': 3,
       'overriden_text': 'test2',

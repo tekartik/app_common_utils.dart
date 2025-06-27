@@ -7,7 +7,7 @@ description: Simple test menu for web and io
 publish_to: none
 
 environment:
-  sdk: ^3.7.0
+  sdk: ^3.8.0
 
 dependencies:
   process_run: ">=1.2.1+1"

@@ -31,10 +31,9 @@ Future<void> main() async {
   /// You can also read in a transaction.
   await db.transaction((transaction) async {
     /// Access a book by code
-    var book =
-        (await dbCodeIndex
-            .transactionRecord(transaction, 'BOOK002')
-            .getSnapshot())!;
+    var book = (await dbCodeIndex
+        .transactionRecord(transaction, 'BOOK002')
+        .getSnapshot())!;
 
     /// Should print the simple book!
     print(book['title']);

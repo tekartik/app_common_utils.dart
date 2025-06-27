@@ -149,10 +149,9 @@ void main() {
         expect(doc.toMap(), {'text': 'value'});
       }
 
-      var doc =
-          CvFsSingleString()
-            ..path = 'test/single_string'
-            ..text.v = 'value';
+      var doc = CvFsSingleString()
+        ..path = 'test/single_string'
+        ..text.v = 'value';
 
       expect(doc.path, 'test/single_string');
       expect(doc.toMap(), {'text': 'value'});
@@ -163,13 +162,16 @@ void main() {
       readDoc = await firestore.doc(doc.path).cvGet<CvFsSingleString>();
       check(readDoc);
 
-      var snapshots =
-          await firestore.collection('test').cvGet<CvFsSingleString>();
+      var snapshots = await firestore
+          .collection('test')
+          .cvGet<CvFsSingleString>();
       expect(snapshots, [doc]);
       check(snapshots.first);
 
-      snapshots =
-          await firestore.collection('test').limit(1).cvGet<CvFsSingleString>();
+      snapshots = await firestore
+          .collection('test')
+          .limit(1)
+          .cvGet<CvFsSingleString>();
       expect(snapshots, [doc]);
       check(snapshots.first);
 
@@ -180,10 +182,9 @@ void main() {
         //transaction.pathDelete(doc.path);
         transaction.docDelete(readDoc);
       });
-      doc =
-          CvFsSingleString()
-            ..path = 'test/single_string'
-            ..text.v = 'value2';
+      doc = CvFsSingleString()
+        ..path = 'test/single_string'
+        ..text.v = 'value2';
 
       await firestore.cvRunTransaction((transaction) async {
         readDoc = await transaction.cvGet(doc.path);
@@ -191,15 +192,13 @@ void main() {
 
         transaction.cvSet(doc);
       });
-      doc =
-          CvFsSingleString()
-            ..path = 'test/single_string'
-            ..text.v = 'value3';
+      doc = CvFsSingleString()
+        ..path = 'test/single_string'
+        ..text.v = 'value3';
       await firestore.cvRunTransaction((transaction) async {
-        var doc =
-            CvFsSingleString()
-              ..path = 'test/single_string'
-              ..text.v = 'value3';
+        var doc = CvFsSingleString()
+          ..path = 'test/single_string'
+          ..text.v = 'value3';
         readDoc = await transaction.cvGet(doc.path);
         expect(readDoc.exists, isTrue);
         transaction.cvUpdate(doc);
@@ -222,10 +221,9 @@ void main() {
     });
 
     test('batch', () async {
-      var doc =
-          CvFsSingleString()
-            ..path = 'batch/single_string'
-            ..text.v = 'value';
+      var doc = CvFsSingleString()
+        ..path = 'batch/single_string'
+        ..text.v = 'value';
       var batch = firestore.cvBatch();
       batch.cvSet(doc);
       await batch.commit();
@@ -256,10 +254,9 @@ void main() {
     });
 
     test('onSnapshot', () async {
-      var doc =
-          CvFsSingleString()
-            ..path = 'test/single_string'
-            ..text.v = 'value';
+      var doc = CvFsSingleString()
+        ..path = 'test/single_string'
+        ..text.v = 'value';
 
       await firestore.cvSet(doc);
       expect(
@@ -493,25 +490,21 @@ void main() {
       expect(doc.parent.parent?.parent.parent, isNull);
     });
     test('List to Map', () {
-      var doc1 =
-          CvFsSingleString()
-            ..path = 'test/1'
-            ..text.v = '1';
-      var doc2 =
-          CvFsSingleString()
-            ..path = 'test/2'
-            ..text.v = '2';
+      var doc1 = CvFsSingleString()
+        ..path = 'test/1'
+        ..text.v = '1';
+      var doc2 = CvFsSingleString()
+        ..path = 'test/2'
+        ..text.v = '2';
       expect([doc1, doc2].toMap(), {'1': doc1, '2': doc2});
     });
     test('toMap', () {
-      var doc1 =
-          CvFsSingleString()
-            ..path = 'test/1'
-            ..text.v = '1';
-      var doc2 =
-          CvFsSingleString()
-            ..path = 'test/2'
-            ..text.v = '2';
+      var doc1 = CvFsSingleString()
+        ..path = 'test/1'
+        ..text.v = '1';
+      var doc2 = CvFsSingleString()
+        ..path = 'test/2'
+        ..text.v = '2';
       expect([doc1, doc2].toMap(), {'1': doc1, '2': doc2});
     });
     test('ref', () async {

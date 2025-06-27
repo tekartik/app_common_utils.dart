@@ -164,12 +164,11 @@ final class JsonSchema {
       },
     // Calculate required properties based on optionalProperties
     if (properties != null)
-      'required':
-          optionalProperties != null
-              ? properties!.keys
-                  .where((key) => !optionalProperties!.contains(key))
-                  .toList()
-              : properties!.keys.toList(),
+      'required': optionalProperties != null
+          ? properties!.keys
+                .where((key) => !optionalProperties!.contains(key))
+                .toList()
+          : properties!.keys.toList(),
   };
 }
 

@@ -5,7 +5,7 @@ homepage: https://github.com/tekartik/app_common_utils.dart/app_serialize
 publish_to: none
 
 environment:
-  sdk: ^3.7.0
+  sdk: ^3.8.0
 
 dependencies:
   tekartik_app_mirrors:

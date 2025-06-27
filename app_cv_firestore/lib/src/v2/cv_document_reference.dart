@@ -49,17 +49,15 @@ class CvDocumentReference<T extends CvFirestoreDocument>
     TrackChangesPullOptions? options,
   }) => firestore.doc(path).cvOnSnapshotSupport(options: options);
 
-  T cv() =>
-      cvBuildModel<T>({})
-        ..path = path
-        // ignore: invalid_use_of_visible_for_testing_member
-        ..prvExists = false;
+  T cv() => cvBuildModel<T>({})
+    ..path = path
+    // ignore: invalid_use_of_visible_for_testing_member
+    ..prvExists = false;
 
-  T cvType(Type type) =>
-      cvTypeBuildModel<T>(type, {})
-        ..path = path
-        // ignore: invalid_use_of_visible_for_testing_member
-        ..prvExists = false;
+  T cvType(Type type) => cvTypeBuildModel<T>(type, {})
+    ..path = path
+    // ignore: invalid_use_of_visible_for_testing_member
+    ..prvExists = false;
 
   /// Delete
   Future<void> delete(Firestore firestore) => firestore.doc(path).delete();

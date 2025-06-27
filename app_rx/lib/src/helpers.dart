@@ -169,10 +169,9 @@ class _BroadcastValueStream<T> extends Stream<T>
   /// Returns the last emitted event (either data/value or error event).
   /// `null` if no value or error events have been emitted yet.
   @override
-  StreamNotification<T>? get lastEventOrNull =>
-      hasValue
-          ? StreamNotification<T>.data(value)
-          : hasError
-          ? StreamNotification<T>.error(error)
-          : null;
+  StreamNotification<T>? get lastEventOrNull => hasValue
+      ? StreamNotification<T>.data(value)
+      : hasError
+      ? StreamNotification<T>.error(error)
+      : null;
 }

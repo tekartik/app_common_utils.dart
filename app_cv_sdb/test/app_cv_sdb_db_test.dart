@@ -241,10 +241,9 @@ void main() {
 
     test('string with id store', () async {
       var dbStore = dbStringTestWithIdStore;
-      var dbRecord =
-          DbStringTestWithId()
-            ..value.v = 1234
-            ..recId.v = 'my_key';
+      var dbRecord = DbStringTestWithId()
+        ..value.v = 1234
+        ..recId.v = 'my_key';
       var addedRecord = await dbStore.add(db, dbRecord);
       expect(addedRecord.value.v, 1234);
       var id = addedRecord.id;

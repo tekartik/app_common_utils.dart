@@ -36,8 +36,9 @@ PrefsFactory getPrefsFactory({String? packageName}) {
     if (packageName == null) {
       return _defaultPrefsFactory ??= newPrefsFactorySembast(packageName);
     } else {
-      _prefsFactoryMap[packageName] =
-          prefsFactory = newPrefsFactorySembast(packageName);
+      _prefsFactoryMap[packageName] = prefsFactory = newPrefsFactorySembast(
+        packageName,
+      );
     }
   }
   return prefsFactory;
@@ -48,13 +49,12 @@ PrefsAsyncFactory getPrefsAsyncFactory({String? packageName}) {
   var prefsFactory = _prefsAsyncFactoryMap[packageName];
   if (prefsFactory == null) {
     if (packageName == null) {
-      prefsFactory =
-          _defaultPrefsAsyncFactory ??= newPrefsAsyncFactorySembast(
-            packageName: packageName,
-          );
+      prefsFactory = _defaultPrefsAsyncFactory ??= newPrefsAsyncFactorySembast(
+        packageName: packageName,
+      );
     } else {
-      _prefsAsyncFactoryMap[packageName] =
-          prefsFactory = newPrefsAsyncFactorySembast(packageName: packageName);
+      _prefsAsyncFactoryMap[packageName] = prefsFactory =
+          newPrefsAsyncFactorySembast(packageName: packageName);
     }
   }
   return prefsFactory;

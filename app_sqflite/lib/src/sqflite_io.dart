@@ -46,10 +46,9 @@ class _DatabaseFactory implements sqflite.DatabaseFactory {
     required this.rootPath,
     required this.delegate,
   }) {
-    databasesPath =
-        packageName != null
-            ? join(userAppDataPath, packageName, 'databases')
-            : rootPath!;
+    databasesPath = packageName != null
+        ? join(userAppDataPath, packageName, 'databases')
+        : rootPath!;
   }
 
   String _fixPath(String path) {

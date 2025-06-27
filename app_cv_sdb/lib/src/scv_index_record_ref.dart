@@ -61,8 +61,8 @@ class _ScvIndexRecord<
     ScvIndexRecordRef<K, V, I> indexRecordRef,
     SdbIndexRecordSnapshot<K, SdbModel, I> rawSnapshot,
   ) : super(indexRecordRef, rawSnapshot) {
-    _record = (cvBuildModel<V>(rawSnapshot.value)
-      ..ref = _recordRef)..fromMap(rawSnapshot.value);
+    _record = (cvBuildModel<V>(rawSnapshot.value)..ref = _recordRef)
+      ..fromMap(rawSnapshot.value);
   }
 }
 

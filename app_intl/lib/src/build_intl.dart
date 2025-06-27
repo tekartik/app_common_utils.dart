@@ -64,16 +64,17 @@ class LocalizationProject {
   // Read local from json files
   Future<List<TextLocale>> intlGetLocales() async {
     try {
-      var jsonFilenames = (await Directory(
-            getAbsolutePathFromRelative(i18nPath),
-          ).list().toList())
-          .map((e) => basename(e.path))
-          .where(
-            (element) =>
-                withoutExtension(element).split('_').length == 2 &&
-                extension(element) == '.json',
-          )
-          .map((e) => basenameWithoutExtension(e));
+      var jsonFilenames =
+          (await Directory(
+                getAbsolutePathFromRelative(i18nPath),
+              ).list().toList())
+              .map((e) => basename(e.path))
+              .where(
+                (element) =>
+                    withoutExtension(element).split('_').length == 2 &&
+                    extension(element) == '.json',
+              )
+              .map((e) => basenameWithoutExtension(e));
       return jsonFilenames.map((e) => TextLocale(e)).toList();
     } catch (e) {
       stderr.writeln('intlGetLocales error $e');

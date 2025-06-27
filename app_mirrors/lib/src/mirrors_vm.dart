@@ -19,13 +19,13 @@ mixin DeclarationMirrorMixin implements DeclarationMirror {
 
   List<InstanceMirror>? _metadata;
   @override
-  List<InstanceMirror> get metadata =>
-      _metadata ??= _vmDeclarationMirror.metadata
-          .map(
-            (vm.InstanceMirror vmInstanceMirror) =>
-                _instanceMirror(vmInstanceMirror),
-          )
-          .toList(growable: false);
+  List<InstanceMirror> get metadata => _metadata ??= _vmDeclarationMirror
+      .metadata
+      .map(
+        (vm.InstanceMirror vmInstanceMirror) =>
+            _instanceMirror(vmInstanceMirror),
+      )
+      .toList(growable: false);
 }
 
 class InstanceMirrorVm with DeclarationMirrorMixin implements InstanceMirror {
@@ -52,18 +52,17 @@ class ClassMirrorVm with DeclarationMirrorMixin implements ClassMirror {
 
   ClassMirrorVm(this._vm);
   @override
-  Map<Symbol, DeclarationMirror> get declarations =>
-      _declarations ??= () {
-        return _vm.declarations.map((
-          symbol,
-          vm.DeclarationMirror vmDeclarationMirror,
-        ) {
-          return MapEntry<Symbol, DeclarationMirror>(
-            symbol,
-            _declarationMirror(vmDeclarationMirror),
-          );
-        });
-      }();
+  Map<Symbol, DeclarationMirror> get declarations => _declarations ??= () {
+    return _vm.declarations.map((
+      symbol,
+      vm.DeclarationMirror vmDeclarationMirror,
+    ) {
+      return MapEntry<Symbol, DeclarationMirror>(
+        symbol,
+        _declarationMirror(vmDeclarationMirror),
+      );
+    });
+  }();
 
   @override
   Type get reflectedType => _vm.reflectedType;
