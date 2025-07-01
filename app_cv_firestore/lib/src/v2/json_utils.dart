@@ -1,4 +1,5 @@
 import 'package:tekartik_app_cv_firestore/app_cv_firestore.dart';
+import 'package:tekartik_firebase_firestore/utils/document_data.dart';
 import 'package:tekartik_firebase_firestore/utils/json_utils.dart';
 
 /// info json list to document list
@@ -35,6 +36,17 @@ extension TekartikCvFirestoreCvDocumentInfoJsonExt on CvFirestoreDocument {
       path: ref.path,
       data: DocumentData(toMap()),
     ).toJsonMap();
+  }
+
+  /// Helper for serialization
+  Model fsDataToJsonMap() {
+    return DocumentData(toMap()).toJsonRecordValueMap();
+  }
+
+  /// Helper for serialization
+  void fsDataFromJsonMap(Firestore firestore, Map map) {
+    var model = documentDataMapFromJsonMap(firestore, asModel(map));
+    fromMap(model);
   }
 }
 
