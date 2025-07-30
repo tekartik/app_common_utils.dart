@@ -17,4 +17,5 @@ build/
 pubspec_overrides.yaml
 .dart_tool/
 pubspec.lock
-.flutter-*
+.*
+!*.gitignore

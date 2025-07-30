@@ -6,5 +6,6 @@ Future<void> main() async {
   test('removeDiacritics', () {
     expect(sanitizeString(' Hello'), 'hello');
     expect(' élève ?\r'.removeDiacritics(), ' eleve ?\r');
+    expect(' Elève ?\r'.removeDiacritics(), ' Eleve ?\r');
   });
 }
