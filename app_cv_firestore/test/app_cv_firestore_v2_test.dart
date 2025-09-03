@@ -32,6 +32,7 @@ void main() {
     setUp(() {
       firestore = newFirestoreMemory();
     });
+    var rootTestCollection = CvCollectionReference<CvFirestoreDocument>('test');
     test('get/set empty', () async {
       var snapshot = await firestore.doc('test/1').get();
       expect(snapshot.cv<CvFsEmpty>(), CvFsEmpty()..path = 'test/1');
@@ -582,6 +583,27 @@ void main() {
       var model = CvFsSingleString();
       expect(model.exists, isFalse);
       expect(model.refOrNull, isNull);
+    });
+    test('deleteQuery', () async {
+      var collRef = rootTestCollection
+          .doc('delete')
+          .collection<CvFsSingleString>('query');
+      Future<int> getCount() async {
+        return (await collRef.count(firestore));
+      }
+
+      await collRef.query().delete(firestore);
+      expect(await getCount(), 0);
+      await firestore.cvRunTransaction((txn) {
+        for (var i = 0; i < 10; i++) {
+          var id = (i + 1).toString().padLeft(3, '0');
+          var timestamp = Timestamp.now();
+          txn.cvSet(collRef.doc(id).cv()..text.v = timestamp.toIso8601String());
+        }
+      });
+      var query = collRef.query().orderBy('text');
+      expect(await query.delete(firestore, limit: 7, batchSize: 3), 7);
+      expect(await getCount(), 3);
     });
   });
 }
