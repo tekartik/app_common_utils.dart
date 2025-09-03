@@ -48,4 +48,4 @@ export 'src/v2/json_utils.dart'
 
 export 'src/v2/map_extension.dart'
     show AppCvFirestoreFieldMapExt, WithServerTimestampMixin;
-export 'src/v2/query_utils.dart' show CvQueryReferenceUtilsExt;
+export 'src/v2/query_utils.dart' show CvFirestoreQueryReferenceUtilsExt;

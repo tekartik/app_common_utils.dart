@@ -2,7 +2,7 @@ import 'package:tekartik_app_cv_firestore/app_cv_firestore.dart';
 import 'package:tekartik_firebase_firestore/utils/query.dart';
 
 /// Helpers to delete query results
-extension CvQueryReferenceUtilsExt<T extends CvFirestoreDocument>
+extension CvFirestoreQueryReferenceUtilsExt<T extends CvFirestoreDocument>
     on CvQueryReference<T> {
   Future<int> delete(
     Firestore firestore, {
