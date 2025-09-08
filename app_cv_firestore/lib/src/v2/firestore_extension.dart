@@ -2,7 +2,7 @@ import 'package:tekartik_app_cv_firestore/app_cv_firestore_v2.dart';
 import 'package:tekartik_app_cv_firestore/src/v2/cv_document.dart'
     show CvFirestoreDocumentPrvExt;
 import 'package:tekartik_common_utils/common_utils_import.dart';
-import 'package:tekartik_common_utils/foundation/constants.dart';
+import 'package:tekartik_common_utils/env_utils.dart';
 import 'package:tekartik_common_utils/list_utils.dart';
 import 'package:tekartik_firebase_firestore/utils/track_changes_support.dart';
 
@@ -303,7 +303,7 @@ extension CvFirestoreDocumentReferenceExt on DocumentReference {
             sink.add(converted);
             // devPrint('cvOnSnapshot $converted');
           } catch (e) {
-            if (kDebugMode) {
+            if (isDebug) {
               print('cvOnSnapshot.error: $e');
             }
             rethrow;
