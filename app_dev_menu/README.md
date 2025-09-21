@@ -10,7 +10,6 @@ In `pubspec.yaml`
 tekartik_app_dev_menu:
   git:
     url: https://github.com/tekartik/app_common_utils.dart
-    ref: dart3a
     path: app_dev_menu
   version: '>=0.1.0'
 ```

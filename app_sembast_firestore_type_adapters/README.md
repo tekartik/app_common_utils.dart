@@ -15,7 +15,6 @@ dependencies:
   tekartik_app_sembast_firestore_type_adapters:
     git:
       url: https://github.com/tekartik/app_common_utils.dart
-      ref: dart3a
       path: app_sembast_firestore_type_adapters
     version: '>=0.1.0'
 ```

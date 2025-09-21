@@ -12,31 +12,26 @@ dependencies:
   tekartik_prefs_sembast:
     git:
       url: https://github.com/tekartik/prefs.dart
-      ref: dart3a
       path: prefs_sembast
   tekartik_prefs:
     git:
       url: https://github.com/tekartik/prefs.dart
-      ref: dart3a
       path: prefs
   tekartik_prefs_browser:
     git:
       url: https://github.com/tekartik/prefs.dart
       path: prefs_browser
-      ref: dart3a
     version: '>=0.1.0'
   path: ">=1.9.0"
   process_run: ">=1.2.1+1"
   tekartik_app_sembast:
     git:
       url: https://github.com/tekartik/app_common_utils.dart
-      ref: dart3a
       path: app_sembast
     version: '>=0.1.0'
   tekartik_prefs_test:
     git:
       url: https://github.com/tekartik/prefs.dart
-      ref: dart3a
       path: prefs_test
 dev_dependencies:
   dev_build: ">=1.1.2"
@@ -44,7 +39,6 @@ dev_dependencies:
   tekartik_lints:
     git:
       url: https://github.com/tekartik/common.dart
-      ref: dart3a
       path: packages/lints
     version: '>=0.1.0'
 resolution: workspace

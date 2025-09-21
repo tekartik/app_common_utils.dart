@@ -12,13 +12,11 @@ dependencies:
   tekartik_io_utils:
     git:
       url: https://github.com/tekartik/io_utils.dart
-      ref: dart3a
     version: '>=0.7.0'
   lints: ">=5.0.0"
   tekartik_lints:
     git:
       url: https://github.com/tekartik/common.dart
-      ref: dart3a
       path: packages/lints
     version: '>=0.1.0'
 dev_dependencies:

@@ -11,7 +11,6 @@ dependencies:
   tekartik_app_emit:
     git:
       url: https://github.com/tekartik/app_common_utils.dart
-      ref: dart3a
       path: app_emit
     version: '>=0.1.2'
 ```

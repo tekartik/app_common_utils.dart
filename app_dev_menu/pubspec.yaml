@@ -15,23 +15,19 @@ dependencies:
   tekartik_test_menu_browser:
     git:
       url: https://github.com/tekartik/test_menu.dart
-      ref: dart3a
       path: test_menu_browser
   tekartik_test_menu_io:
     git:
       url: https://github.com/tekartik/test_menu.dart
       path: test_menu_io
-      ref: dart3a
     version: '>=0.4.7'
 
   tekartik_common_utils:
     git:
       url: https://github.com/tekartik/common_utils.dart
-      ref: dart3a
   tekartik_test_menu:
     git:
       url: https://github.com/tekartik/test_menu.dart
-      ref: dart3a
       path: test_menu
 dev_dependencies:
   dev_build: ">=1.1.2"
@@ -41,7 +37,6 @@ dev_dependencies:
   tekartik_app_web_build:
     git:
       url: https://github.com/tekartik/app_web_utils.dart
-      ref: dart3a
       path: packages/app_build
 
 

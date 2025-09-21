@@ -10,19 +10,16 @@ dependencies:
   tekartik_app_bloc:
     git:
       url: https://github.com/tekartik/app_common_utils.dart
-      ref: dart3a
       path: app_bloc
     version: '>=0.2.0'
   rxdart: '>=0.27.7'
   tekartik_app_rx:
     git:
       url: https://github.com/tekartik/app_common_utils.dart
-      ref: dart3a
       path: app_rx
   tekartik_app_common_utils:
     git:
       url: https://github.com/tekartik/app_common_utils.dart
-      ref: dart3a
       path: app
 
 dev_dependencies:
