@@ -20,6 +20,7 @@ dependencies:
   tekartik_encrypt:
     git:
       url: https://github.com/tekartikdev/encrypt
+      ref: main
   crypto:
   # Temp web compile issue
   pointycastle: '>=3.2.0-rc0'
