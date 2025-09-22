@@ -38,6 +38,8 @@ var _mimeTypeMap = {
 };
 
 const _mimeTypeDefault = 'application/octet-stream';
+
+/// Get the mime type from a filename
 String filenameMimeType(String filename) {
   var ext = extension(basename(filename)).toLowerCase();
   return _mimeTypeMap[ext] ?? _mimeTypeDefault;
