@@ -220,6 +220,8 @@ class CvQueryReference<T extends CvFirestoreDocument> {
     _queryInfo,
   );
 
+  CvQueryReference<U> cast<U extends CvFirestoreDocument>() =>
+      CvQueryReference._(collectionReference.cast<U>(), _impl);
   @override
   String toString() => 'CvQueryReference<$T>(${collectionReference.path})';
 }

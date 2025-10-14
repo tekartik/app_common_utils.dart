@@ -78,6 +78,9 @@ class CvDocumentReference<T extends CvFirestoreDocument>
       CvDocumentReference<T>(firestorePathReplaceId(path, id));
   @override
   String toString() => 'CvDocumentReference<$T>($path)';
+
+  CvDocumentReference<U> cast<U extends CvFirestoreDocument>() =>
+      CvDocumentReference<U>(path);
 }
 
 /// Document reference helpers.

@@ -323,6 +323,23 @@ void main() {
       doc = await collection.add(firestore, doc);
       expect(doc.id, isNot('1'));
     });
+    test('document.cast', () async {
+      var collection = CvCollectionReference<CvFsEmpty>('test');
+      var ref = collection.doc('1');
+      var refCast = ref.cast<CvFsSingleString>();
+      var doc = ref.cv();
+      var docCast = refCast.cv()..text.v = 'value';
+      expect(doc, isA<CvFsEmpty>());
+      expect(docCast, isA<CvFsSingleString>());
+    });
+    test('collection.cast', () async {
+      var collectionOther = CvCollectionReference<CvFsEmpty>('test');
+      var collection = collectionOther.cast<CvFsEmpty>();
+      var query = collection.query().where('text', isEqualTo: 'value');
+      expect(query.type, CvFsEmpty);
+      var queryCast = query.cast<CvFsSingleString>();
+      expect(queryCast.type, CvFsSingleString);
+    });
 
     test('Document reference', () {
       var docRef = CvDocumentReference<CvFsSingleString>('test/1');
