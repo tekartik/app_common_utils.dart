@@ -124,6 +124,13 @@ extension ScvRecordExtInternal<T extends ScvRecord> on T {
   ///
   /// if [keyPath] is a, the list cannot contain null values and null is returned instead.
   void setKeyValue(Object? keyPath, Object value) {
+    if (keyPath is SdbKeyPath) {
+      if (keyPath.isSingle) {
+        keyPath = keyPath.keyPaths.first;
+      } else {
+        keyPath = keyPath.keyPaths;
+      }
+    }
     if (keyPath is String) {
       return setFieldValue(keyPath, value);
     } else if (keyPath is List) {
