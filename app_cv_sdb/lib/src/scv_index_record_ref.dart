@@ -32,6 +32,7 @@ class _ScvIndexRecordKey<
   final ScvRecordRef<K, V> _recordRef;
 
   I get _indexKey => _indexRecordRef.indexKey;
+
   K get _key => _recordRef.key;
 
   _ScvIndexRecordKey(
@@ -151,6 +152,7 @@ extension SdbIndexRecordSnapshotScvExt<K extends SdbKey, I extends SdbIndexKey>
   }
 }
 */
+
 /// Index record reference extension db access.
 extension ScvIndexRecordRefDbExt<
   K extends SdbKey,
@@ -164,7 +166,35 @@ extension ScvIndexRecordRefDbExt<
     if (rawSnapshot == null) {
       return null;
     }
-    return _ScvIndexRecord(this, rawSnapshot);
+    return _ScvIndexRecord<K, V, I>(this, rawSnapshot);
+  }
+
+  /// Find records.
+  Future<List<ScvIndexRecord<K, V, I>>> findRecords(
+    SdbClient client, {
+    SdbFindOptions<I>? options,
+  }) async {
+    var rawSnapshots = await impl.rawRef.findRecords(client, options: options);
+    return rawSnapshots.lazy(
+      (snapshot) => _ScvIndexRecord<K, V, I>(this, snapshot),
+    );
+  }
+
+  /// Find records.
+  Future<ScvIndexRecord<K, V, I>?> findRecord(
+    SdbClient client, {
+    SdbFindOptions<I>? options,
+  }) {
+    options = sdbFindOptionsMerge(options).copyWith(limit: 1);
+    return findRecords(
+      client,
+      options: options,
+    ).then((records) => records.firstOrNull);
+  }
+
+  /// Count records.
+  Future<int> count(SdbClient client, {SdbFindOptions<I>? options}) async {
+    return await impl.rawRef.count(client, options: options);
   }
 }
 
@@ -215,14 +245,20 @@ extension ScvIndexRefDbExt<
 
     /// Optional descending order
     bool? descending,
+
+    /// New api
+    SdbFindOptions<I>? options,
   }) async {
     var rawSnapshots = await impl.rawRef.findRecords(
       client,
-      boundaries: boundaries,
-      filter: filter,
-      offset: offset,
-      limit: limit,
-      descending: descending,
+      options: sdbFindOptionsMerge<I>(
+        options,
+        boundaries: boundaries,
+        limit: limit,
+        offset: offset,
+        descending: descending,
+        filter: filter,
+      ),
     );
     return rawSnapshots.lazy(
       (rawSnapshot) =>
@@ -241,14 +277,19 @@ extension ScvIndexRefDbExt<
 
     /// Optional descending order
     bool? descending,
+
+    /// New api
+    SdbFindOptions<I>? options,
   }) async {
     var records = await findRecords(
       client,
-      boundaries: boundaries,
-      filter: filter,
-      limit: 1,
-      offset: offset,
-      descending: descending,
+      options: sdbFindOptionsMerge<I>(
+        options,
+        boundaries: boundaries,
+        offset: offset,
+        descending: descending,
+        filter: filter,
+      ).copyWith(limit: 1),
     );
     return records.firstOrNull;
   }
@@ -262,13 +303,19 @@ extension ScvIndexRefDbExt<
 
     /// Optional descending order
     bool? descending,
+
+    /// New api
+    SdbFindOptions<I>? options,
   }) async {
     var rawKeys = await impl.rawRef.findRecordKeys(
       client,
-      boundaries: boundaries,
-      offset: offset,
-      limit: limit,
-      descending: descending,
+      options: sdbFindOptionsMerge<I>(
+        options,
+        boundaries: boundaries,
+        limit: limit,
+        offset: offset,
+        descending: descending,
+      ),
     );
     return rawKeys.lazy(
       (rawKey) =>

@@ -59,6 +59,19 @@ extension ScvStoreRefExt<K extends SdbKey, V extends ScvRecord<K>>
 
   /// Cast if needed
   ScvStoreRef<K, RV> castV<RV extends ScvRecord<K>>() => cast<K, RV>();
+
+  /// Schema
+  SdbStoreSchema schema({
+    SdbKeyPath? keyPath,
+    bool? autoIncrement,
+    List<SdbIndexSchema>? indexes,
+  }) {
+    return rawRef.schema(
+      keyPath: keyPath,
+      autoIncrement: autoIncrement,
+      indexes: indexes,
+    );
+  }
 }
 
 /// Store factory interface

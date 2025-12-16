@@ -1,7 +1,6 @@
 import 'package:tekartik_app_cv_sdb/app_cv_sdb.dart';
 import 'package:tekartik_app_cv_sdb/src/scv_record.dart';
 import 'package:tekartik_app_cv_sdb/src/scv_record_db.dart';
-import 'package:tekartik_common_utils/list_utils.dart';
 
 /// Common DB helpers
 extension ScvStoreRefDbExt<K extends SdbKey, V extends ScvRecord<K>>
@@ -27,16 +26,22 @@ extension ScvStoreRefDbExt<K extends SdbKey, V extends ScvRecord<K>>
 
     /// Optional sort order
     bool? descending,
+
+    /// New api
+    SdbFindOptions<K>? options,
   }) async {
     var snapshots = await rawRef.findRecords(
       client,
-      boundaries: boundaries,
-      filter: filter,
-      offset: offset,
-      limit: limit,
-      descending: descending,
+      options: sdbFindOptionsMerge(
+        options,
+        boundaries: boundaries,
+        filter: filter,
+        offset: offset,
+        limit: limit,
+        descending: descending,
+      ),
     );
-    return snapshots.lazy((snapshot) => snapshot.cv());
+    return snapshots.cv();
   }
 
   /// Find records.
@@ -51,14 +56,19 @@ extension ScvStoreRefDbExt<K extends SdbKey, V extends ScvRecord<K>>
 
     /// Optional sort order
     bool? descending,
+
+    /// New api
+    SdbFindOptions<K>? options,
   }) async {
     var records = await findRecords(
       client,
-      boundaries: boundaries,
-      filter: filter,
-      offset: offset,
-      limit: 1,
-      descending: descending,
+      options: sdbFindOptionsMerge(
+        options,
+        boundaries: boundaries,
+        filter: filter,
+        offset: offset,
+        descending: descending,
+      ).copyWith(limit: 1),
     );
     return records.firstOrNull;
   }
@@ -91,8 +101,18 @@ extension ScvStoreRefDbExt<K extends SdbKey, V extends ScvRecord<K>>
 
     /// Optional sort order
     bool? descending,
+    SdbFindOptions<K>? options,
   }) {
-    return rawRef.count(client, boundaries: boundaries);
+    return rawRef.count(
+      client,
+      boundaries: boundaries,
+      options: sdbFindOptionsMerge(
+        options,
+        offset: offset,
+        limit: limit,
+        descending: descending,
+      ),
+    );
   }
 }
 

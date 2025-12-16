@@ -1,6 +1,7 @@
 import 'package:cv/cv.dart';
 import 'package:idb_shim/sdb.dart';
 import 'package:tekartik_common_utils/env_utils.dart';
+import 'package:tekartik_common_utils/list_utils.dart';
 import 'scv_record_ref.dart';
 import 'scv_store_ref.dart';
 
@@ -196,4 +197,12 @@ extension ScvRecordSnapshotExt<K extends SdbKey>
   T cv<T extends ScvRecord<K>>() {
     return (cvBuildModel<T>(value)..rawRef = this)..fromMap(value);
   }
+}
+
+/// Easy extension
+extension ScvRecordSnapshotListExt<K extends SdbKey>
+    on List<SdbRecordSnapshot<K, Model>> {
+  /// Create a DbRecord from a snapshot
+  List<T> cv<T extends ScvRecord<K>>() =>
+      lazy<T>((snapshot) => snapshot.cv<T>()).toList();
 }

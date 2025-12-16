@@ -56,6 +56,11 @@ extension ScvIndexRefExt<
   /// Record reference.
   ScvIndexRecordRef<K, V, I> record(I indexKey) =>
       ScvIndexRecordRefImpl<K, V, I>(impl, impl.rawRef.record(indexKey));
+
+  /// Schema
+  SdbIndexSchema schema({required Object keyPath, bool? unique}) {
+    return rawRef.schema(keyPath: keyPath, unique: unique);
+  }
 }
 
 /// Extension on index on 1 field.

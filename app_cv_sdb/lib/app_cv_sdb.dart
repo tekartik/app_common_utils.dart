@@ -23,7 +23,8 @@ export 'src/scv_record.dart'
         ScvRecordToRefExt,
         ScvRecordListExt,
         ScvRecordExt,
-        ScvRecordSnapshotExt;
+        ScvRecordSnapshotExt,
+        ScvRecordSnapshotListExt;
 export 'src/scv_record_db.dart' show ScvRecordRefDbExt, ScvRecordDbExt;
 export 'src/scv_record_ref.dart'
     show ScvRecordRef, ScvStringRecordRef, ScvIntRecordRef, ScvRecordRefExt;

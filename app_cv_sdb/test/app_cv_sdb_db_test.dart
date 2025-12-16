@@ -313,4 +313,71 @@ void main() {
       );
     });
   });
+  group('schema', () {
+    late SdbDatabase db;
+    setUpAll(() {
+      cvAddConstructors([DbTest.new, DbStringTest.new, DbString2Test.new]);
+    });
+    setUp(() async {
+      var factory = newSdbFactoryMemory();
+      db = await factory.openDatabase(
+        'test',
+        version: 1,
+        schema: SdbDatabaseSchema(
+          stores: [
+            dbIntTestStore.rawRef.schema(
+              indexes: [
+                dbIntTestIndex.rawRef.schema(keyPath: 'value', unique: true),
+              ],
+            ),
+          ],
+        ),
+      );
+    });
+    tearDown(() {
+      db.close();
+    });
+
+    test('index1', () async {
+      var dbStore = dbIntTestStore;
+      var dbRecordRef = dbStore.record(1);
+      var record = await dbRecordRef.add(db, DbTest()..value.v = 1234);
+      var ref = dbIntTestIndex.record(1234);
+      var indexRecord = (await ref.get(db))!;
+      expect(indexRecord.record, record);
+      expect(indexRecord.key, record.id);
+      expect(await dbIntTestIndex.record(4321).get(db), isNull);
+      expect(
+        await dbIntTestIndex.findRecords(
+          db,
+          boundaries: SdbBoundaries.lower(dbIntTestIndex.lowerBoundary(1235)),
+        ),
+        isEmpty,
+      );
+      expect(
+        (await dbIntTestIndex.findRecord(
+          db,
+          boundaries: SdbBoundaries.lower(dbIntTestIndex.lowerBoundary(1234)),
+        ))!.record,
+        record,
+      );
+      expect(
+        (await dbIntTestIndex.findRecordKey(
+          db,
+          boundaries: SdbBoundaries.lowerValue(123),
+        ))!.key,
+        record.id,
+      );
+
+      try {
+        /// unique
+        dbRecordRef = dbStore.record(2);
+        record = await dbRecordRef.add(db, DbTest()..value.v = 1234);
+        fail('Expected unique error');
+      } catch (e) {
+        expect(e, isNot(isA<TestFailure>()));
+        return;
+      }
+    });
+  });
 }
