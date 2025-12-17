@@ -266,6 +266,40 @@ extension ScvIndexRefDbExt<
     );
   }
 
+  /// Stream records.
+  Stream<ScvIndexRecord<K, V, I>> streamRecords(
+    SdbClient client, {
+    SdbBoundaries<I>? boundaries,
+
+    /// Optional filter, performed in memory
+    SdbFilter? filter,
+    int? offset,
+    int? limit,
+
+    /// Optional descending order
+    bool? descending,
+
+    /// New api
+    SdbFindOptions<I>? options,
+  }) {
+    return impl.rawRef
+        .streamRecords(
+          client,
+          options: sdbFindOptionsMerge<I>(
+            options,
+            boundaries: boundaries,
+            limit: limit,
+            offset: offset,
+            descending: descending,
+            filter: filter,
+          ),
+        )
+        .map(
+          (rawSnapshot) =>
+              _ScvIndexRecord(impl.record(rawSnapshot.indexKey), rawSnapshot),
+        );
+  }
+
   /// Find a single record.
   Future<ScvIndexRecord<K, V, I>?> findRecord(
     SdbClient client, {

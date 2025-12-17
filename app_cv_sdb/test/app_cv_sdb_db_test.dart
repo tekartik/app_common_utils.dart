@@ -338,6 +338,22 @@ void main() {
       db.close();
     });
 
+    test('transaction', () async {
+      await db.inStoreTransaction(
+        dbIntTestStore.rawRef,
+        SdbTransactionMode.readWrite,
+        (txn) async {
+          var recordRef = dbIntTestStore.record(1);
+          var record = await recordRef.add(txn, DbTest()..value.v = 1234);
+          expect(record.idOrNull, isNotNull);
+          var readRecord = await recordRef.get(txn);
+          expect(contentAndKeyEquals(record, readRecord), isNotNull);
+          var ref = dbIntTestIndex.record(1234);
+          var indexRecord = (await ref.get(db))!;
+          expect(contentAndKeyEquals(record, indexRecord.record), isNotNull);
+        },
+      );
+    });
     test('index1', () async {
       var dbStore = dbIntTestStore;
       var dbRecordRef = dbStore.record(1);
@@ -368,6 +384,19 @@ void main() {
         ))!.key,
         record.id,
       );
+
+      var records = await dbIntTestIndex
+          .streamRecords(
+            db,
+            options: SdbFindOptions(
+              boundaries: SdbBoundaries.lower(
+                dbIntTestIndex.lowerBoundary(1234),
+              ),
+            ),
+          )
+          .toList();
+
+      expect(records.map((e) => e.record), [record]);
 
       try {
         /// unique

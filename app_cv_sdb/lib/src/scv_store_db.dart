@@ -45,6 +45,13 @@ extension ScvStoreRefDbExt<K extends SdbKey, V extends ScvRecord<K>>
   }
 
   /// Find records.
+  Stream<V> streamRecords(SdbClient client, {SdbFindOptions<K>? options}) {
+    return rawRef.streamRecords(client, options: options).map((snapshot) {
+      return snapshot.cv();
+    });
+  }
+
+  /// Find records.
   Future<V?> findRecord(
     SdbClient client, {
 
