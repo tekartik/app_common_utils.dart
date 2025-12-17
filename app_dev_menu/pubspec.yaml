@@ -38,6 +38,10 @@ dev_dependencies:
     git:
       url: https://github.com/tekartik/app_web_utils.dart
       path: packages/app_build
+  tekartik_ci:
+    git:
+      url: https://github.com/tekartik/ci.dart
+      path: ci
 
 
 resolution: workspace
