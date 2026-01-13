@@ -94,6 +94,13 @@ class ScvStoreFactoryBase<K extends SdbKey> implements ScvStoreFactory<K> {
   }
 }
 
+/// Global Store ref factory
+ScvStoreRef<K, V> scvStoreRef<K extends SdbKey, V extends ScvRecord<K>>(
+  String name,
+) {
+  return ScvStoreRef<K, V>(name);
+}
+
 /// common `<int, DbRecord<int>` factory
 final ScvStoreFactory<int> scvIntStoreFactory = ScvIntStoreFactory();
 

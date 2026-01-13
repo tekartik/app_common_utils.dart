@@ -32,8 +32,10 @@ export 'src/scv_store_db.dart' show ScvStoreRefDbExt;
 export 'src/scv_store_ref.dart'
     show
         ScvStoreRef,
+        scvStoreRef,
         ScvStoreRefExt,
         scvIntStoreFactory,
         scvStringStoreFactory,
         ScvIntStoreRef,
         ScvStringStoreRef;
+export 'src/scv_types.dart' show ScvTimestamp, cvEncodedTimestampField;

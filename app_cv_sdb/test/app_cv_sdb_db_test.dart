@@ -1,6 +1,7 @@
 import 'package:sembast/sembast.dart' show disableSembastCooperator;
+import 'package:sembast/sembast.dart';
 import 'package:tekartik_app_cv_sdb/app_cv_sdb.dart';
-
+import 'package:tekartik_app_cv_sdb/test/scv_schema_upgrade_validator.dart';
 import 'package:test/test.dart';
 
 import 'app_cv_sdb_test.dart';
@@ -28,6 +29,12 @@ final dbStringTestWithIdStore = scvStringStoreFactory.store<DbStringTestWithId>(
   'string_test_with_id',
 );
 void main() {
+  cvAddConstructors([
+    DbTest.new,
+    DbStringTest.new,
+    DbString2Test.new,
+    DbTimestampTest.new,
+  ]);
   disableSembastCooperator();
   group('db_simple', () {
     late SdbDatabase db;
@@ -238,6 +245,52 @@ void main() {
       var readRecord = await dbStore.record(addedRecord.id).get(db);
       expect(contentAndKeyEquals(addedRecord, readRecord), isNotNull);
     });
+  });
+  group('db_keypath_autoincrement', () {
+    late SdbDatabase db;
+    setUpAll(() {
+      cvAddConstructors([
+        DbTestWithId.new,
+        DbStringTest.new,
+        DbString2Test.new,
+      ]);
+    });
+    setUp(() async {
+      var factory = newSdbFactoryMemory();
+      db = await factory.openDatabase(
+        'test',
+        version: 1,
+        onVersionChange: (e) {
+          if (e.oldVersion < 1) {
+            var db = e.db;
+            db.scvCreateStore(
+              dbIntTestWithIdStore,
+              autoIncrement: true,
+              keyPath: 'id',
+            );
+            db.scvCreateStore(dbStringTestWithIdStore, keyPath: 'id');
+          }
+        },
+      );
+    });
+    tearDown(() {
+      db.close();
+    });
+
+    test('int with id store', () async {
+      var dbStore = dbIntTestWithIdStore;
+      var dbRecord = DbTestWithId()..value.v = 1234;
+      var addedRecord = await dbStore.add(db, dbRecord);
+      expect(addedRecord.value.v, 1234);
+      var id = addedRecord.id;
+      expect(addedRecord.idOrNull, isNotNull);
+      expect(addedRecord.ref.store, dbStore);
+      expect(addedRecord.recId.v, id);
+      expect(dbRecord.idOrNull, isNull);
+      expect(dbRecord.recId.v, isNull);
+      var readRecord = await dbStore.record(addedRecord.id).get(db);
+      expect(contentAndKeyEquals(addedRecord, readRecord), isNotNull);
+    });
 
     test('string with id store', () async {
       var dbStore = dbStringTestWithIdStore;
@@ -315,9 +368,6 @@ void main() {
   });
   group('schema', () {
     late SdbDatabase db;
-    setUpAll(() {
-      cvAddConstructors([DbTest.new, DbStringTest.new, DbString2Test.new]);
-    });
     setUp(() async {
       var factory = newSdbFactoryMemory();
       db = await factory.openDatabase(
@@ -408,5 +458,49 @@ void main() {
         return;
       }
     });
+  });
+  // var schemaVersion = (1, SdbDatabaseSchema(stores: []));
+  var schemaVersion = (
+    2,
+    SdbDatabaseSchema(stores: [scvTimestampStore.schema()]),
+  );
+  test('schema upgrade', () async {
+    await ScvSchemaUpgradeValidator(
+      name: 'schema_upgrade_test',
+    ).run(version: schemaVersion.$1, schema: schemaVersion.$2);
+  }, skip: kSdbDartIsWeb);
+
+  group('schema timestamp', () {
+    late SdbDatabase db;
+    setUpAll(() {});
+    setUp(() async {
+      var factory = newSdbFactoryMemory();
+      db = await factory.openDatabase(
+        'test_timestamp',
+        version: 1,
+        schema: SdbDatabaseSchema(stores: [scvTimestampStore.schema()]),
+      );
+    });
+    tearDown(() {
+      db.close();
+    });
+    test('timestamp store', () async {
+      var store = scvTimestampStore;
+      var now = ScvTimestamp.now();
+      var timestamp1 = ScvTimestamp(1, 2000);
+
+      var dbTest = DbTimestampTest()..timestamp.setValue(now);
+      var recordRef = store.record('now');
+
+      await recordRef.put(db, dbTest);
+
+      var readDbTest = await recordRef.get(db);
+
+      var writeDbTest = recordRef.cv()..timestamp.v = timestamp1;
+
+      await writeDbTest.put(db);
+      readDbTest = await recordRef.get(db);
+      expect(readDbTest, writeDbTest);
+    }, skip: false);
   });
 }

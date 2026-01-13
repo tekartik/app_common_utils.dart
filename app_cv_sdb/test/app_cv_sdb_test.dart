@@ -1,4 +1,5 @@
 import 'package:tekartik_app_cv_sdb/app_cv_sdb.dart';
+import 'package:tekartik_app_cv_sdb/src/scv_types.dart';
 import 'package:test/test.dart';
 
 class DbTest extends ScvIntRecordBase {
@@ -29,6 +30,28 @@ class DbString2Test extends ScvStringRecordBase {
   List<CvField> get fields => [value2];
 }
 
+/// SCV Timestamp type alias for Sembast Timestamp (not coupled to Firebase nor Sembast)
+
+/// CvField extensions
+extension ScvCvFieldExt on CvField {
+  /// Enum field, give a name and a list of possible values (such as `MyEnum.values`)
+  static CvField<ScvTimestamp> encodedTimestamp(String name) =>
+      CvField.encoded<ScvTimestamp, String>(
+        name,
+        codec: const TimestampToStringCodec(),
+      );
+}
+
+class DbTimestampTest extends ScvStringRecordBase {
+  final timestamp = cvEncodedTimestampField('timestamp');
+
+  @override
+  List<CvField> get fields => [timestamp];
+}
+
+final scvTimestampStore = scvStoreRef<String, DbTimestampTest>(
+  'timestamp_store',
+);
 bool contentAndKeyEquals(ScvRecord? record1, ScvRecord? record2) {
   return record1?.rawRef == record2?.rawRef && record1 == record2;
 }
@@ -43,7 +66,12 @@ void checkContentAndKeyEquals(ScvRecord? record1, ScvRecord? record2) {
 
 void main() {
   setUpAll(() {
-    cvAddConstructors([DbTest.new, DbStringTest.new, DbString2Test.new]);
+    cvAddConstructors([
+      DbTest.new,
+      DbStringTest.new,
+      DbString2Test.new,
+      DbTimestampTest.new,
+    ]);
   });
   group('ref', () {
     test('toMap', () async {
@@ -51,6 +79,16 @@ void main() {
       var record1 = store.record(1).cv();
       var record2 = store.record(2).cv();
       expect([record1, record2].toMap(), {1: record1, 2: record2});
+    });
+    test('timestamp', () async {
+      var store = scvTimestampStore;
+      var record1 = store.record('1').cv();
+      expect(record1.toMap(), isEmpty);
+      var now = ScvTimestamp.now();
+      record1.timestamp.value = now;
+      expect(record1.toMap(), {'timestamp': now.toIso8601String()});
+      var record2 = store.record('2').cv();
+      expect([record1, record2].toMap(), {'1': record1, '2': record2});
     });
     test('ref', () async {
       var store1 = scvIntStoreFactory.store('test');
