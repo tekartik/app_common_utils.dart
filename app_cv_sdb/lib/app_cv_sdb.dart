@@ -1,5 +1,7 @@
 export 'package:cv/cv.dart';
 export 'package:idb_shim/sdb/sdb.dart';
+export 'package:tekartik_app_cv_sdb/src/scv_record_ref.dart'
+    show ScvRecordRefIterableExt;
 
 export 'src/cv_utils.dart'
     show TekartikScvIntRecordListCvExt, TekartikScvStringRecordListCvExt;

@@ -47,8 +47,8 @@ extension ScvRecordRefDbExt<K extends SdbKey, V extends ScvRecord<K>>
   }
 
   /// Delete a record
-  Future<void> delete(SdbClient db) async {
-    await rawRef.delete(db);
+  Future<void> delete(SdbClient client) async {
+    await rawRef.delete(client);
   }
 }
 

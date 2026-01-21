@@ -1,6 +1,7 @@
 import 'package:sembast/sembast.dart' show disableSembastCooperator;
 import 'package:sembast/sembast.dart';
 import 'package:tekartik_app_cv_sdb/app_cv_sdb.dart';
+
 import 'package:tekartik_app_cv_sdb/test/scv_schema_upgrade_validator.dart';
 import 'package:test/test.dart';
 
@@ -285,6 +286,9 @@ void main() {
       expect(dbRecord.recId.v, isNull);
       var readRecord = await dbStore.record(addedRecord.id).get(db);
       expect(contentAndKeyEquals(addedRecord, readRecord), isNotNull);
+      var firstReadRecord =
+          (await dbStore.records([addedRecord.id]).getObjects(db)).first;
+      expect(contentAndKeyEquals(addedRecord, firstReadRecord), isNotNull);
     });
 
     test('string with id store', () async {

@@ -1,8 +1,6 @@
-import 'package:cv/cv.dart';
-import 'package:idb_shim/sdb/sdb.dart';
+import 'package:tekartik_app_cv_sdb/app_cv_sdb.dart';
 
 import 'scv_record.dart';
-import 'scv_store_ref.dart';
 
 /// Record reference
 class ScvRecordRef<K extends SdbKey, V extends ScvRecord<K>> {
@@ -61,4 +59,18 @@ extension ScvRecordRefExt<K extends SdbKey, V extends ScvRecord<K>>
 
   /// Cast if needed
   ScvRecordRef<K, RV> castV<RV extends ScvRecord<K>>() => cast<K, RV>();
+}
+
+/// Common helpers
+extension ScvRecordRefIterableExt<K extends SdbKey, V extends ScvRecord<K>>
+    on Iterable<ScvRecordRef<K, V>> {
+  /// Get all objects
+  Future<List<V?>> getObjects(SdbClient client) async {
+    return Future.wait(map((e) => e.get(client)));
+  }
+
+  /// Get all objects
+  Future<void> delete(SdbClient client) async {
+    await Future.wait(map((e) => e.delete(client)));
+  }
 }

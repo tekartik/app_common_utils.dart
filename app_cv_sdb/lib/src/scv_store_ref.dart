@@ -45,6 +45,10 @@ extension ScvStoreRefExt<K extends SdbKey, V extends ScvRecord<K>>
   /// Record ref
   ScvRecordRef<K, V> record(K key) => ScvRecordRef<K, V>(this, key);
 
+  /// Records ref
+  List<ScvRecordRef<K, V>> records(Iterable<K> keys) =>
+      keys.map((item) => record(item)).toList();
+
   /// Index reference on 1 field
   ScvIndex1Ref<K, V, I> index<I extends SdbIndexKey>(String name) =>
       ScvIndex1RefImpl<K, V, I>(this, rawRef.index(name));
