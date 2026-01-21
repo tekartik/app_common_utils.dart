@@ -4,7 +4,11 @@ export 'package:idb_shim/sdb/sdb.dart';
 export 'src/cv_utils.dart'
     show TekartikScvIntRecordListCvExt, TekartikScvStringRecordListCvExt;
 export 'src/scv_database.dart'
-    show ScvOpenStoreRef, ScvOpenStoreRefExt, ScvOpenDatabaseExt;
+    show
+        ScvOpenStoreRef,
+        ScvOpenStoreRefExt,
+        ScvOpenDatabaseExt,
+        ScvDatabaseExtension;
 export 'src/scv_index_record_ref.dart'
     show
         ScvIndexRecordRef,

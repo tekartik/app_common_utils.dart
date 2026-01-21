@@ -77,6 +77,15 @@ extension ScvStoreRefExt<K extends SdbKey, V extends ScvRecord<K>>
       indexes: indexes,
     );
   }
+
+  /// In this store transaction
+  Future<T> inTransaction<T>(
+    SdbDatabase db,
+    SdbTransactionMode mode,
+    Future<T> Function(SdbSingleStoreTransaction<K, SdbModel> txn) action,
+  ) async {
+    return await db.inStoreTransaction<T, K, SdbModel>(rawRef, mode, action);
+  }
 }
 
 /// Store factory interface

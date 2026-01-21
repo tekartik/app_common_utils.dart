@@ -21,6 +21,7 @@ final dbIntTestWithIdStore = scvIntStoreFactory.store<DbTestWithId>(
 class DbStringTestWithId extends ScvStringRecordBase {
   final value = CvField<int>('value');
   final recId = CvField<String>('id');
+
   @override
   List<CvField> get fields => [recId, value];
 }
@@ -28,6 +29,7 @@ class DbStringTestWithId extends ScvStringRecordBase {
 final dbStringTestWithIdStore = scvStringStoreFactory.store<DbStringTestWithId>(
   'string_test_with_id',
 );
+
 void main() {
   cvAddConstructors([
     DbTest.new,
@@ -480,14 +482,14 @@ void main() {
     ).run(version: schemaVersionLatest.$1, schema: schemaVersionLatest.$2);
   }, skip: kSdbDartIsWeb);
 
-  group('schema timestamp', () {
+  group('schema various', () {
     late SdbDatabase db;
     setUpAll(() {});
     setUp(() async {
       var schemaVersion = schemaVersionLatest;
       var factory = newSdbFactoryMemory();
       db = await factory.openDatabase(
-        'test_timestamp',
+        'test_various',
         version: schemaVersion.$1,
         schema: schemaVersion.$2,
       );
@@ -522,11 +524,55 @@ void main() {
       await recordRef.put(db, dbTest);
       var readDbTest = await recordRef.get(db);
       expect(readDbTest, dbTest);
-      var readByIndex = await userProjectIndex
-          .record(dbTest.userId.v!, dbTest.projectId.v!)
-          .get(db);
+      var indexRecordRef = userProjectIndex.record(
+        dbTest.userId.v!,
+        dbTest.projectId.v!,
+      );
+      var readByIndex = await indexRecordRef.get(db);
       expect(readByIndex?.record, dbTest);
       expect(readByIndex?.indexKey, (dbTest.userId.v, dbTest.projectId.v));
+      await indexRecordRef.delete(db);
+    });
+    test('multi store', () async {
+      var store = userProjectStore;
+      var dbTest1 = DbUserProject()
+        ..userId.v = 4
+        ..projectId.v = 'project_1';
+      var dbTest2 = DbUserProject()
+        ..userId.v = 4
+        ..projectId.v = 'project_2';
+      await store.record(1).put(db, dbTest1);
+      await store.record(2).put(db, dbTest2);
+
+      late List<DbUserProject> records1;
+      late List<DbUserProject> records2;
+      late DbUserProject? record;
+      await db.inScvStoresTransaction(
+        [userProjectStore, scvTimestampStore],
+        SdbTransactionMode.readOnly,
+        (txn) async {
+          records1 = await store.findRecords(
+            txn,
+            filter: SdbFilter.equals(dbUserProjectModel.userId.name, 4),
+          );
+          records2 = await store.findRecords(
+            txn,
+            filter: SdbFilter.equals(
+              dbUserProjectModel.projectId.name,
+              'project_1',
+            ),
+          );
+          record =
+              (await userProjectIndex
+                      .record(dbTest2.userId.v!, dbTest2.projectId.v!)
+                      .get(txn))
+                  ?.record;
+        },
+      );
+      expect(records1.length, 2);
+      expect(records2.length, 1);
+      expect(records2.first, dbTest1);
+      expect(record, dbTest2);
     });
   });
 }

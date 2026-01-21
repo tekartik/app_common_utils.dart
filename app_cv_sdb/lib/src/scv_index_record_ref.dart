@@ -145,17 +145,6 @@ extension ScvIndexRecordRefExt<
   I get indexKey => impl.rawRef.indexKey;
 }
 
-/*
-/// Index record snapshot extension
-extension SdbIndexRecordSnapshotScvExt<K extends SdbKey, I extends SdbIndexKey>
-    on SdbIndexRecordSnapshot<K, SdbModel, I> {
-  /// Convert to a record.
-  ScvIndexRecord<K, V, I> cv<V extends ScvRecord<K>>() {
-    return _ScvIndexRecord<K, V, I>(this);
-  }
-}
-*/
-
 /// Index record reference extension db access.
 extension ScvIndexRecordRefDbExt<
   K extends SdbKey,
@@ -172,6 +161,17 @@ extension ScvIndexRecordRefDbExt<
     return _ScvIndexRecord<K, V, I>(this, rawSnapshot);
   }
 
+  /// Get a single record key.
+  Future<K?> getKey(SdbClient client) async {
+    var key = await impl.rawRef.getKey(client);
+    return key;
+  }
+
+  /// Get a single record.
+  Future<V?> getObject(SdbClient client) async {
+    return (await get(client))?.record;
+  }
+
   /// Find records.
   Future<List<ScvIndexRecord<K, V, I>>> findRecords(
     SdbClient client, {
@@ -181,6 +181,23 @@ extension ScvIndexRecordRefDbExt<
     return rawSnapshots.lazy(
       (snapshot) => _ScvIndexRecord<K, V, I>(this, snapshot),
     );
+  }
+
+  /// Find objects.
+  Future<List<V>> findObjects(
+    SdbClient client, {
+    SdbFindOptions<I>? options,
+  }) async {
+    var rawSnapshots = await impl.rawRef.findRecords(client, options: options);
+    return rawSnapshots.lazy(
+      (snapshot) => _ScvIndexRecord<K, V, I>(this, snapshot).record,
+    );
+  }
+
+  /// Find objects.
+  Future<V?> findObject(SdbClient client, {SdbFindOptions<I>? options}) async {
+    var rawSnapshot = await findRecord(client, options: options);
+    return rawSnapshot?.record;
   }
 
   /// Find records.
@@ -198,6 +215,12 @@ extension ScvIndexRecordRefDbExt<
   /// Count records.
   Future<int> count(SdbClient client, {SdbFindOptions<I>? options}) async {
     return await impl.rawRef.count(client, options: options);
+  }
+
+  /// Delete record with the given index key.
+  /// Multiple record could be deleted
+  Future<void> delete(SdbClient client, {SdbFindOptions<I>? options}) async {
+    await impl.rawRef.delete(client, options: options);
   }
 }
 

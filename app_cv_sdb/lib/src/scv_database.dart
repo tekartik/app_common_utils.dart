@@ -1,5 +1,6 @@
 import 'package:tekartik_app_cv_sdb/app_cv_sdb.dart';
 import 'package:tekartik_app_cv_sdb/src/scv_index_ref.dart';
+import 'package:tekartik_common_utils/common_utils_import.dart';
 
 /// Open store reference.
 abstract class ScvOpenStoreRef<K extends SdbKey, V extends ScvRecord<K>> {}
@@ -68,5 +69,21 @@ extension ScvOpenDatabaseExt on SdbOpenDatabase {
       autoIncrement: autoIncrement,
     );
     return _ScvOpenStoreRef<K, V>(this, openStore);
+  }
+}
+
+/// Common helper on database
+extension ScvDatabaseExtension on SdbDatabase {
+  /// Run a transaction.
+  Future<T> inScvStoresTransaction<T, K extends SdbKey, V extends SdbValue>(
+    List<ScvStoreRef> stores,
+    SdbTransactionMode mode,
+    FutureOr<T> Function(SdbMultiStoreTransaction txn) callback,
+  ) {
+    return inStoresTransaction(
+      stores.map((item) => item.rawRef).toList(),
+      mode,
+      callback,
+    );
   }
 }
