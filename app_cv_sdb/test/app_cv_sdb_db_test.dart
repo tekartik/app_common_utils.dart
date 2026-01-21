@@ -34,19 +34,12 @@ void main() {
     DbStringTest.new,
     DbString2Test.new,
     DbTimestampTest.new,
+    DbUserProject.new,
+    DbStringTestWithId.new,
   ]);
   disableSembastCooperator();
   group('db_simple', () {
     late SdbDatabase db;
-    setUpAll(() {
-      cvAddConstructors([
-        DbTest.new,
-        DbStringTest.new,
-        DbString2Test.new,
-        DbStringTestWithId.new,
-        DbTestWithId.new,
-      ]);
-    });
     setUp(() async {
       var factory = newSdbFactoryMemory();
       db = await factory.openDatabase(
@@ -464,21 +457,39 @@ void main() {
     2,
     SdbDatabaseSchema(stores: [scvTimestampStore.schema()]),
   );
+
+  var schemaVersion3 = (
+    3,
+    SdbDatabaseSchema(
+      stores: [
+        scvTimestampStore.schema(),
+        userProjectStore.schema(indexes: [userProjectIndexSchema]),
+      ],
+    ),
+  );
+  var schemaVersionLatest = schemaVersion3;
   test('schema upgrade', () async {
     await ScvSchemaUpgradeValidator(
-      name: 'schema_upgrade_test',
+      name: 'schema_upgrade_1_test',
     ).run(version: schemaVersion.$1, schema: schemaVersion.$2);
+  }, skip: true);
+
+  test('schema upgrade latest', () async {
+    await ScvSchemaUpgradeValidator(
+      name: 'schema_upgrade_test',
+    ).run(version: schemaVersionLatest.$1, schema: schemaVersionLatest.$2);
   }, skip: kSdbDartIsWeb);
 
   group('schema timestamp', () {
     late SdbDatabase db;
     setUpAll(() {});
     setUp(() async {
+      var schemaVersion = schemaVersionLatest;
       var factory = newSdbFactoryMemory();
       db = await factory.openDatabase(
         'test_timestamp',
-        version: 1,
-        schema: SdbDatabaseSchema(stores: [scvTimestampStore.schema()]),
+        version: schemaVersion.$1,
+        schema: schemaVersion.$2,
       );
     });
     tearDown(() {
@@ -502,5 +513,20 @@ void main() {
       readDbTest = await recordRef.get(db);
       expect(readDbTest, writeDbTest);
     }, skip: false);
+    test('user_product store', () async {
+      var store = userProjectStore;
+      var dbTest = DbUserProject()
+        ..userId.v = 3
+        ..projectId.v = 'project_1';
+      var recordRef = store.record(1);
+      await recordRef.put(db, dbTest);
+      var readDbTest = await recordRef.get(db);
+      expect(readDbTest, dbTest);
+      var readByIndex = await userProjectIndex
+          .record(dbTest.userId.v!, dbTest.projectId.v!)
+          .get(db);
+      expect(readByIndex?.record, dbTest);
+      expect(readByIndex?.indexKey, (dbTest.userId.v, dbTest.projectId.v));
+    });
   });
 }

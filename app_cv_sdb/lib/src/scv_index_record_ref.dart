@@ -65,6 +65,9 @@ class _ScvIndexRecord<
     _record = (cvBuildModel<V>(rawSnapshot.value)..ref = _recordRef)
       ..fromMap(rawSnapshot.value);
   }
+  @override
+  String toString() =>
+      'IndexRecord(${_recordRef.store.name}, $key, $_indexKey)';
 }
 
 /// Index record key extension.

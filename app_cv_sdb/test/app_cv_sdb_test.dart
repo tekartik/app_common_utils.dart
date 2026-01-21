@@ -1,5 +1,6 @@
 import 'package:tekartik_app_cv_sdb/app_cv_sdb.dart';
-import 'package:tekartik_app_cv_sdb/src/scv_types.dart';
+import 'package:tekartik_app_cv_sdb/src/scv_types.dart'
+    show TimestampToStringCodec;
 import 'package:test/test.dart';
 
 class DbTest extends ScvIntRecordBase {
@@ -8,6 +9,16 @@ class DbTest extends ScvIntRecordBase {
   @override
   List<CvField> get fields => [value];
 }
+
+class DbUserProject extends ScvIntRecordBase {
+  final userId = CvField<int>('user_id');
+  final projectId = CvField<String>('project_id');
+
+  @override
+  List<CvField> get fields => [userId, projectId];
+}
+
+final dbUserProjectModel = DbUserProject();
 
 final dbIntTestStore = scvIntStoreFactory.store<DbTest>('int_test');
 var dbIntTestIndex = dbIntTestStore.index('value_index');
@@ -52,6 +63,16 @@ class DbTimestampTest extends ScvStringRecordBase {
 final scvTimestampStore = scvStoreRef<String, DbTimestampTest>(
   'timestamp_store',
 );
+final userProjectStore = scvIntStoreFactory.store<DbUserProject>(
+  'user_project',
+);
+final userProjectIndex = userProjectStore.index2<int, String>(
+  'user_project_id',
+);
+final userProjectIndexSchema = userProjectIndex.schema(
+  keyPath: [dbUserProjectModel.userId.key, dbUserProjectModel.projectId.key],
+);
+
 bool contentAndKeyEquals(ScvRecord? record1, ScvRecord? record2) {
   return record1?.rawRef == record2?.rawRef && record1 == record2;
 }

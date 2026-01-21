@@ -1,0 +1,5 @@
+{"version":1,"sembast":1}
+{"key":"version","value":3}
+{"key":"stores","value":["timestamp_store","user_project"]}
+{"key":"store_timestamp_store","value":{"name":"timestamp_store"}}
+{"key":"store_user_project","value":{"name":"user_project","indecies":[{"name":"user_project_id","keyPath":["user_id","project_id"]}]}}

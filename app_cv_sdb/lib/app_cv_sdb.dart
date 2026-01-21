@@ -14,7 +14,13 @@ export 'src/scv_index_record_ref.dart'
         ScvIndexRecordExt,
         ScvIndexRefDbExt;
 export 'src/scv_index_ref.dart'
-    show ScvIndexRef, ScvIndex1Ref, ScvIndexRefExt, ScvIndex1RefExt;
+    show
+        ScvIndexRef,
+        ScvIndex1Ref,
+        ScvIndexRefExt,
+        ScvIndex1RefExt,
+        ScvIndex2Ref,
+        ScvIndex2RefExt;
 export 'src/scv_record.dart'
     show
         ScvRecord,
