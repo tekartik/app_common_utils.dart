@@ -15,6 +15,18 @@ extension ScvClientInternalExt on SdbClient {
       return dbFn(this as SdbDatabase);
     }
   }
+
+  /// Handle db or transaction.
+  Future<T> scvHandleStoreDbOrTxn<T>(
+    ScvStoreRef storeRef,
+    SdbTransactionMode mode,
+    Future<T> Function(SdbTransaction txn) txnFn,
+  ) {
+    return scvHandleDbOrTxn<T>(
+      (db) => storeRef.inTransaction(db, mode, txnFn),
+      (txn) => txnFn(txn),
+    );
+  }
 }
 
 /// Helper extension.
@@ -221,5 +233,40 @@ extension ScvRecordDbExtInternal<K extends SdbKey> on ScvRecord<K> {
     }
     await txn.store(rawRef.store).delete(id);
     return true;
+  }
+}
+
+/// Easy extension
+extension ScvRecordListDbExt<K extends SdbKey, V> on List<ScvRecord<K>> {
+  /// put
+  Future<void> put(SdbClient client) {
+    if (isEmpty) return Future.value();
+
+    return client.scvHandleStoreDbOrTxn(
+      first.ref.store,
+      SdbTransactionMode.readWrite,
+      (txn) async {
+        for (var record in this) {
+          await record.put(txn);
+        }
+      },
+    );
+  }
+
+  /// delete
+  Future<void> delete(SdbClient client) {
+    if (isEmpty) return Future.value();
+
+    return client.scvHandleStoreDbOrTxn(
+      first.ref.store,
+      SdbTransactionMode.readWrite,
+      (txn) async {
+        var futures = <Future>[];
+        for (var record in this) {
+          futures.add(record.delete(txn));
+        }
+        await Future.wait(futures);
+      },
+    );
   }
 }
