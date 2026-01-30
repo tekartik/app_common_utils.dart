@@ -195,7 +195,7 @@ extension ScvRecordSnapshotExt<K extends SdbKey>
     on SdbRecordSnapshot<K, Model> {
   /// Create a DbRecord from a snapshot
   T cv<T extends ScvRecord<K>>() {
-    return (cvBuildModel<T>(value)..rawRef = this)..fromMap(value);
+    return (cvBuildModel<T>(value)..rawRef = ref)..fromMap(value);
   }
 }
 

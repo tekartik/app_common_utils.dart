@@ -526,7 +526,7 @@ void main() {
         ..projectId.v = 'project_1';
       var recordRef = store.record(1);
       await recordRef.put(db, dbTest);
-      var readDbTest = await recordRef.get(db);
+      var readDbTest = (await recordRef.get(db))!;
       expect(readDbTest, dbTest);
       var indexRecordRef = userProjectIndex.record(
         dbTest.userId.v!,
@@ -535,6 +535,10 @@ void main() {
       var readByIndex = await indexRecordRef.get(db);
       expect(readByIndex?.record, dbTest);
       expect(readByIndex?.indexKey, (dbTest.userId.v, dbTest.projectId.v));
+
+      /// modify a read record
+      readDbTest.userId.v = 4;
+      await readDbTest.put(db);
       await indexRecordRef.delete(db);
     });
     test('multi store', () async {
