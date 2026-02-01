@@ -6,7 +6,7 @@ homepage: https://www.example.com
 publish_to: none
 
 environment:
-  sdk: ^3.9.0
+  sdk: ^3.10.0
 
 dependencies:
   pub_semver: ">=2.1.4"

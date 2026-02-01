@@ -6,10 +6,6 @@ enable-beta-ecosystems: true
 
 updates:
   - package-ecosystem: "pub"
-    directory: "."
-    schedule:
-      interval: "monthly"
-  - package-ecosystem: "pub"
     directory: "app"
     schedule:
       interval: "monthly"
@@ -31,6 +27,10 @@ updates:
       interval: "monthly"
   - package-ecosystem: "pub"
     directory: "app_cv_firestore"
+    schedule:
+      interval: "monthly"
+  - package-ecosystem: "pub"
+    directory: "app_cv_sdb"
     schedule:
       interval: "monthly"
   - package-ecosystem: "pub"
@@ -79,6 +79,10 @@ updates:
       interval: "monthly"
   - package-ecosystem: "pub"
     directory: "app_pager"
+    schedule:
+      interval: "monthly"
+  - package-ecosystem: "pub"
+    directory: "app_platform"
     schedule:
       interval: "monthly"
   - package-ecosystem: "pub"

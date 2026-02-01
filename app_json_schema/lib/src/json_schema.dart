@@ -152,10 +152,10 @@ final class JsonSchema {
   /// Convert to json object.
   Map<String, Object> toJson() => {
     'type': type.toJson(),
-    if (format case final format?) 'format': format,
-    if (description case final description?) 'description': description,
-    if (nullable case final nullable?) 'nullable': nullable,
-    if (enumValues case final enumValues?) 'enum': enumValues,
+    'format': ?format,
+    'description': ?description,
+    'nullable': ?nullable,
+    'enum': ?enumValues,
     if (items case final items?) 'items': items.toJson(),
     if (properties case final properties?)
       'properties': {
