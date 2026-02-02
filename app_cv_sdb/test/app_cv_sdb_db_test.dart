@@ -365,6 +365,25 @@ void main() {
       );
     });
   });
+  test('put/add encoded', () async {
+    var factory = newSdbFactoryMemory();
+    cvAddConstructor(DbTimestamp2Test.new);
+    var db = await factory.openDatabase(
+      'test',
+      version: 1,
+      schema: SdbDatabaseSchema(
+        stores: [scvTimestamp2Store.schema(autoIncrement: true)],
+      ),
+    );
+    var timestamp = DbTimestamp2Test()..timestamp.v = ScvTimestamp.now();
+    await scvTimestamp2Store.record(1).put(db, timestamp);
+    var added = await scvTimestamp2Store.add(db, timestamp);
+    expect(added.id, isNot(1));
+
+    expect(await scvTimestamp2Store.record(1).get(db), timestamp);
+    expect(await scvTimestamp2Store.record(added.id).get(db), timestamp);
+    await db.close();
+  });
   group('schema', () {
     late SdbDatabase db;
     setUp(() async {

@@ -60,7 +60,17 @@ class DbTimestampTest extends ScvStringRecordBase {
   List<CvField> get fields => [timestamp];
 }
 
+class DbTimestamp2Test extends ScvIntRecordBase {
+  final timestamp = cvEncodedTimestampField('timestamp');
+
+  @override
+  List<CvField> get fields => [timestamp];
+}
+
 final scvTimestampStore = scvStoreRef<String, DbTimestampTest>(
+  'timestamp_store',
+);
+final scvTimestamp2Store = scvStoreRef<int, DbTimestamp2Test>(
   'timestamp_store',
 );
 final userProjectStore = scvIntStoreFactory.store<DbUserProject>(
