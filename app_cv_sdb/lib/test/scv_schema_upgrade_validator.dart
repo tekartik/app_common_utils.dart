@@ -63,7 +63,9 @@ class ScvSchemaUpgradeValidator {
   }
 
   /// Run the validator.
-  Future<void> run({required int version, SdbDatabaseSchema? schema}) async {
+  Future<void> run({required SdbOpenDatabaseOptions options}) async {
+    var version = options.version!;
+    var schema = options.schema;
     var dbPath = join(path, '${name}_$version.db');
     var dbFile = File(dbPath);
     String? existingContent;
@@ -74,11 +76,7 @@ class ScvSchemaUpgradeValidator {
       await dbFile.delete();
     }
     var factory = sdbFactoryIo;
-    var db = await factory.openDatabase(
-      dbPath,
-      version: version,
-      schema: schema,
-    );
+    var db = await factory.openDatabase(dbPath, options: options);
     await db.close();
     var newContent = await _getContent(dbPath);
 

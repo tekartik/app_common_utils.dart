@@ -1,6 +1,6 @@
+import 'dart:typed_data';
+
 import 'package:tekartik_app_cv_sdb/app_cv_sdb.dart';
-import 'package:tekartik_app_cv_sdb/src/scv_types.dart'
-    show TimestampToStringCodec;
 import 'package:test/test.dart';
 
 class DbTest extends ScvIntRecordBase {
@@ -41,23 +41,18 @@ class DbString2Test extends ScvStringRecordBase {
   List<CvField> get fields => [value2];
 }
 
-/// SCV Timestamp type alias for Sembast Timestamp (not coupled to Firebase nor Sembast)
-
-/// CvField extensions
-extension ScvCvFieldExt on CvField {
-  /// Enum field, give a name and a list of possible values (such as `MyEnum.values`)
-  static CvField<ScvTimestamp> encodedTimestamp(String name) =>
-      CvField.encoded<ScvTimestamp, String>(
-        name,
-        codec: const TimestampToStringCodec(),
-      );
-}
-
 class DbTimestampTest extends ScvStringRecordBase {
   final timestamp = cvEncodedTimestampField('timestamp');
 
   @override
   List<CvField> get fields => [timestamp];
+}
+
+class DbBlobTest extends ScvStringRecordBase {
+  final blob = cvEncodedBlobField('blob');
+
+  @override
+  List<CvField> get fields => [blob];
 }
 
 class DbTimestamp2Test extends ScvIntRecordBase {
@@ -70,6 +65,7 @@ class DbTimestamp2Test extends ScvIntRecordBase {
 final scvTimestampStore = scvStoreRef<String, DbTimestampTest>(
   'timestamp_store',
 );
+final scvBlobStore = scvStoreRef<String, DbBlobTest>('blob_store');
 final scvTimestamp2Store = scvStoreRef<int, DbTimestamp2Test>(
   'timestamp_store',
 );
@@ -102,6 +98,7 @@ void main() {
       DbStringTest.new,
       DbString2Test.new,
       DbTimestampTest.new,
+      DbBlobTest.new,
     ]);
   });
   group('ref', () {
@@ -124,7 +121,21 @@ void main() {
       expect(record1.toMap(), isEmpty);
       var now = ScvTimestamp.now();
       record1.timestamp.value = now;
-      expect(record1.toMap(), {'timestamp': now.toIso8601String()});
+      expect(record1.toMap(), {'timestamp': now.toDateTime(isUtc: true)});
+      var record1Bis = store.record('1bis').cv()..fromMap(record1.toMap());
+      expect(record1Bis, record1);
+      var record2 = store.record('2').cv();
+      expect([record1, record2].toMap(), {'1': record1, '2': record2});
+    });
+    test('blob', () async {
+      var store = scvBlobStore;
+      var record1 = store.record('1').cv();
+      expect(record1.toMap(), isEmpty);
+      var bytes = Uint8List.fromList([1, 2, 3]);
+      record1.blob.value = ScvBlob(bytes);
+      expect(record1.toMap(), {'blob': bytes});
+      var record1Bis = store.record('1bis').cv()..fromMap(record1.toMap());
+      expect(record1Bis, record1);
       var record2 = store.record('2').cv();
       expect([record1, record2].toMap(), {'1': record1, '2': record2});
     });

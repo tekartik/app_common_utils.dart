@@ -478,11 +478,13 @@ void main() {
     });
   });
   // var schemaVersion = (1, SdbDatabaseSchema(stores: []));
+  // ignore: unused_local_variable
   var schemaVersion = (
     2,
     SdbDatabaseSchema(stores: [scvTimestampStore.schema()]),
   );
 
+  // ignore: unused_local_variable
   var schemaVersion3 = (
     3,
     SdbDatabaseSchema(
@@ -492,30 +494,30 @@ void main() {
       ],
     ),
   );
-  var schemaVersionLatest = schemaVersion3;
-  test('schema upgrade', () async {
-    await ScvSchemaUpgradeValidator(
-      name: 'schema_upgrade_1_test',
-    ).run(version: schemaVersion.$1, schema: schemaVersion.$2);
-  }, skip: true);
+  var options4 = SdbOpenDatabaseOptions(
+    version: 4,
+    schema: SdbDatabaseSchema(
+      stores: [
+        scvTimestampStore.schema(),
+        userProjectStore.schema(indexes: [userProjectIndexSchema]),
+        scvBlobStore.schema(),
+      ],
+    ),
+  );
+  var optionsLatest = options4;
 
   test('schema upgrade latest', () async {
     await ScvSchemaUpgradeValidator(
       name: 'schema_upgrade_test',
-    ).run(version: schemaVersionLatest.$1, schema: schemaVersionLatest.$2);
+    ).run(options: optionsLatest);
   }, skip: kSdbDartIsWeb);
 
   group('schema various', () {
     late SdbDatabase db;
     setUpAll(() {});
     setUp(() async {
-      var schemaVersion = schemaVersionLatest;
       var factory = newSdbFactoryMemory();
-      db = await factory.openDatabase(
-        'test_various',
-        version: schemaVersion.$1,
-        schema: schemaVersion.$2,
-      );
+      db = await factory.openDatabase('test_various', options: optionsLatest);
     });
     tearDown(() {
       db.close();
