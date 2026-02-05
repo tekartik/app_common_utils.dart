@@ -16,6 +16,7 @@ dependencies:
     git:
       url: https://github.com/tekartik/common_utils.dart
     version: '>=0.10.7'
+  synchronized: ^3.4.0
 #  tekartik_app_pager:
 #    git:
 #      url: https://github.com/tekartik/app_common_utils.dart
