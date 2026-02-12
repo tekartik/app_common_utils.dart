@@ -3,7 +3,6 @@ library;
 
 import 'dart:io';
 
-import 'package:csv/csv.dart';
 import 'package:path/path.dart';
 import 'package:tekartik_app_csv/app_csv.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
@@ -111,8 +110,7 @@ void main() {
                 'World',
           },
         ]);
-        expect(csvToMapList(csv, converter: CsvToListConverter()), isEmpty);
-        expect(csvToMapList(csv, converter: CsvToListConverter(eol: '\n')), [
+        expect(csvToMapList(csv, converter: CsvToListConverter()), [
           {
             'one_column_with_line_feed':
                 'Hello\n'
@@ -124,11 +122,8 @@ void main() {
 
     test('simple1', () async {
       var csv = await readCsv('simple1.csv');
-      if (!Platform.isWindows) {
-        expect(csvToMapList(csv, converter: CsvToListConverter()), isEmpty);
-      }
       expect(csvToMapList(csv), [
-        {'a': 1, 'b': 2},
+        {'a': '1', 'b': '2'},
       ]);
     });
     test('complex1', () async {
@@ -139,21 +134,21 @@ void main() {
             'L1\n'
                     'L2':
                 'C1',
-            'N': 0,
+            'N': '0',
             'Name':
                 'L1\n'
                 'L2 ',
-            'With space ': 12345,
+            'With space ': '12345',
             'YES = 1\n'
                     '/\n'
                     'NO = 0':
-                1,
+                '1',
           },
           {
             'L1\n'
                     'L2':
                 '',
-            'N': 0,
+            'N': '0',
             'Name': 'P',
             'With space ': '',
             'YES = 1\n'
@@ -183,7 +178,7 @@ void main() {
             'YES = 1\n'
                     '/\n'
                     'NO = 0':
-                86,
+                '86',
           },
         ]);
       }

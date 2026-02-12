@@ -1,5 +1,4 @@
-import 'package:csv/csv.dart';
-import 'package:csv/csv_settings_autodetection.dart';
+import 'package:tekartik_app_csv/app_csv.dart';
 
 final csvToMapListDefaultCsvSettingsDetector = FirstOccurrenceSettingsDetector(
   eols: ['\r\n', '\n'],
