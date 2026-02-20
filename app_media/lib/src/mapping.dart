@@ -1,46 +1,36 @@
-import 'package:path/path.dart';
+import 'package:mime/mime.dart' as mime;
 import 'package:tekartik_app_media/mime_type.dart';
-
-const _mimeTypeExtensions = {
-  mimeTypeApplicationJson: extensionApplicationJson,
-  mimeTypeImageJpg: extensionImageJpg,
-  mimeTypeImagePng: extensionImagePng,
-  mimeTypeImageWebp: extensionImageWebp,
-  mimeTypeApplicationZip: extensionApplicationZip,
-};
 
 /// Get the extension from a mime type
 String? extensionFromMimeType(String mimeType) {
-  return _mimeTypeExtensions[mimeType];
+  // native implementation does not have leading .
+  var ext = mime.extensionFromMime(mimeType) ?? _mimeTypeExtMap[mimeType];
+  if (ext != null) {
+    return '.$ext';
+  }
+  return null;
 }
 
-var _mimeTypeMap = {
-  '.css': 'text/css',
-  '.dart': 'application/dart',
-  '.gif': 'image/gif',
-  '.html': 'text/html',
-  '.ico': 'image/x-icon',
-  '.jpg': 'image/jpeg',
-  '.jpeg': 'image/jpeg',
-  '.js': 'application/javascript',
-  '.json': 'application/json',
-  '.png': 'image/png',
-  '.svg': 'image/svg+xml',
-  '.txt': 'text/plain',
-  '.webp': 'image/webp',
-  '.woff': 'application/font-woff',
-  '.woff2': 'application/font-woff2',
-  '.wasm': 'application/wasm',
-  '.pdf': 'application/pdf',
-  '.yaml': 'application/yaml',
-  '.mp4': 'video/mp4',
-  '.ics': 'text/calendar',
-};
+var _extMimeTypeExtraMap = {'yaml': 'application/yaml'};
 
-const _mimeTypeDefault = 'application/octet-stream';
+var _mimeTypeExtMap = Map.fromEntries(
+  _extMimeTypeExtraMap.entries.map((entry) => MapEntry(entry.value, entry.key)),
+);
 
-/// Get the mime type from a filename
+String _ext(String path) {
+  final index = path.lastIndexOf('.');
+  if (index < 0 || index + 1 >= path.length) return path;
+  return path.substring(index + 1).toLowerCase();
+}
+
+/// Get the mime type from a filename, default to octet-stream
 String filenameMimeType(String filename) {
-  var ext = extension(basename(filename)).toLowerCase();
-  return _mimeTypeMap[ext] ?? _mimeTypeDefault;
+  return extensionMimeType(filename) ?? mimeTypeOctetStream;
+}
+
+/// Get the mime type from an extension (without or without leading .)
+String? extensionMimeType(String extension) {
+  var fixedExtension = _ext(extension);
+  return mime.lookupMimeType(fixedExtension) ??
+      _extMimeTypeExtraMap[fixedExtension];
 }

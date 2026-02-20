@@ -27,3 +27,6 @@ const mimeTypeApplicationZip = 'application/zip';
 
 /// PNG extension
 const extensionApplicationZip = '.zip';
+
+/// Default
+const mimeTypeOctetStream = 'application/octet-stream';
