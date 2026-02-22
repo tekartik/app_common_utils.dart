@@ -4,7 +4,7 @@ import 'package:test/test.dart';
 Future<void> main() async {
   group('compat', () {
     test('api', () {
-      csvToMapList('', converter: CsvToListConverter());
+      csvToMapList('1,2,3', converter: CsvToListConverter());
       mapListToCsv([], converter: ListToCsvConverter());
     });
   });
