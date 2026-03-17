@@ -9,6 +9,7 @@ void main() async {
       await prefs.setInt('value', ++value);
       // print('prefs set to $value');
       // Should increment at each test
+      await prefs.close();
     });
     test('doc', () async {
       // Get the default persistent prefs factory.
@@ -18,7 +19,7 @@ void main() async {
       // Once you have a [Prefs] object ready, use it. You can keep it open.
       await prefs.setInt('value', 26);
       var title = await prefs.getString('title');
-
+      await prefs.close();
       {
         // For Windows/Linux support you can add package name to find a shared
         // location on the file system
@@ -35,6 +36,7 @@ void main() async {
         expect(await prefs.getInt('value'), isNull);
         await prefs.setInt('value', 1);
         expect(await prefs.getInt('value'), 1);
+        await prefs.close();
       }
 
       // ignore: unnecessary_statements
