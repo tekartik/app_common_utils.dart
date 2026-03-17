@@ -60,6 +60,7 @@ typedef ScvTimestamp = Timestamp;
 typedef ScvBlob = Blob;
 
 /// Timestamp field (as utc DateTime encoded)
+@Deprecated('do not use, User CvField<SdbTimestamp> instead')
 CvField<ScvTimestamp> cvEncodedTimestampField(String name) =>
     CvField.encoded<ScvTimestamp, DateTime>(
       name,
@@ -67,6 +68,7 @@ CvField<ScvTimestamp> cvEncodedTimestampField(String name) =>
     );
 
 /// Blob field (as uint8List encoded)
+@Deprecated('do not use, User CvField<SdbBlob> instead')
 CvField<ScvBlob> cvEncodedBlobField(String name) =>
     CvField.encoded<ScvBlob, List<int>>(
       name,

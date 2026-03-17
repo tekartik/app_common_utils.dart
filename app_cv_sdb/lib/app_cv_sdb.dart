@@ -52,4 +52,10 @@ export 'src/scv_store_ref.dart'
         ScvIntStoreRef,
         ScvStringStoreRef;
 export 'src/scv_types.dart'
-    show ScvTimestamp, cvEncodedTimestampField, ScvBlob, cvEncodedBlobField;
+    show
+        ScvTimestamp,
+        // ignore: deprecated_member_use_from_same_package
+        cvEncodedTimestampField,
+        ScvBlob,
+        // ignore: deprecated_member_use_from_same_package
+        cvEncodedBlobField;

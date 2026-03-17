@@ -42,21 +42,21 @@ class DbString2Test extends ScvStringRecordBase {
 }
 
 class DbTimestampTest extends ScvStringRecordBase {
-  final timestamp = cvEncodedTimestampField('timestamp');
+  final timestamp = CvField<SdbTimestamp>('timestamp');
 
   @override
   List<CvField> get fields => [timestamp];
 }
 
 class DbBlobTest extends ScvStringRecordBase {
-  final blob = cvEncodedBlobField('blob');
+  final blob = CvField<SdbBlob>('blob');
 
   @override
   List<CvField> get fields => [blob];
 }
 
 class DbTimestamp2Test extends ScvIntRecordBase {
-  final timestamp = cvEncodedTimestampField('timestamp');
+  final timestamp = CvField<SdbTimestamp>('timestamp');
 
   @override
   List<CvField> get fields => [timestamp];
@@ -121,7 +121,7 @@ void main() {
       expect(record1.toMap(), isEmpty);
       var now = ScvTimestamp.now();
       record1.timestamp.value = now;
-      expect(record1.toMap(), {'timestamp': now.toDateTime(isUtc: true)});
+      expect(record1.toMap(), {'timestamp': now});
       var record1Bis = store.record('1bis').cv()..fromMap(record1.toMap());
       expect(record1Bis, record1);
       var record2 = store.record('2').cv();
@@ -133,7 +133,7 @@ void main() {
       expect(record1.toMap(), isEmpty);
       var bytes = Uint8List.fromList([1, 2, 3]);
       record1.blob.value = ScvBlob(bytes);
-      expect(record1.toMap(), {'blob': bytes});
+      expect(record1.toMap(), {'blob': SdbBlob.fromList(bytes)});
       var record1Bis = store.record('1bis').cv()..fromMap(record1.toMap());
       expect(record1Bis, record1);
       var record2 = store.record('2').cv();
