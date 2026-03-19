@@ -47,14 +47,16 @@ void main() {
       var factory = newSdbFactoryMemory();
       db = await factory.openDatabase(
         'test',
-        version: 1,
-        onVersionChange: (e) {
-          if (e.oldVersion < 1) {
-            var db = e.db;
-            db.scvCreateStore(dbIntTestStore);
-            db.scvCreateStore(dbStringTestStore);
-          }
-        },
+        options: SdbOpenDatabaseOptions(
+          version: 1,
+          onVersionChange: (e) {
+            if (e.oldVersion < 1) {
+              var db = e.db;
+              db.scvCreateStore(dbIntTestStore);
+              db.scvCreateStore(dbStringTestStore);
+            }
+          },
+        ),
       );
     });
     tearDown(() {
@@ -209,18 +211,20 @@ void main() {
       var factory = newSdbFactoryMemory();
       db = await factory.openDatabase(
         'test',
-        version: 1,
-        onVersionChange: (e) {
-          if (e.oldVersion < 1) {
-            var db = e.db;
-            db.scvCreateStore(
-              dbIntTestWithIdStore,
-              autoIncrement: true,
-              keyPath: 'id',
-            );
-            db.scvCreateStore(dbStringTestWithIdStore, keyPath: 'id');
-          }
-        },
+        options: SdbOpenDatabaseOptions(
+          version: 1,
+          onVersionChange: (e) {
+            if (e.oldVersion < 1) {
+              var db = e.db;
+              db.scvCreateStore(
+                dbIntTestWithIdStore,
+                autoIncrement: true,
+                keyPath: 'id',
+              );
+              db.scvCreateStore(dbStringTestWithIdStore, keyPath: 'id');
+            }
+          },
+        ),
       );
     });
     tearDown(() {
@@ -255,18 +259,20 @@ void main() {
       var factory = newSdbFactoryMemory();
       db = await factory.openDatabase(
         'test',
-        version: 1,
-        onVersionChange: (e) {
-          if (e.oldVersion < 1) {
-            var db = e.db;
-            db.scvCreateStore(
-              dbIntTestWithIdStore,
-              autoIncrement: true,
-              keyPath: 'id',
-            );
-            db.scvCreateStore(dbStringTestWithIdStore, keyPath: 'id');
-          }
-        },
+        options: SdbOpenDatabaseOptions(
+          version: 1,
+          onVersionChange: (e) {
+            if (e.oldVersion < 1) {
+              var db = e.db;
+              db.scvCreateStore(
+                dbIntTestWithIdStore,
+                autoIncrement: true,
+                keyPath: 'id',
+              );
+              db.scvCreateStore(dbStringTestWithIdStore, keyPath: 'id');
+            }
+          },
+        ),
       );
     });
     tearDown(() {
@@ -318,15 +324,17 @@ void main() {
       var factory = newSdbFactoryMemory();
       db = await factory.openDatabase(
         'test',
-        version: 1,
-        onVersionChange: (e) {
-          if (e.oldVersion < 1) {
-            var db = e.db;
+        options: SdbOpenDatabaseOptions(
+          version: 1,
+          onVersionChange: (e) {
+            if (e.oldVersion < 1) {
+              var db = e.db;
 
-            var store = db.scvCreateStore(dbIntTestStore);
-            store.createIndex(dbIntTestIndex, 'value');
-          }
-        },
+              var store = db.scvCreateStore(dbIntTestStore);
+              store.createIndex(dbIntTestIndex, 'value');
+            }
+          },
+        ),
       );
     });
     tearDown(() {
@@ -370,9 +378,11 @@ void main() {
     cvAddConstructor(DbTimestamp2Test.new);
     var db = await factory.openDatabase(
       'test',
-      version: 1,
-      schema: SdbDatabaseSchema(
-        stores: [scvTimestamp2Store.schema(autoIncrement: true)],
+      options: SdbOpenDatabaseOptions(
+        version: 1,
+        schema: SdbDatabaseSchema(
+          stores: [scvTimestamp2Store.schema(autoIncrement: true)],
+        ),
       ),
     );
     var timestamp = DbTimestamp2Test()..timestamp.v = ScvTimestamp.now();
@@ -390,15 +400,17 @@ void main() {
       var factory = newSdbFactoryMemory();
       db = await factory.openDatabase(
         'test',
-        version: 1,
-        schema: SdbDatabaseSchema(
-          stores: [
-            dbIntTestStore.rawRef.schema(
-              indexes: [
-                dbIntTestIndex.rawRef.schema(keyPath: 'value', unique: true),
-              ],
-            ),
-          ],
+        options: SdbOpenDatabaseOptions(
+          version: 1,
+          schema: SdbDatabaseSchema(
+            stores: [
+              dbIntTestStore.rawRef.schema(
+                indexes: [
+                  dbIntTestIndex.rawRef.schema(keyPath: 'value', unique: true),
+                ],
+              ),
+            ],
+          ),
         ),
       );
     });
