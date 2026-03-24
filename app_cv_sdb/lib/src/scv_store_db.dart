@@ -51,6 +51,11 @@ extension ScvStoreRefDbExt<K extends SdbKey, V extends ScvRecord<K>>
     });
   }
 
+  /// Track changes
+  Stream<List<V>> onRecords(SdbDatabase db) {
+    return rawRef.onSnapshots(db).map((snapshot) => snapshot.cv<V>());
+  }
+
   /// Find records.
   Future<V?> findRecord(
     SdbClient client, {

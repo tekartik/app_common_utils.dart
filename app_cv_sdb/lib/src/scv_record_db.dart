@@ -58,6 +58,11 @@ extension ScvRecordRefDbExt<K extends SdbKey, V extends ScvRecord<K>>
     );
   }
 
+  /// Track changes
+  Stream<V?> onRecord(SdbDatabase db) {
+    return rawRef.onSnapshot(db).map((snapshot) => snapshot?.cv<V>());
+  }
+
   /// Delete a record
   Future<void> delete(SdbClient client) async {
     await rawRef.delete(client);

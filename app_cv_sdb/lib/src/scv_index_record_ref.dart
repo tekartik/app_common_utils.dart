@@ -152,13 +152,27 @@ extension ScvIndexRecordRefDbExt<
   I extends SdbIndexKey
 >
     on ScvIndexRecordRef<K, V, I> {
-  /// Get a single record.
-  Future<ScvIndexRecord<K, V, I>?> get(SdbClient client) async {
-    var rawSnapshot = await impl.rawRef.get(client);
+  ScvIndexRecord<K, V, I>? _record(
+    SdbIndexRecordSnapshot<K, SdbModel, I>? rawSnapshot,
+  ) {
     if (rawSnapshot == null) {
       return null;
     }
     return _ScvIndexRecord<K, V, I>(this, rawSnapshot);
+  }
+
+  List<ScvIndexRecord<K, V, I>> _records(
+    List<SdbIndexRecordSnapshot<K, SdbModel, I>> rawSnapshots,
+  ) {
+    return rawSnapshots.lazy(
+      (snapshot) => _ScvIndexRecord<K, V, I>(this, snapshot),
+    );
+  }
+
+  /// Get a single record.
+  Future<ScvIndexRecord<K, V, I>?> get(SdbClient client) async {
+    var rawSnapshot = await impl.rawRef.get(client);
+    return _record(rawSnapshot);
   }
 
   /// Get a single record key.
@@ -178,9 +192,7 @@ extension ScvIndexRecordRefDbExt<
     SdbFindOptions<I>? options,
   }) async {
     var rawSnapshots = await impl.rawRef.findRecords(client, options: options);
-    return rawSnapshots.lazy(
-      (snapshot) => _ScvIndexRecord<K, V, I>(this, snapshot),
-    );
+    return _records(rawSnapshots);
   }
 
   /// Find objects.
@@ -221,6 +233,21 @@ extension ScvIndexRecordRefDbExt<
   /// Multiple record could be deleted
   Future<void> delete(SdbClient client, {SdbFindOptions<I>? options}) async {
     await impl.rawRef.delete(client, options: options);
+  }
+
+  /// Track changes
+  Stream<ScvIndexRecord<K, V, I>?> onRecord(SdbDatabase db) {
+    return impl.rawRef.onSnapshot(db).map((snapshot) => _record(snapshot));
+  }
+
+  /// Track changes
+  Stream<List<ScvIndexRecord<K, V, I>>> onRecords(
+    SdbDatabase db, {
+    SdbFindOptions<I>? options,
+  }) {
+    return impl.rawRef
+        .onSnapshots(db, options: options)
+        .map((snapshot) => _records(snapshot));
   }
 }
 

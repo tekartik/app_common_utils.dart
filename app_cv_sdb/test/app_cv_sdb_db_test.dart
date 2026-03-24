@@ -3,6 +3,7 @@ import 'package:sembast/sembast.dart';
 import 'package:tekartik_app_cv_sdb/app_cv_sdb.dart';
 
 import 'package:tekartik_app_cv_sdb/test/scv_schema_upgrade_validator.dart';
+import 'package:tekartik_common_utils/common_utils_import.dart';
 import 'package:test/test.dart';
 
 import 'app_cv_sdb_test.dart';
@@ -197,53 +198,47 @@ void main() {
       await record.put(db);
       expect(record.value.v, 2);
     });
-  });
-  group('db_keypath_autoincrement', () {
-    late SdbDatabase db;
-    setUpAll(() {
-      cvAddConstructors([
-        DbTestWithId.new,
-        DbStringTest.new,
-        DbString2Test.new,
-      ]);
-    });
-    setUp(() async {
-      var factory = newSdbFactoryMemory();
-      db = await factory.openDatabase(
-        'test',
-        options: SdbOpenDatabaseOptions(
-          version: 1,
-          onVersionChange: (e) {
-            if (e.oldVersion < 1) {
-              var db = e.db;
-              db.scvCreateStore(
-                dbIntTestWithIdStore,
-                autoIncrement: true,
-                keyPath: 'id',
-              );
-              db.scvCreateStore(dbStringTestWithIdStore, keyPath: 'id');
-            }
-          },
-        ),
-      );
-    });
-    tearDown(() {
-      db.close();
+
+    test('onRecord', () async {
+      var store = dbStringTestStore;
+      var recordRef = store.record('test');
+      var record = recordRef.cv()..value.v = 1;
+
+      var completer = Completer<DbStringTest?>();
+      var subscription = recordRef.onRecord(db).listen((event) {
+        if (event?.value.v == 2) {
+          completer.complete(event);
+        }
+      });
+
+      await record.put(db);
+      record.value.v = 2;
+      await record.put(db);
+
+      var result = await completer.future;
+      expect(result?.value.v, 2);
+      await subscription.cancel();
     });
 
-    test('int with id store', () async {
-      var dbStore = dbIntTestWithIdStore;
-      var dbRecord = DbTestWithId()..value.v = 1234;
-      var addedRecord = await dbStore.add(db, dbRecord);
-      expect(addedRecord.value.v, 1234);
-      var id = addedRecord.id;
-      expect(addedRecord.idOrNull, isNotNull);
-      expect(addedRecord.ref.store, dbStore);
-      expect(addedRecord.recId.v, id);
-      expect(dbRecord.idOrNull, isNull);
-      expect(dbRecord.recId.v, isNull);
-      var readRecord = await dbStore.record(addedRecord.id).get(db);
-      expect(contentAndKeyEquals(addedRecord, readRecord), isNotNull);
+    test('onRecords', () async {
+      var store = dbIntTestStore;
+      var record1 = store.record(1).cv()..value.v = 1;
+      var record2 = store.record(2).cv()..value.v = 2;
+
+      var completer = Completer<List<DbTest>>();
+      var subscription = store.onRecords(db).listen((event) {
+        if (event.length == 2) {
+          completer.complete(event);
+        }
+      });
+
+      await record1.put(db);
+      await record2.put(db);
+
+      var result = await completer.future;
+      expect(result.length, 2);
+      expect(result, containsAll([record1, record2]));
+      await subscription.cancel();
     });
   });
   group('db_keypath_autoincrement', () {
@@ -372,6 +367,29 @@ void main() {
         record.id,
       );
     });
+
+    test('index onRecord', () async {
+      var dbStore = dbIntTestStore;
+      var dbRecordRef = dbStore.record(1);
+      var indexRecordRef = dbIntTestIndex.record(1234);
+
+      var completer = Completer<ScvIndexRecord?>();
+      var subscription = indexRecordRef.onRecord(db).listen((event) {
+        if (event?.record.value.v == 1234) {
+          completer.complete(event);
+        }
+      });
+
+      var record = await dbRecordRef.add(db, DbTest()..value.v = 123);
+      record.value.v = 1234;
+      await record.put(db);
+
+      var result = await completer.future;
+      expect(result?.record, record);
+      expect(result?.key, 1);
+
+      await subscription.cancel();
+    });
   });
   test('put/add encoded', () async {
     var factory = newSdbFactoryMemory();
@@ -394,6 +412,7 @@ void main() {
     expect(await scvTimestamp2Store.record(added.id).get(db), timestamp);
     await db.close();
   });
+
   group('schema', () {
     late SdbDatabase db;
     setUp(() async {
