@@ -24,15 +24,7 @@ abstract class ScvIndex1Ref<
   V extends ScvRecord<K>,
   I extends SdbIndexKey
 >
-    implements ScvIndexRef<K, V, I> {
-  /// Store reference.
-  @override
-  ScvStoreRef<K, V> get store;
-
-  /// Index name.
-  @override
-  String get name;
-}
+    implements ScvIndexRef<K, V, I> {}
 
 /// Index on 2 field
 abstract class ScvIndex2Ref<
@@ -41,15 +33,17 @@ abstract class ScvIndex2Ref<
   I1 extends SdbIndexKey,
   I2 extends SdbIndexKey
 >
-    implements ScvIndexRef<K, V, (I1, I2)> {
-  /// Store reference.
-  @override
-  ScvStoreRef<K, V> get store;
+    implements ScvIndexRef<K, V, (I1, I2)> {}
 
-  /// Index name.
-  @override
-  String get name;
-}
+/// Index on 3 field
+abstract class ScvIndex3Ref<
+  K extends SdbKey,
+  V extends ScvRecord<K>,
+  I1 extends SdbIndexKey,
+  I2 extends SdbIndexKey,
+  I3 extends SdbIndexKey
+>
+    implements ScvIndexRef<K, V, (I1, I2, I3)> {}
 
 /// Index on 1 field.
 class ScvIndex1RefImpl<
@@ -63,7 +57,7 @@ class ScvIndex1RefImpl<
   ScvIndex1RefImpl(super.store, super.rawRef);
 }
 
-/// Index on 2 field.
+/// Index on 2 fields.
 class ScvIndex2RefImpl<
   K extends SdbKey,
   V extends ScvRecord<K>,
@@ -72,8 +66,22 @@ class ScvIndex2RefImpl<
 >
     extends ScvIndexRefImpl<K, V, (I1, I2)>
     implements ScvIndex2Ref<K, V, I1, I2> {
-  /// Index on 1 field.
+  /// Index on 2 fields.
   ScvIndex2RefImpl(super.store, super.rawRef);
+}
+
+/// Index on 3 fields.
+class ScvIndex3RefImpl<
+  K extends SdbKey,
+  V extends ScvRecord<K>,
+  I1 extends SdbIndexKey,
+  I2 extends SdbIndexKey,
+  I3 extends SdbIndexKey
+>
+    extends ScvIndexRefImpl<K, V, (I1, I2, I3)>
+    implements ScvIndex3Ref<K, V, I1, I2, I3> {
+  /// Index on 3 field.
+  ScvIndex3RefImpl(super.store, super.rawRef);
 }
 
 /// Index extension.
@@ -119,7 +127,7 @@ extension ScvIndex1RefExt<
   }
 }
 
-/// Extension on index on 1 field.
+/// Extension on index on 2 field.
 extension ScvIndex2RefExt<
   K extends SdbKey,
   V extends ScvRecord<K>,
@@ -147,6 +155,47 @@ extension ScvIndex2RefExt<
     I2 value2, {
     bool? include = false,
   }) => rawRef1.upperBoundary((value1, value2), include: include);
+
+  /// Schema
+  SdbIndexSchema schema({required List<String> keyPath, bool? unique}) {
+    return rawRef.schema(keyPath: keyPath, unique: unique);
+  }
+}
+
+/// Extension on index on 3 field.
+extension ScvIndex3RefExt<
+  K extends SdbKey,
+  V extends ScvRecord<K>,
+  I1 extends SdbIndexKey,
+  I2 extends SdbIndexKey,
+  I3 extends SdbIndexKey
+>
+    on ScvIndex3Ref<K, V, I1, I2, I3> {
+  /// Record reference.
+  ScvIndexRecordRef<K, V, (I1, I2, I3)> record(
+    I1 indexKey1,
+    I2 indexKey2,
+    I3 indexKey3,
+  ) => ScvIndexRecordRefImpl<K, V, (I1, I2, I3)>(
+    impl,
+    impl.rawRef.record((indexKey1, indexKey2, indexKey3)),
+  );
+
+  /// Lower boundary
+  SdbBoundary<(I1, I2, I3)> lowerBoundary(
+    I1 value1,
+    I2 value2,
+    I3 value3, {
+    bool? include = true,
+  }) => rawRef1.lowerBoundary((value1, value2, value3), include: include);
+
+  /// Upper boundary
+  SdbBoundary<(I1, I2, I3)> upperBoundary(
+    I1 value1,
+    I2 value2,
+    I3 value3, {
+    bool? include = false,
+  }) => rawRef1.upperBoundary((value1, value2, value3), include: include);
 
   /// Schema
   SdbIndexSchema schema({required List<String> keyPath, bool? unique}) {

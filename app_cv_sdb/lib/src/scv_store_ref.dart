@@ -58,6 +58,14 @@ extension ScvStoreRefExt<K extends SdbKey, V extends ScvRecord<K>>
   index2<I1 extends SdbIndexKey, I2 extends SdbIndexKey>(String name) =>
       ScvIndex2RefImpl<K, V, I1, I2>(this, rawRef.index2(name));
 
+  /// Index reference on 3 field
+  ScvIndex3Ref<K, V, I1, I2, I3> index3<
+    I1 extends SdbIndexKey,
+    I2 extends SdbIndexKey,
+    I3 extends SdbIndexKey
+  >(String name) =>
+      ScvIndex3RefImpl<K, V, I1, I2, I3>(this, rawRef.index3(name));
+
   /// Cast if needed
   ScvStoreRef<RK, RV> cast<RK extends SdbKey, RV extends ScvRecord<RK>>() {
     if (this is ScvStoreRef<RK, RV>) {

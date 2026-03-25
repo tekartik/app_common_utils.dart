@@ -27,7 +27,9 @@ export 'src/scv_index_ref.dart'
         ScvIndexRefExt,
         ScvIndex1RefExt,
         ScvIndex2Ref,
-        ScvIndex2RefExt;
+        ScvIndex2RefExt,
+        ScvIndex3Ref,
+        ScvIndex3RefExt;
 export 'src/scv_record.dart'
     show
         ScvRecord,

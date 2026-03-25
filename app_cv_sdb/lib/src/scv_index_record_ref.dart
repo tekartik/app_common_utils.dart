@@ -195,6 +195,14 @@ extension ScvIndexRecordRefDbExt<
     return _records(rawSnapshots);
   }
 
+  /// Find records.
+  Future<List<K>> findRecordPrimaryKeys(
+    SdbClient client, {
+    SdbFindOptions<I>? options,
+  }) async {
+    return (await impl.rawRef.findRecordKeys(client, options: options)).keys;
+  }
+
   /// Find objects.
   Future<List<V>> findObjects(
     SdbClient client, {
