@@ -21,7 +21,7 @@ class DbUserProject extends ScvIntRecordBase {
 final dbUserProjectModel = DbUserProject();
 
 final dbIntTestStore = scvIntStoreFactory.store<DbTest>('int_test');
-var dbIntTestIndex = dbIntTestStore.index('value_index');
+var dbIntTestIndex = dbIntTestStore.index<int>('value_index');
 
 class DbStringTest extends ScvStringRecordBase {
   final value = CvField<int>('value');

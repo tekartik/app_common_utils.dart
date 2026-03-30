@@ -1,6 +1,5 @@
 import 'package:tekartik_app_cv_sdb/app_cv_sdb.dart';
-
-import 'scv_index_record_ref.dart';
+import 'package:tekartik_app_cv_sdb/src/scv_index_record_db.dart';
 
 /// Index reference.
 abstract interface class ScvIndexRef<
@@ -94,12 +93,6 @@ extension ScvIndexRefExt<
   /// Record reference.
   ScvIndexRecordRef<K, V, I> record(I indexKey) =>
       ScvIndexRecordRefImpl<K, V, I>(impl, impl.rawRef.record(indexKey));
-
-  /*
-  /// Schema
-  SdbIndexSchema schema({required Object keyPath, bool? unique}) {
-    return rawRef.schema(keyPath: keyPath, unique: unique);
-  }*/
 }
 
 /// Extension on index on 1 field.
@@ -257,25 +250,3 @@ class ScvIndexRefImpl<
   /// Constructor (private)
   ScvIndexRefImpl(this.store, this.rawRef);
 }
-
-/*
-/// Index reference extension.
-class ScvIndex2RefImpl<
-  K extends SdbKey,
-  V extends ScvRecord<K>,
-  I1 extends SdbIndexKey,
-  I2 extends SdbIndexKey
->
-    implements ScvIndex2Ref<K, V, I1, I2> {
-  @override
-  final ScvStoreRef<K, V> store;
-  @override
-  final SdbIndex2Ref<K, SdbModel, I1, I2> rawRef;
-
-  @override
-  String get name => rawRef.name;
-
-  /// Constructor (private)
-  ScvIndex2RefImpl(this.store, this.rawRef);
-}
-*/

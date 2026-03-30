@@ -374,9 +374,31 @@ void main() {
       var indexRecordRef = dbIntTestIndex.record(1234);
 
       var completer = Completer<ScvIndexRecord?>();
-      var subscription = indexRecordRef.onRecord(db).listen((event) {
+      var completer2 = Completer<DbTest?>();
+      var completer3 = Completer<List<ScvIndexRecord<int, DbTest, int>>>();
+      var completer4 = Completer<List<DbTest>>();
+      var subscription = indexRecordRef.onIndexRecord(db).listen((event) {
+        // print('onIndexRecord: $event');
         if (event?.record.value.v == 1234) {
           completer.complete(event);
+        }
+      });
+      var subscription2 = indexRecordRef.onObject(db).listen((event) {
+        // print('onObject: $event');
+        if (event?.value.v == 1234) {
+          completer2.complete(event);
+        }
+      });
+      var subscription3 = dbIntTestIndex.onIndexRecords(db).listen((event) {
+        // print('onIndexRecords: $event');
+        if (event.firstOrNull?.record.value.v == 1234) {
+          completer3.complete(event);
+        }
+      });
+      var subscription4 = dbIntTestIndex.onObjects(db).listen((event) {
+        // print('onObject: $event');
+        if (event.firstOrNull?.value.v == 1234) {
+          completer4.complete(event);
         }
       });
 
@@ -384,11 +406,21 @@ void main() {
       record.value.v = 1234;
       await record.put(db);
 
-      var result = await completer.future;
-      expect(result?.record, record);
-      expect(result?.key, 1);
+      var result = (await completer.future)!;
+      await completer2.future;
+      var result3 = (await completer3.future).first;
+      await completer4.future;
+      expect(result.record, record);
+      expect(result.indexKey, 1234);
+      expect(result.key, 1);
+      expect(result3.record, record);
+      expect(result3.indexKey, 1234);
+      expect(result3.key, 1);
 
       await subscription.cancel();
+      await subscription2.cancel();
+      await subscription3.cancel();
+      await subscription4.cancel();
     });
   });
   test('put/add encoded', () async {

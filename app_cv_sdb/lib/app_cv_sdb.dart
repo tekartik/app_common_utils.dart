@@ -11,15 +11,11 @@ export 'src/scv_database.dart'
         ScvOpenStoreRefExt,
         ScvOpenDatabaseExt,
         ScvDatabaseExtension;
+export 'src/scv_index_db.dart'
+    show ScvIndexRefDbExt, ScvIndexRecordKeyExt, ScvIndexRecordExt;
+export 'src/scv_index_record_db.dart' show ScvIndexRecordRefDbExt;
 export 'src/scv_index_record_ref.dart'
-    show
-        ScvIndexRecordRef,
-        ScvIndexRecordRefExt,
-        ScvIndexRecordRefDbExt,
-        ScvIndexRecordKeyExt,
-        ScvIndexRecordExt,
-        ScvIndexRecord,
-        ScvIndexRefDbExt;
+    show ScvIndexRecordRef, ScvIndexRecordRefExt, ScvIndexRecord;
 export 'src/scv_index_ref.dart'
     show
         ScvIndexRef,
