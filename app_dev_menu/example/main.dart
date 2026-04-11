@@ -18,6 +18,9 @@ void main(List<String> arguments) async {
           'RESULT prompt: ${await prompt('Some text please then [ENTER]')}',
         );
       });
+      item('dump_my_var', () async {
+        write(myVar.get());
+      });
 
       item('print hi', () {
         print('hi');
