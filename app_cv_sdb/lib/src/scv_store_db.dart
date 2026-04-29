@@ -45,6 +45,15 @@ extension ScvStoreRefDbExt<K extends SdbKey, V extends ScvRecord<K>>
   }
 
   /// Find records.
+  Future<List<K>> findRecordKeys(
+    SdbClient client, {
+    SdbFindOptions<K>? options,
+  }) async {
+    var keys = await rawRef.findRecordKeys(client, options: options);
+    return keys.map((key) => key.key).toList();
+  }
+
+  /// Find records.
   Stream<V> streamRecords(SdbClient client, {SdbFindOptions<K>? options}) {
     return rawRef.streamRecords(client, options: options).map((snapshot) {
       return snapshot.cv();
@@ -52,8 +61,10 @@ extension ScvStoreRefDbExt<K extends SdbKey, V extends ScvRecord<K>>
   }
 
   /// Track changes
-  Stream<List<V>> onRecords(SdbDatabase db) {
-    return rawRef.onSnapshots(db).map((snapshot) => snapshot.cv<V>());
+  Stream<List<V>> onRecords(SdbDatabase db, {SdbFindOptions<K>? options}) {
+    return rawRef
+        .onSnapshots(db, options: options)
+        .map((snapshot) => snapshot.cv<V>());
   }
 
   /// Find records.
