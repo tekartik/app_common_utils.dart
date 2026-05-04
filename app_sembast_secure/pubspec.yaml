@@ -15,7 +15,7 @@ dependencies:
   sembast: ">=3.7.4+3"
   path: ">=1.9.0"
   # Dependencies for encryption
-  encrypt: '>=5.0.0-0'
+  pointycastle: '>=3.7.3'
   crypto: '>=3.0.0'
 
 dev_dependencies:
