@@ -25,6 +25,7 @@ class Provider implements PagerDataProvider<int> {
   Future<List<int>> getData(int offset, int limit) async {
     actions.add(Action('getData($offset, $limit)'));
     if (debug) {
+      // ignore: avoid_print
       print('getting offset $offset limit $limit');
     }
     var remainings = count - offset;
@@ -39,6 +40,7 @@ class Provider implements PagerDataProvider<int> {
   @override
   Future<int> getItemCount() async {
     if (debug) {
+      // ignore: avoid_print
       print('getting count $count');
     }
     actions.add(Action('getItemCount()'));

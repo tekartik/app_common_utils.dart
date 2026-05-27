@@ -2,6 +2,10 @@ import 'package:rxdart/rxdart.dart';
 import 'package:tekartik_common_utils/common_utils_import.dart';
 
 final _debug = false;
+void _log(Object? message) {
+  // ignore: avoid_print
+  print(message);
+}
 
 /// Stream helpers
 extension TekartikRxStreamExt<T> on Stream<T> {
@@ -11,12 +15,12 @@ extension TekartikRxStreamExt<T> on Stream<T> {
     StreamSubscription<T>? subscription;
     late BehaviorSubject<T> subject;
     if (_debug) {
-      print('toBehaviorSubject $hashCode');
+      _log('toBehaviorSubject $hashCode');
     }
     subject = BehaviorSubject<T>(
       onListen: () {
         if (_debug) {
-          print('onListen $hashCode');
+          _log('onListen $hashCode');
         }
         subscription = listen((event) {
           subject.add(event);
@@ -24,7 +28,7 @@ extension TekartikRxStreamExt<T> on Stream<T> {
       },
       onCancel: () {
         if (_debug) {
-          print('onCancel $hashCode');
+          _log('onCancel $hashCode');
         }
         subscription?.cancel();
       },
@@ -53,7 +57,7 @@ class _BroadcastStream<T> extends Stream<T> implements BroadcastStream<T> {
     _subject = PublishSubject<T>(
       onListen: () {
         if (_debug) {
-          print('onListen $hashCode');
+          _log('onListen $hashCode');
         }
         subscription ??= stream.listen((event) {
           _subject.add(event);
@@ -61,7 +65,7 @@ class _BroadcastStream<T> extends Stream<T> implements BroadcastStream<T> {
       },
       onCancel: () {
         if (_debug) {
-          print('onCancel $hashCode');
+          _log('onCancel $hashCode');
         }
       },
       sync: true,
@@ -84,7 +88,7 @@ class _BroadcastStream<T> extends Stream<T> implements BroadcastStream<T> {
   @override
   Future<void> close() async {
     if (_debug) {
-      print('close $hashCode');
+      _log('close $hashCode');
     }
     subscription?.cancel().unawait();
     await _subject.close();
@@ -105,7 +109,7 @@ class _BroadcastValueStream<T> extends Stream<T>
     _subject = BehaviorSubject<T>(
       onListen: () {
         if (_debug) {
-          print('onListen $hashCode');
+          _log('onListen $hashCode');
         }
         subscription ??= stream.listen((event) {
           _subject.add(event);
@@ -113,7 +117,7 @@ class _BroadcastValueStream<T> extends Stream<T>
       },
       onCancel: () {
         if (_debug) {
-          print('onCancel $hashCode');
+          _log('onCancel $hashCode');
         }
       },
       sync: true,
@@ -136,7 +140,7 @@ class _BroadcastValueStream<T> extends Stream<T>
   @override
   Future<void> close() async {
     if (_debug) {
-      print('close $hashCode');
+      _log('close $hashCode');
     }
     subscription?.cancel().unawait();
     await _subject.close();

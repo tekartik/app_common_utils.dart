@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:tekartik_app_sembast/sembast.dart';
 import 'package:tekartik_app_sembast/unique_index.dart';
 

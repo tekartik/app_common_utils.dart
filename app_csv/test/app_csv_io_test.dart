@@ -32,6 +32,7 @@ void main() {
         ).writeAsString(jsonPretty(jsonEncode(data))!);
       } catch (e) {
         if (isDebug) {
+          // ignore: avoid_print
           print(e);
           rethrow;
         }

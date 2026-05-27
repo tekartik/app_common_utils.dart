@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:tekartik_app_http/app_http.dart';
 import 'package:test/test.dart';
 

@@ -27,7 +27,7 @@ Future<void> main(List<String> arguments) async {
       // Also re-order files
       await project.intlFixJson(localeList: localeList);
     } else {
-      print('no locale found');
+      stdout.writeln('no locale found');
     }
   }
 }

@@ -118,7 +118,7 @@ extension ScvRecordExtInternal<T extends ScvRecord> on T {
       }
       return keys;
     }
-    throw 'keyPath $keyPath not supported';
+    throw ArgumentError('keyPath $keyPath not supported');
   }
 
   /// return a list if keyPath is an array
@@ -164,7 +164,7 @@ extension ScvRecordExtInternal<T extends ScvRecord> on T {
         setFieldValue(keyList[i] as String, valueList[i]!);
       }
     } else {
-      throw 'keyPath $keyPath not supported';
+      throw ArgumentError('keyPath $keyPath not supported');
     }
   }
 

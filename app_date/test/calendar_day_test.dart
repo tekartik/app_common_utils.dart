@@ -22,7 +22,7 @@ void main() {
       var day = CalendarDay.today();
 
       for (var i = 0; i < 1500; i++) {
-        print(day);
+        //print(day);
         var nextDay = day.nextDay();
         expect(nextDay, isNot(day));
       }

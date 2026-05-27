@@ -96,6 +96,7 @@ void main() {
       try {
         // expect(await subject.first, 1);
       } catch (e) {
+        // ignore: avoid_print
         print(e);
       }
 

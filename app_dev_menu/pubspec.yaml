@@ -7,11 +7,11 @@ description: Simple test menu for web and io
 publish_to: none
 
 environment:
-  sdk: ^3.10.0
+  sdk: ^3.12.0
 
 dependencies:
   process_run: ">=1.2.1+1"
-  test: ">=1.24.0"
+  test: ">=1.31.0"
   tekartik_test_menu_browser:
     git:
       url: https://github.com/tekartik/test_menu.dart
@@ -30,10 +30,10 @@ dependencies:
       url: https://github.com/tekartik/test_menu.dart
       path: test_menu
 dev_dependencies:
-  dev_build: ">=1.1.2"
-  build_runner: ">=2.4.13"
+  dev_build: ">=1.1.7+3"
+  build_runner: ">=2.15.0"
   build_test: '>=0.10.2'
-  build_web_compilers: ">=4.0.11"
+  build_web_compilers: ">=4.4.19"
   tekartik_app_web_build:
     git:
       url: https://github.com/tekartik/app_web_utils.dart

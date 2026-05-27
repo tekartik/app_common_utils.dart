@@ -1,4 +1,4 @@
-// ignore_for_file: depend_on_referenced_packages
+// ignore_for_file: avoid_print, depend_on_referenced_packages
 import 'package:path/path.dart';
 import 'package:process_run/shell.dart';
 import 'package:tekartik_app_web_build/dhttpd.dart';

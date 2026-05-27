@@ -21,16 +21,16 @@ void main(List<String> arguments) {
       write('RESULT prompt: ${await prompt()}');
     });
     item('print hi', () {
-      print('hi');
+      writeln('hi');
     });
     item('crash', () {
-      throw 'crash';
+      throw StateError('crash');
     });
     menu('sub', () {
       menu('below', () {
         item('write below', () => write('below sub'));
       });
-      item('write sub', () => print('sub'));
+      item('write sub', () => writeln('sub'));
     });
     item('write 250 lines', () {
       for (var i = 1; i <= 250; i++) {

@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:tekartik_app_crypto/encrypt.dart';
 import 'package:tekartik_app_crypto/src/generate_password.dart'
     show generatePassword;

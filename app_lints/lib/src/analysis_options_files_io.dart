@@ -15,6 +15,7 @@ extension AnalysisOptionsFileIo on AnalysisOptionsFile {
       );
       this.options = options;
     } on Exception catch (e) {
+      // ignore: avoid_print
       print(e);
       rethrow;
     }

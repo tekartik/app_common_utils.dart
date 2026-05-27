@@ -20,13 +20,14 @@ void main(List<String> arguments) async {
       });
 
       item('print hi', () {
+        // ignore: avoid_print
         print('hi');
       });
       item('crash', () {
-        throw 'Hi';
+        throw StateError('crash');
       });
       menu('sub', () {
-        item('print hi', () => print('hi'));
+        item('print hi', () => writeln('hi'));
       });
     });
   });

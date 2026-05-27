@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:tekartik_app_crypto/encrypt.dart';
 import 'package:tekartik_common_utils/num_utils.dart';
 import 'package:test/test.dart';

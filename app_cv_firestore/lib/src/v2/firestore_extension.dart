@@ -126,7 +126,7 @@ class CvFirestoreTransaction extends Transaction {
     CvDocumentReference<T> ref,
     T document, [
     SetOptions? options,
-  ]) async {
+  ]) {
     refSetMap(ref, document.toMap(), options);
   }
 
@@ -135,7 +135,7 @@ class CvFirestoreTransaction extends Transaction {
     CvDocumentReference<T> ref,
     Model map, [
     SetOptions? options,
-  ]) async {
+  ]) {
     set(_firestore.doc(ref.path), map, options);
   }
 
@@ -147,7 +147,7 @@ class CvFirestoreTransaction extends Transaction {
   void refUpdate<T extends CvFirestoreDocument>(
     CvDocumentReference<T> ref,
     T document,
-  ) async {
+  ) {
     refUpdateMap(ref, document.toMap());
   }
 
@@ -155,7 +155,7 @@ class CvFirestoreTransaction extends Transaction {
   void refUpdateMap<T extends CvFirestoreDocument>(
     CvDocumentReference<T> ref,
     Model map,
-  ) async {
+  ) {
     update(ref.raw(_firestore), map);
   }
 
@@ -304,6 +304,7 @@ extension CvFirestoreDocumentReferenceExt on DocumentReference {
             // devPrint('cvOnSnapshot $converted');
           } catch (e) {
             if (isDebug) {
+              // ignore: avoid_print
               print('cvOnSnapshot.error: $e');
             }
             rethrow;
@@ -371,7 +372,7 @@ class CvFirestoreWriteBatch extends WriteBatch {
     CvDocumentReference<T> ref,
     Model map, [
     SetOptions? options,
-  ]) async {
+  ]) {
     set(ref.raw(_firestore), map, options);
   }
 

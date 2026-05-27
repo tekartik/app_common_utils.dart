@@ -29,12 +29,11 @@ class Pager<T> {
   final LruMap<int, PagerData<T>> _pageCache;
 
   Pager({
-    required PagerDataProvider<T> provider,
+    required this._provider,
     int? pageSize,
     int? cachePageCount,
     int? poolSize,
-  }) : _provider = provider,
-       _pageSize = pageSize ?? defaultPageSize,
+  }) : _pageSize = pageSize ?? defaultPageSize,
        _pageCache = LruMap<int, PagerData<T>>(
          maximumSize: cachePageCount ?? defaultCachePageCount,
        ),
