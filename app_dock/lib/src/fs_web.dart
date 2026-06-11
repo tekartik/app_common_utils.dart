@@ -10,4 +10,4 @@ String dockGetAppDataPath({String? packageName}) =>
 
 /// File system
 FileSystem dockGetAppDataFileSystem({required String packageName}) =>
-    fileSystemWeb.sandbox(path: packageName);
+    fileSystemWeb.sandbox(path: dockGetAppDataPath(packageName: packageName));

@@ -1,6 +1,4 @@
-import 'package:idb_shim/idb_client_sembast.dart';
 import 'package:idb_shim/sdb.dart';
-import 'package:sembast/sembast_io.dart';
 import 'package:tekartik_app_dock/sembast.dart';
 
 final _factories = <String, SdbFactory>{};
@@ -14,10 +12,7 @@ SdbFactory dockGetSdbFactory({String? packageName}) {
   if (packageName == null) {
     return sdbFactoryIo;
   }
-  return _factories[packageName] ??= sdbFactoryFromIdb(
-    IdbFactorySembast(
-      databaseFactoryIo,
-      dockGetAppSembastDatabasesPath(packageName: packageName),
-    ),
+  return _factories[packageName] ??= sdbFactoryIo.sandbox(
+    path: dockGetAppSembastDatabasesPath(packageName: packageName),
   );
 }
