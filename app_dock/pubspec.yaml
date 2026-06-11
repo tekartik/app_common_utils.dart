@@ -1,0 +1,38 @@
+name: tekartik_app_dock
+description: App dock (prefs, fs, sembast, sdb) for dart app (Web, VM)
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: ^3.12.0
+
+dependencies:
+  sembast: ">=3.8.9"
+  sembast_web: ">=2.4.0+3"
+  idb_shim: ">=2.9.4"
+  fs_shim: ">=2.5.2"
+  path: ">=1.9.1"
+  process_run: ">=1.2.1+1"
+  tekartik_prefs:
+    git:
+      url: https://github.com/tekartik/prefs.dart
+      path: prefs
+  tekartik_prefs_browser:
+    git:
+      url: https://github.com/tekartik/prefs.dart
+      path: prefs_browser
+    version: '>=0.1.0'
+  tekartik_prefs_sembast:
+    git:
+      url: https://github.com/tekartik/prefs.dart
+      path: prefs_sembast
+
+dev_dependencies:
+  tekartik_lints:
+    git:
+      url: https://github.com/tekartik/common.dart
+      path: packages/lints
+    version: '>=0.1.0'
+  test: ">=1.31.0"
+  dev_build: ">=1.1.7+3"
+resolution: workspace
