@@ -1,4 +1,3 @@
-import 'package:sembast/sembast_io.dart';
 import 'package:tekartik_app_dock/sembast.dart';
 
 /// Sembast database factory (io).
