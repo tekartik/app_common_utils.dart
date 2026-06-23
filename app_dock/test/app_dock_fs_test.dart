@@ -15,6 +15,11 @@ void main() {
       expect(await file.readAsString(), 'test');
       await dir.delete(recursive: true);
     });
+    test('api', () async {
+      var fs = newFileSystemMemory();
+      var dir = fs.directory(fs.path.join('test', 'fs'));
+      await dir.create(recursive: true);
+    });
     test('path helpers', () {
       expect(dockGetAppDataPath(packageName: testPackageName), isNotEmpty);
     });
