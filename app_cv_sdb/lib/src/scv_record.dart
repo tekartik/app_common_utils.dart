@@ -190,8 +190,31 @@ extension ScvRecordListExt<K extends SdbKey, V extends ScvRecord<K>>
   /// List of ifs
   List<K> get ids => map((record) => record.id).toList();
 
+  /*
   /// Map of ids to record
   Map<K, V> toMapById() {
+    return {for (var record in this) record.id: record};
+  }*/
+}
+
+/// Easy extension
+extension ScvRecordStringListExt<V extends ScvRecord<String>> on Iterable<V> {
+  /// List of ifs
+  List<String> get ids => map((record) => record.id).toList();
+
+  /// Map of ids to record
+  Map<String, V> toMapById() {
+    return {for (var record in this) record.id: record};
+  }
+}
+
+/// Easy extension
+extension ScvRecordIntListExt<V extends ScvRecord<int>> on Iterable<V> {
+  /// List of ifs
+  List<int> get ids => map((record) => record.id).toList();
+
+  /// Map of ids to record
+  Map<int, V> toMapById() {
     return {for (var record in this) record.id: record};
   }
 }

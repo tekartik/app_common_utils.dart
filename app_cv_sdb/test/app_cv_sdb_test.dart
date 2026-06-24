@@ -106,13 +106,24 @@ void main() {
       var store = scvIntStoreFactory.store<DbTest>('test');
       var record1 = store.record(1).cv();
       var record2 = store.record(2).cv();
+
       expect([record1, record2].toMap(), {1: record1, 2: record2});
     });
-    test('toMapById', () async {
+    test('int toMapById', () async {
       var store = scvIntStoreFactory.store<DbTest>('test');
       var record1 = store.record(1).cv();
       var record2 = store.record(2).cv();
-      expect([record1, record2].toMapById(), {1: record1, 2: record2});
+      // ignore: omit_local_variable_types
+      Map<int, DbTest> map = [record1, record2].toMapById();
+      expect(map, {1: record1, 2: record2});
+    });
+    test('string toMapById', () async {
+      var store = scvStringStoreFactory.store<DbStringTest>('test');
+      var record1 = store.record('1').cv();
+      var record2 = store.record('2').cv();
+      // ignore: omit_local_variable_types
+      Map<String, DbStringTest> map = [record1, record2].toMapById();
+      expect(map, {'1': record1, '2': record2});
     });
     test('toString', () {
       var record = DbUserProject()..userId.v = 1;
