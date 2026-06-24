@@ -185,9 +185,15 @@ extension ScvRecordExtInternal<T extends ScvRecord> on T {
 }
 
 /// Easy extension
-extension ScvRecordListExt<K extends SdbKey, V> on List<ScvRecord<K>> {
+extension ScvRecordListExt<K extends SdbKey, V extends ScvRecord<K>>
+    on Iterable<V> {
   /// List of ifs
   List<K> get ids => map((record) => record.id).toList();
+
+  /// Map of ids to record
+  Map<K, V> toMapById() {
+    return {for (var record in this) record.id: record};
+  }
 }
 
 /// Easy extension

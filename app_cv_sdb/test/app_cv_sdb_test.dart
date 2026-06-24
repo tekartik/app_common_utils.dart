@@ -108,6 +108,12 @@ void main() {
       var record2 = store.record(2).cv();
       expect([record1, record2].toMap(), {1: record1, 2: record2});
     });
+    test('toMapById', () async {
+      var store = scvIntStoreFactory.store<DbTest>('test');
+      var record1 = store.record(1).cv();
+      var record2 = store.record(2).cv();
+      expect([record1, record2].toMapById(), {1: record1, 2: record2});
+    });
     test('toString', () {
       var record = DbUserProject()..userId.v = 1;
       expect(record.toString(), '<null> {user_id: 1}');
