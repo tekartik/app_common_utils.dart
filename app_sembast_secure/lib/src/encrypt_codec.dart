@@ -3,6 +3,8 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:crypto/crypto.dart';
+import 'package:path/path.dart' as p;
+
 import 'package:pointycastle/export.dart';
 // ignore: implementation_imports
 import 'package:sembast/src/api/v2/sembast.dart';
@@ -200,4 +202,8 @@ class EncryptedDatabaseFactory implements DatabaseFactory {
   Future<bool> databaseExists(String path) {
     return databaseFactory.databaseExists(path);
   }
+
+  @override
+  // TODO: implement pathContext
+  p.Context get pathContext => throw UnimplementedError();
 }

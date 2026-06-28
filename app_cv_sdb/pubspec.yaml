@@ -14,7 +14,7 @@ dependencies:
     git:
       url: https://github.com/tekartik/common_utils.dart
     version: '>=1.0.0'
-  idb_shim: ">=2.9.1-1"
+  idb_shim: ">=2.9.5"
 
 dev_dependencies:
   lints: ">=6.1.0"
