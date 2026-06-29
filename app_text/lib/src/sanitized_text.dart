@@ -36,6 +36,10 @@ extension SanitizedTextExt on SanitizedText {
 }
 
 /// Helper for generating a convenient sanitized string
+/// Can be used as an id in a database. Warning that multiple text
+/// can result the same sanitized string
+///
+/// 'Héllo (world)' => 'hello_world'
 String sanitizeString(String text) {
   text = text.trim();
   text = removeDiacritics(text);
