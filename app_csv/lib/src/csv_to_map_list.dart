@@ -1,9 +1,11 @@
 import 'package:tekartik_app_csv/app_csv.dart';
 
-final csvToMapListDefaultCsvSettingsDetector = FirstOccurrenceSettingsDetector(
-  eols: ['\r\n', '\n'],
-  textDelimiters: ['"', "'"],
-);
+/// Default settings detector for CSV conversion, detecting common EOLs and text delimiters.
+final csvToMapListDefaultCsvSettingsDetector =
+    const FirstOccurrenceSettingsDetector(
+      eols: ['\r\n', '\n'],
+      textDelimiters: ['"', "'"],
+    );
 
 /// Convert a csv (with an header row) to csv
 List<Map<String, Object?>> csvToMapList(

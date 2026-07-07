@@ -3,6 +3,7 @@ export 'src/compat.dart'
         CsvToListConverter,
         FirstOccurrenceSettingsDetector,
         ListToCsvConverter;
+export 'src/csv_helpers.dart' show csvExcelCompatibilityBom;
 export 'src/csv_to_map_list.dart'
     show csvToMapList, csvToMapListDefaultCsvSettingsDetector;
 export 'src/map_list_to_csv.dart' show mapListToCsv;

@@ -44,6 +44,12 @@ test\r
           ],
         );
       });
+      test('simple with bom', () {
+        var bytes = [...csvExcelCompatibilityBom, ...utf8.encode('test\r\n1')];
+        expect(csvToMapList(utf8.decode(bytes)), [
+          {'test': '1'},
+        ]);
+      });
       test('2 lines', () {
         expect(
           csvToMapList('''
@@ -208,7 +214,7 @@ int,double,String,bool,Uint8List
 5,d’A,t’s,C,C,T,T,D,S,C
 ''';
       var converter = CsvToListConverter(
-        csvSettingsDetector: FirstOccurrenceSettingsDetector(
+        csvSettingsDetector: const FirstOccurrenceSettingsDetector(
           eols: ['\r\n', '\n'],
           textDelimiters: ['"'],
         ),
