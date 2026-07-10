@@ -77,7 +77,7 @@ extension CvFirestoreExt on Firestore {
 
   /// Add a document
   Future<T> cvGet<T extends CvFirestoreDocument>(String path) async {
-    return (await doc(path).get()).cv();
+    return (await doc(path).get()).cv<T>();
   }
 
   /// Transaction
@@ -111,7 +111,7 @@ class CvFirestoreTransaction extends Transaction {
 
   /// Returns non-null [Future] of the read data in a [DocumentSnapshot].
   Future<T> cvGet<T extends CvFirestoreDocument>(String path) async {
-    return (await get(_firestore.doc(path))).cv();
+    return (await get(_firestore.doc(path))).cv<T>();
   }
 
   /// Returns non-null [Future] of the read data in a [DocumentSnapshot].
@@ -291,7 +291,7 @@ extension CvFirestoreDocumentSnapshotExt on DocumentSnapshot {
 extension CvFirestoreDocumentReferenceExt on DocumentReference {
   /// Get a document
   Future<T> cvGet<T extends CvFirestoreDocument>() async {
-    return (await get()).cv();
+    return (await get()).cv<T>();
   }
 
   StreamTransformer<DocumentSnapshot, T>
@@ -327,7 +327,7 @@ extension CvFirestoreDocumentReferenceExt on DocumentReference {
 extension CvFirestoreDocumentSnapshotsExt on Iterable<DocumentSnapshot> {
   /// Create a list of DbRecords from a snapshot
   List<T> cv<T extends CvFirestoreDocument>() =>
-      lazy<T>((snapshot) => snapshot.cv());
+      lazy<T>((snapshot) => snapshot.cv<T>());
 }
 
 /// Easy extension
