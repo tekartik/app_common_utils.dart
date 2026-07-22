@@ -12,6 +12,7 @@ const bool debugLazyRunner = false; // devWarning(true);
 
 /// Lazy runner private extension
 @visibleForTesting
+/// Extension representing [LazyRunnerPrvExtension].
 extension LazyRunnerPrvExtension on LazyRunner {
   _LazyRunner get _self => this as _LazyRunner;
   bool get _locked => _self._lock.locked;

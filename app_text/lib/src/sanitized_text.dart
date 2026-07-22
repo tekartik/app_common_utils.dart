@@ -61,6 +61,7 @@ String sanitizeString(String text) {
 /// trimming, remove diacritics, and converting to lower case
 SanitizedText sanitizeText(String text) {
   var sanitizedString = sanitizeString(text);
+
   return SanitizedText(text: text, sanitizedString: sanitizedString);
 }
 

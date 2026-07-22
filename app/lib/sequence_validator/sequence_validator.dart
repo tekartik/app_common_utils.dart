@@ -197,6 +197,7 @@ class SequenceValidator {
       // this is the only way to cancel: wait for 1500ms
       if (diff > _cancelDiff) {
         _cancel();
+
         return validate(ellapsedMs);
       }
       // We were at the end...too bad

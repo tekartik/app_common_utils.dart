@@ -133,6 +133,7 @@ extension DbRecordDbExt<K extends RecordKeyBase, V> on DbRecord<K> {
   /// put
   Future<void> put(DatabaseClient db, {bool merge = false}) async {
     var data = await rawRef.put(db, toMap(), merge: merge);
+
     fromMap(data);
   }
 
@@ -219,7 +220,7 @@ extension DbRecordListExt<K extends RecordKeyBase, V> on List<DbRecord<K>> {
   }
 
   /*
-  /// Weird, this reads onto an existing record...
+/// Weird, this reads onto an existing record...
   Future<bool> get(DatabaseClient db) async {
 
   }*/

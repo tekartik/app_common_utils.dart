@@ -189,12 +189,14 @@ class _SingleFlight<T> implements SingleFlight<T> {
   @override
   Future<void> close() async {
     _closing = true;
+
     await wait();
   }
 }
 
 /// Extension for testing to access internal methods and state.
 @visibleForTesting
+/// Extension representing [SingleFlightTestExtension].
 extension SingleFlightTestExtension<T> on SingleFlight<T> {
   _SingleFlight<T> get _impl => this as _SingleFlight<T>;
 

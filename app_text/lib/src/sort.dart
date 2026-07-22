@@ -27,6 +27,7 @@ extension TekartikAppSortItemTextExt<T> on List<T> {
   /// Sorted list of items by text
   List<T> toSortedByTextList(
     String Function(T item) getText,
+
     int Function(String a, String b) compare,
   ) {
     var list = map((item) => _SortWrapper(item, getText(item))).toList();

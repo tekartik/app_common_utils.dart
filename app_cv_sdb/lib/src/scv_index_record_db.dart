@@ -11,6 +11,7 @@ extension ScvIndexRecordRefDbExt<
   /// Get a single record.
   Future<ScvIndexRecord<K, V, I>?> get(SdbClient client) async {
     var rawSnapshot = await impl.rawRef.get(client);
+
     return makeRecord(rawSnapshot);
   }
 
@@ -48,6 +49,7 @@ extension ScvIndexRecordRefDbExt<
     SdbFindOptions<I>? options,
   }) async {
     var rawSnapshots = await impl.rawRef.findRecords(client, options: options);
+
     return makeObjects(rawSnapshots);
   }
 

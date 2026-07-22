@@ -25,7 +25,6 @@ class QueryImpl
 
 /// Query reference strong type helper
 class CvQueryReference<T extends CvFirestoreDocument> {
-  ///
   final Query _impl;
   final CvCollectionReference<T> collectionReference;
 

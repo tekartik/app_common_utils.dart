@@ -12,6 +12,7 @@ CvFillOptions get cvSembastFillOptions1 => CvFillOptions(
     if (options.valueStart != null) {
       if (type == Timestamp) {
         var value = options.valueStart = options.valueStart! + 1;
+
         return Timestamp(value, 0);
       } else if (type == Model || type == Map) {
         var value = options.valueStart = options.valueStart! + 1;

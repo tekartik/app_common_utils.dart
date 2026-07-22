@@ -118,6 +118,7 @@ extension ScvRecordExtInternal<T extends ScvRecord> on T {
       }
       return keys;
     }
+
     throw ArgumentError('keyPath $keyPath not supported');
   }
 
@@ -159,6 +160,7 @@ extension ScvRecordExtInternal<T extends ScvRecord> on T {
       /// value must be a list
 
       final valueList = value as List<Object?>;
+
       assert(keyList.length == valueList.length);
       for (var i = 0; i < keyList.length; i++) {
         setFieldValue(keyList[i] as String, valueList[i]!);

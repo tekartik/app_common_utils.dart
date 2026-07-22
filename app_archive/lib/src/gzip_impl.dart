@@ -39,6 +39,7 @@ Uint8List gzipBytes(Uint8List bytes, {bool? noDate, int? operatingSystem}) {
   if (operatingSystem != null) {
     data[9] = operatingSystem;
   }
+
   return asUint8List(data);
 }
 

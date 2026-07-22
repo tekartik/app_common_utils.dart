@@ -78,6 +78,7 @@ extension ScvDatabaseExtension on SdbDatabase {
   Future<T> inScvStoresTransaction<T, K extends SdbKey, V extends SdbValue>(
     List<ScvStoreRef> stores,
     SdbTransactionMode mode,
+
     FutureOr<T> Function(SdbMultiStoreTransaction txn) callback,
   ) {
     return inStoresTransaction(

@@ -8,9 +8,7 @@ import 'package:sembast/src/sembast_fs.dart';
 import 'package:tekartik_app_sembast_secure/src/encrypt_codec.dart';
 import 'package:test/test.dart';
 
-///
 /// helper to read a list of string (lines)
-///
 Future<List<String>> readContent(FileSystem fs, String filePath) {
   final content = <String>[];
   return utf8.decoder

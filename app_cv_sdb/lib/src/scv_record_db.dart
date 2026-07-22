@@ -7,6 +7,7 @@ extension ScvClientInternalExt on SdbClient {
   /// Handle db or transaction.
   Future<T> scvHandleDbOrTxn<T>(
     Future<T> Function(SdbDatabase db) dbFn,
+
     Future<T> Function(SdbTransaction txn) txnFn,
   ) {
     if (this is SdbTransaction) {
@@ -20,6 +21,7 @@ extension ScvClientInternalExt on SdbClient {
   Future<T> scvHandleStoreDbOrTxn<T>(
     ScvStoreRef storeRef,
     SdbTransactionMode mode,
+
     Future<T> Function(SdbTransaction txn) txnFn,
   ) {
     return scvHandleDbOrTxn<T>(
@@ -181,6 +183,7 @@ extension ScvRecordDbExtInternal<K extends SdbKey> on ScvRecord<K> {
 
     Future<bool> add() async {
       var id = await store.add(addedValue);
+
       fromMap(addedValue);
       this.id = id;
       return true;
@@ -193,6 +196,7 @@ extension ScvRecordDbExtInternal<K extends SdbKey> on ScvRecord<K> {
     if (exists) {
       return false;
     }
+
     return add();
   }
 

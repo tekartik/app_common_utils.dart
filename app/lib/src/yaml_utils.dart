@@ -7,6 +7,7 @@ Model decodeYamlMap(String yaml) {
   if (map is! Map) {
     throw ArgumentError('Expected a YAML map, but got: $map');
   }
+
   return asModel(map);
 }
 
@@ -19,5 +20,6 @@ Model? decodeYamlMapOrNull(String? yaml) {
   if (map is! Map) {
     return null;
   }
+
   return asModel(map);
 }
