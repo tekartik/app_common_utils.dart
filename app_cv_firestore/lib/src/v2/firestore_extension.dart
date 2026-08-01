@@ -84,7 +84,7 @@ extension CvFirestoreExt on Firestore {
   Future<T> cvRunTransaction<T>(
     FutureOr<T> Function(CvFirestoreTransaction transaction) action,
   ) {
-    return runTransaction<T>((transaction) async {
+    return runTransactionSupport<T>((transaction) async {
       return action(CvFirestoreTransaction(this, transaction));
     });
   }
