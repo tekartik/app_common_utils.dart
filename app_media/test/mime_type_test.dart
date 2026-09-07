@@ -76,7 +76,7 @@ var _mimeTypeMap = {
   '.svg': 'image/svg+xml',
   '.txt': 'text/plain',
   '.webp': 'image/webp',
-  '.woff': 'application/x-font-woff',
+  '.woff': 'font/woff',
   '.woff2': 'font/woff2',
   '.wasm': 'application/wasm',
   '.pdf': 'application/pdf',
