@@ -39,11 +39,13 @@ class CvDocumentReference<T extends CvFirestoreDocument>
   Future<void> update(Firestore firestore, T document) =>
       updateMap(firestore, document.toMap());
 
-  /// Document changed
-  Stream<T> onSnapshot(Firestore firestore) =>
-      firestore.doc(path).cvOnSnapshot();
+  /// Document changed.
+  ///
+  /// Same as [onSnapshotSupport] with default options: works on a service
+  /// without track changes support too.
+  Stream<T> onSnapshot(Firestore firestore) => onSnapshotSupport(firestore);
 
-  /// Document changed
+  /// Document changed, polling if the service does not support track changes.
   Stream<T> onSnapshotSupport(
     Firestore firestore, {
     TrackChangesPullOptions? options,

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:path/path.dart';
 import 'package:tekartik_app_cv_firestore/app_cv_firestore_v2.dart';
 import 'package:tekartik_firebase_firestore_sembast/firestore_sembast.dart';
@@ -277,6 +279,59 @@ void main() {
             .cvOnSnapshotSupport<CvFsSingleString>()
             .first,
         doc,
+      );
+    });
+
+    test('onSnapshot no track changes support', () async {
+      // Fresh memory service: disable track changes support so that the plain
+      // onSnapshot calls go through the polling fallback (onSnapshotSupport).
+      firestore.service.sembastSupportsTrackChanges = false;
+      expect(firestore.service.supportsTrackChanges, isFalse);
+      expect(firestore.service.supportsRecordTrackChanges, isFalse);
+
+      var collection = CvCollectionReference<CvFsSingleString>('test');
+      var docRef = collection.doc('single_string');
+      var query = collection.query().where('text', isEqualTo: 'value');
+      var doc = docRef.cv()..text.v = 'value';
+      var doc2 = docRef.cv()..text.v = 'value2';
+
+      /// The first snapshot is read but, unlike a native onSnapshot, a later
+      /// write is not seen before the (long) default refresh delay.
+      Future<void> checkPolling<E>(Stream<E> stream, E expectedFirst) async {
+        await firestore.cvSet(doc);
+        var events = <E>[];
+        var firstCompleter = Completer<void>();
+        var subscription = stream.listen((event) {
+          events.add(event);
+          if (!firstCompleter.isCompleted) {
+            firstCompleter.complete();
+          }
+        });
+        try {
+          await firstCompleter.future.timeout(const Duration(seconds: 5));
+          expect(events, [expectedFirst]);
+          await firestore.cvSet(doc2);
+          await Future<void>.delayed(const Duration(milliseconds: 300));
+          expect(events, [expectedFirst], reason: 'polling, not notified');
+        } finally {
+          await subscription.cancel();
+        }
+      }
+
+      // Document
+      await checkPolling(docRef.onSnapshot(firestore), doc);
+      // Collection
+      await checkPolling(collection.onSnapshots(firestore), [doc]);
+      // Query
+      await checkPolling(query.onSnapshots(firestore), [doc]);
+      // Raw extensions
+      await checkPolling(
+        firestore.doc(doc.path).cvOnSnapshot<CvFsSingleString>(),
+        doc,
+      );
+      await checkPolling(
+        firestore.collection(collection.path).cvOnSnapshots<CvFsSingleString>(),
+        [doc],
       );
     });
 

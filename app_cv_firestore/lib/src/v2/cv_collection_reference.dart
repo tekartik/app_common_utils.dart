@@ -68,11 +68,15 @@ extension CvCollectionReferenceExtension<T extends CvFirestoreDocument>
   Future<List<T>> get(Firestore firestore) =>
       firestore.collection(path).cvGet();
 
-  /// Get a list of document
+  /// Collection changed.
+  ///
+  /// Same as [onSnapshotsSupport] with default options: works on a service
+  /// without track changes support too.
   Stream<List<T>> onSnapshots(Firestore firestore) =>
-      firestore.collection(path).cvOnSnapshots();
+      onSnapshotsSupport(firestore);
 
-  /// Document changed
+  /// Collection changed, polling if the service does not support track
+  /// changes.
   Stream<List<T>> onSnapshotsSupport(
     Firestore firestore, {
     TrackChangesPullOptions? options,

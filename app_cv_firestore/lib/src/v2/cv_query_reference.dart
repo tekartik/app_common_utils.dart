@@ -59,40 +59,16 @@ class CvQueryReference<T extends CvFirestoreDocument> {
   }
 
   @Deprecated('User onSnapshots instead')
-  Stream<List<T>> onSnapshot(Firestore firestore) => onSnapshot(firestore);
+  Stream<List<T>> onSnapshot(Firestore firestore) => onSnapshots(firestore);
 
-  /// query snapshots
-  Stream<List<T>> onSnapshots(Firestore firestore) {
-    final lock = Lock();
-    StreamSubscription? streamSubscription;
-    var done = false;
-    late StreamController<List<T>> ctlr;
-    ctlr = StreamController<List<T>>(
-      onListen: () {
-        lock.synchronized(() async {
-          var query = await applyQueryInfo(
-            firestore,
-            collectionReference.path,
-            _queryInfo,
-          );
-          streamSubscription = query.cvOnSnapshots<T>().listen((event) {
-            if (!done) {
-              ctlr.add(event);
-            }
-          });
-        });
-      },
-      onCancel: () {
-        done = true;
-        lock.synchronized(() {
-          streamSubscription?.cancel();
-        });
-      },
-    );
-    return ctlr.stream;
-  }
+  /// Query snapshots.
+  ///
+  /// Same as [onSnapshotsSupport] with default options: works on a service
+  /// without track changes support too.
+  Stream<List<T>> onSnapshots(Firestore firestore) =>
+      onSnapshotsSupport(firestore);
 
-  /// query snapshots
+  /// Query snapshots, polling if the service does not support track changes.
   Stream<List<T>> onSnapshotsSupport(
     Firestore firestore, {
     TrackChangesPullOptions? options,

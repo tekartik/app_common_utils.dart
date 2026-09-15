@@ -222,15 +222,15 @@ extension CvFirestoreQueryExt on Query {
     return querySnapshot.cv<T>();
   }
 
+  /// Query snapshots.
+  ///
+  /// Uses [onSnapshotSupport] so that it also works on a service without
+  /// track changes support (same as [cvOnSnapshotsSupport] with default
+  /// options).
   Stream<List<T>> cvOnSnapshots<T extends CvFirestoreDocument>() =>
-      onSnapshot().transform(
-        StreamTransformer.fromHandlers(
-          handleData: (data, sink) {
-            sink.add(data.docs.cv<T>());
-          },
-        ),
-      );
+      cvOnSnapshotsSupport<T>();
 
+  /// Query snapshots, polling if the service does not support track changes.
   Stream<List<T>> cvOnSnapshotsSupport<T extends CvFirestoreDocument>({
     TrackChangesPullOptions? options,
   }) => onSnapshotSupport(options: options).transform(
@@ -312,11 +312,15 @@ extension CvFirestoreDocumentReferenceExt on DocumentReference {
         },
       );
 
-  /// on snapshots
+  /// Document snapshots.
+  ///
+  /// Uses [onSnapshotSupport] so that it also works on a service without
+  /// track changes support (same as [cvOnSnapshotSupport] with default
+  /// options).
   Stream<T> cvOnSnapshot<T extends CvFirestoreDocument>() =>
-      onSnapshot().transform(_snapshotTransformer<T>());
+      cvOnSnapshotSupport<T>();
 
-  /// on snapshots
+  /// Document snapshots, polling if the service does not support track changes.
   Stream<T> cvOnSnapshotSupport<T extends CvFirestoreDocument>({
     TrackChangesPullOptions? options,
   }) =>
