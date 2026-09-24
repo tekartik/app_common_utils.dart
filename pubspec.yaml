@@ -34,3 +34,4 @@ workspace:
   - app_dock
   - app_text
   - app_cv_sdb
+  - app_web_scrapper
