@@ -1,3 +1,7 @@
+## 0.1.1
+
+- Add `WebScrapper.stop()` and `WebScrapperResult.stopped`.
+
 ## 0.1.0
 
 - Initial version: `WebScrapper` (html, css, javascript imports, optional

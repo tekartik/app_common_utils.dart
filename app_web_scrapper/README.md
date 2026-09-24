@@ -116,3 +116,5 @@ client factory, content handler and output (see `test/cli_test.dart`).
   download again.
 - Failures (http status, network, `onContent` exceptions) are reported as
   failed entries, never thrown.
+- `stop()` stops a run: no new request, `run()` completes once the requests
+  in progress are done with `WebScrapperResult.stopped` set.

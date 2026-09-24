@@ -202,8 +202,13 @@ class WebScrapperResult {
   /// Processed urls in completion order.
   final List<WebScrapperEntry> entries;
 
-  /// Creates a result from its [entries].
-  WebScrapperResult(this.entries);
+  /// True if the run was stopped by [WebScrapper.stop] before every url was
+  /// processed.
+  final bool stopped;
+
+  /// Creates a result from its [entries], [stopped] (false by default) tells
+  /// whether the run was stopped.
+  WebScrapperResult(this.entries, {this.stopped = false});
 
   /// Entries with [WebScrapperEntryStatus.downloaded].
   Iterable<WebScrapperEntry> get downloaded =>
@@ -219,7 +224,8 @@ class WebScrapperResult {
   @override
   String toString() =>
       '${entries.length} urls: ${downloaded.length} downloaded, '
-      '${cached.length} cached, ${failed.length} failed';
+      '${cached.length} cached, ${failed.length} failed'
+      '${stopped ? ', stopped' : ''}';
 }
 
 /// Static web site scrapper.
@@ -274,13 +280,34 @@ class WebScrapper {
     }
   }
 
-  /// Scraps the site, returns when every url has been processed.
+  final _runs = <_WebScrapperRun>{};
+
+  /// Scraps the site, returns when every url has been processed (or after
+  /// [stop]).
   ///
   /// Http, network, file system and [WebScrapperOptions.onContent] errors
   /// are reported as failed entries; only an error thrown by
   /// [WebScrapperOptions.onEntry] aborts the run (the returned future then
   /// completes with it).
-  Future<WebScrapperResult> run() => _WebScrapperRun(this).run();
+  Future<WebScrapperResult> run() async {
+    final run = _WebScrapperRun(this);
+    _runs.add(run);
+    try {
+      return await run.run();
+    } finally {
+      _runs.remove(run);
+    }
+  }
+
+  /// Stops the current runs: no new url is requested, [run] completes once
+  /// the requests in progress are done, with [WebScrapperResult.stopped] set.
+  ///
+  /// Does nothing when no run is in progress.
+  void stop() {
+    for (final run in _runs) {
+      run.stop();
+    }
+  }
 }
 
 class _Item {
@@ -320,6 +347,7 @@ class _WebScrapperRun {
   final _hosts = <String>{};
   final _entries = <WebScrapperEntry>[];
   var _queuedCount = 0;
+  var _stopped = false;
   late http.Client _client;
 
   _WebScrapperRun(this.scrapper)
@@ -342,12 +370,20 @@ class _WebScrapperRun {
     } finally {
       _client.close();
     }
-    return WebScrapperResult(_entries);
+    return WebScrapperResult(_entries, stopped: _stopped);
+  }
+
+  void stop() {
+    _stopped = true;
+    _queue.clear();
   }
 
   bool _isInternal(Uri uri) => _hosts.contains(_hostKey(uri));
 
   void _enqueue(_Item item) {
+    if (_stopped) {
+      return;
+    }
     final maxFiles = options.maxFiles;
     if (maxFiles != null && _queuedCount >= maxFiles) {
       return;

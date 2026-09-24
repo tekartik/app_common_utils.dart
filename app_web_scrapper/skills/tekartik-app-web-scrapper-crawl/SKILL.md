@@ -8,7 +8,7 @@ description: >-
   scanStrings, hosts, filter, maxFiles, concurrency, delay, force, headers,
   localPath, onContent, onEntry), WebScrapperContent (text, document,
   headers, readBytes, links), WebScrapperEntry, WebScrapperLinkExtractor,
-  webScrapperDefaultLocalPath, and the web_scrapper command line
+  webScrapperDefaultLocalPath, WebScrapper.stop, and the web_scrapper command line
   (webScrapperMain, WebScrapperCli) from app_web_scrapper_cli.dart.
 ---
 
@@ -44,7 +44,9 @@ fs_shim `Directory` as `<host>/<path>`. Pure Dart (fs_shim + tekartik_app_http
   to `htmlProviderHtml5Lib`. `run()` returns a `WebScrapperResult`; every
   failure (http status, network, file, `onContent` exception) is a failed
   `WebScrapperEntry` (`statusCode`, `error`, `referrer`), only an `onEntry`
-  exception aborts the run.
+  exception aborts the run. `scrapper.stop()` (i.e. from `onEntry`, a timer
+  or a key press) stops the run: no new request, `run()` completes once the
+  requests in progress are done, with `result.stopped` true.
 * Depth: start urls are depth 0; page links (`<a>`, `<area>`, meta refresh)
   add 1 and stop past `maxDepth`; resources (images, css, scripts, fonts,
   iframes, js imports) keep the depth of their referrer, so `maxDepth: 0`

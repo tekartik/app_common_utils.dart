@@ -352,6 +352,36 @@ void main() {
     expect(site.requests, isNot(contains('/sub/page2.html')));
   });
 
+  test('stop', () async {
+    late WebScrapper scrapper;
+    scrapper = WebScrapper(
+      startUris: [site.uri],
+      outDirectory: out,
+      httpClientFactory: httpClientFactoryMemory,
+      options: WebScrapperOptions(
+        concurrency: 1,
+        onEntry: (entry) {
+          if (entry.uri.path == '/style.css') {
+            scrapper.stop();
+          }
+        },
+      ),
+    );
+    final result = await scrapper.run();
+    expect(result.stopped, isTrue);
+    expect(result.entries.map((entry) => entry.uri.path), ['/', '/style.css']);
+    expect(result.toString(), endsWith(', stopped'));
+    // Stopping when idle does nothing, a new run is complete.
+    scrapper.stop();
+    final next = await WebScrapper(
+      startUris: [site.uri],
+      outDirectory: out,
+      httpClientFactory: httpClientFactoryMemory,
+    ).run();
+    expect(next.stopped, isFalse);
+    expect(next.entries.length, defaultSitePaths.length + 1);
+  });
+
   test('invalid start url', () {
     expect(
       () => WebScrapper(startUris: [Uri.parse('ftp://example.com')]),
