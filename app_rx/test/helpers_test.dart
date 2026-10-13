@@ -117,5 +117,53 @@ void main() {
       // ignore: unnecessary_statements
       BroadcastValueStream;
     });
+    test('broadcast streams are broadcast', () async {
+      var stream = Stream.fromIterable([1]).toBroadcastStream();
+      var valueStream = Stream.fromIterable([1]).toBroadcastValueStream();
+      expect(stream.isBroadcast, isTrue);
+      expect(valueStream.isBroadcast, isTrue);
+      await stream.close();
+      await valueStream.close();
+    });
+    for (var valueStream in [false, true]) {
+      test('forward error and done (value stream: $valueStream)', () async {
+        var source = StreamController<int>();
+        late Stream<int> stream;
+        late Future<void> Function() close;
+        if (valueStream) {
+          var broadcast = source.stream.toBroadcastValueStream();
+          stream = broadcast;
+          close = broadcast.close;
+        } else {
+          var broadcast = source.stream.toBroadcastStream();
+          stream = broadcast;
+          close = broadcast.close;
+        }
+        var values = <int>[];
+        var errors = <Object>[];
+        var done = Completer<void>();
+        stream.listen(
+          values.add,
+          onError: errors.add,
+          onDone: () => done.complete(),
+        );
+        source.add(1);
+        source.addError(StateError('boom'));
+        await source.close();
+        await done.future;
+        expect(values, [1]);
+        expect(errors, [isA<StateError>()]);
+        if (stream is BroadcastValueStream<int>) {
+          expect(stream.hasError, isTrue);
+        }
+        await close();
+      });
+    }
+    test('value stream late listener after source done', () async {
+      var stream = Stream.fromIterable([1, 2]).toBroadcastValueStream();
+      expect(await stream.toList(), [1, 2]);
+      expect(stream.value, 2);
+      await stream.close();
+    });
   });
 }

@@ -50,26 +50,29 @@ abstract class BroadcastStream<T> extends Stream<T> {
   Future<void> close();
 }
 
-class _BroadcastStream<T> extends Stream<T> implements BroadcastStream<T> {
-  StreamSubscription<T>? subscription;
-  late final PublishSubject<T> _subject;
-  _BroadcastStream(Stream<T> stream) {
-    _subject = PublishSubject<T>(
-      onListen: () {
-        if (_debug) {
-          _log('onListen $hashCode');
-        }
-        subscription ??= stream.listen((event) {
-          _subject.add(event);
-        });
+/// Common implementation: [_subject] listens to the source stream on its
+/// first listener and forwards its data, errors and done.
+abstract class _SubjectBroadcastStream<T> extends Stream<T> {
+  Subject<T> get _subject;
+  StreamSubscription<T>? _subscription;
+
+  void _onListen(Stream<T> stream) {
+    if (_debug) {
+      _log('onListen $hashCode');
+    }
+    _subscription ??= stream.listen(
+      _subject.add,
+      onError: _subject.addError,
+      onDone: () {
+        _subject.close().unawait();
       },
-      onCancel: () {
-        if (_debug) {
-          _log('onCancel $hashCode');
-        }
-      },
-      sync: true,
     );
+  }
+
+  void _onCancel() {
+    if (_debug) {
+      _log('onCancel $hashCode');
+    }
   }
 
   @override
@@ -85,13 +88,28 @@ class _BroadcastStream<T> extends Stream<T> implements BroadcastStream<T> {
     cancelOnError: cancelOnError,
   );
 
-  @override
   Future<void> close() async {
     if (_debug) {
       _log('close $hashCode');
     }
-    subscription?.cancel().unawait();
+    _subscription?.cancel().unawait();
     await _subject.close();
+  }
+
+  @override
+  bool get isBroadcast => _subject.isBroadcast;
+}
+
+class _BroadcastStream<T> extends _SubjectBroadcastStream<T>
+    implements BroadcastStream<T> {
+  @override
+  late final PublishSubject<T> _subject;
+  _BroadcastStream(Stream<T> stream) {
+    _subject = PublishSubject<T>(
+      onListen: () => _onListen(stream),
+      onCancel: _onCancel,
+      sync: true,
+    );
   }
 }
 
@@ -100,54 +118,18 @@ abstract class BroadcastValueStream<T> extends ValueStream<T> {
   Future<void> close();
 }
 
-class _BroadcastValueStream<T> extends Stream<T>
+class _BroadcastValueStream<T> extends _SubjectBroadcastStream<T>
     implements BroadcastValueStream<T> {
+  @override
   late final BehaviorSubject<T> _subject;
-  StreamSubscription<T>? subscription;
 
   _BroadcastValueStream(Stream<T> stream) {
     _subject = BehaviorSubject<T>(
-      onListen: () {
-        if (_debug) {
-          _log('onListen $hashCode');
-        }
-        subscription ??= stream.listen((event) {
-          _subject.add(event);
-        });
-      },
-      onCancel: () {
-        if (_debug) {
-          _log('onCancel $hashCode');
-        }
-      },
+      onListen: () => _onListen(stream),
+      onCancel: _onCancel,
       sync: true,
     );
   }
-
-  @override
-  StreamSubscription<T> listen(
-    void Function(T event)? onData, {
-    Function? onError,
-    void Function()? onDone,
-    bool? cancelOnError,
-  }) => _subject.listen(
-    onData,
-    onError: onError,
-    onDone: onDone,
-    cancelOnError: cancelOnError,
-  );
-
-  @override
-  Future<void> close() async {
-    if (_debug) {
-      _log('close $hashCode');
-    }
-    subscription?.cancel().unawait();
-    await _subject.close();
-  }
-
-  @override
-  bool get isBroadcast => _subject.isBroadcast;
 
   @override
   Object get error => _subject.error;

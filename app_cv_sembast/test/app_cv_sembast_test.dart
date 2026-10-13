@@ -68,6 +68,23 @@ void main() {
       record2 = store2.record(1);
       expect(record1, isNot(record2));
     });
+    test('records ref', () async {
+      var store = dbIntStoreFactory.store<DbTest>('test');
+      var records = store.records([1, 2]);
+      expect(records, store.records([1, 2]));
+      expect(records.hashCode, store.records([1, 2]).hashCode);
+      expect(records, isNot(store.records([1, 2, 3])));
+      expect(records, isNot(store.records([1])));
+      expect(records, isNot(store.records([2, 1])));
+      expect(
+        records,
+        isNot(dbIntStoreFactory.store<DbTest>('other').records([1, 2])),
+      );
+      expect({
+        records,
+        store.records([1, 2]),
+      }, hasLength(1));
+    });
     test('int.ref', () async {
       var store = dbIntStoreFactory.store<DbTest>('store');
       var record = store.record(1);
@@ -143,8 +160,8 @@ void main() {
       expect(allFields.toMap(), {
         'int': 1,
         'double': 2.5,
-        'bool': 3.5,
-        'string': 4.5,
+        'bool': false,
+        'string': 'text_4',
         'timestamp': Timestamp.parse('1970-01-01T00:00:05.000Z'),
         'intList': [6],
         'model': {'value': 7},
@@ -158,8 +175,8 @@ void main() {
       expect(allFields.toJsonEncodable(), {
         'int': 1,
         'double': 2.5,
-        'bool': 3.5,
-        'string': 4.5,
+        'bool': false,
+        'string': 'text_4',
         'timestamp': {'@Timestamp': '1970-01-01T00:00:05.000Z'},
         'intList': [6],
         'model': {'value': 7},
@@ -208,8 +225,8 @@ void main() {
 class CvDbAllFields extends DbIntRecordBase {
   final intValue = CvField<int>('int');
   final doubleValue = CvField<double>('double');
-  final boolValue = CvField<double>('bool');
-  final stringValue = CvField<double>('string');
+  final boolValue = CvField<bool>('bool');
+  final stringValue = CvField<String>('string');
   final timestampValue = CvField<Timestamp>('timestamp');
   final intListValue = CvListField<int>('intList');
   final model = CvModelField<DbStringTest>('model');

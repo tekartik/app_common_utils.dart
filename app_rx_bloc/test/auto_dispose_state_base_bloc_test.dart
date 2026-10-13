@@ -12,7 +12,7 @@ class OuterBloc extends AutoDisposeStateBaseBloc<String> {
 }
 
 void main() {
-  group('auto_dispose_base_bloc', () {
+  group('auto_dispose_state_base_bloc', () {
     test('disposed', () {
       var bloc = TestBloc();
       expect(bloc.disposed, isFalse);

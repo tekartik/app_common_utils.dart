@@ -140,14 +140,14 @@ extension ScvIndex2RefExt<
     I1 value1,
     I2 value2, {
     bool? include = true,
-  }) => rawRef1.lowerBoundary((value1, value2), include: include);
+  }) => SdbLowerBoundary((value1, value2), include: include);
 
   /// Upper boundary
   SdbBoundary<(I1, I2)> upperBoundary(
     I1 value1,
     I2 value2, {
     bool? include = false,
-  }) => rawRef1.upperBoundary((value1, value2), include: include);
+  }) => SdbUpperBoundary((value1, value2), include: include);
 
   /// Schema
   SdbIndexSchema schema({required List<String> keyPath, bool? unique}) {
@@ -180,7 +180,7 @@ extension ScvIndex3RefExt<
     I2 value2,
     I3 value3, {
     bool? include = true,
-  }) => rawRef1.lowerBoundary((value1, value2, value3), include: include);
+  }) => SdbLowerBoundary((value1, value2, value3), include: include);
 
   /// Upper boundary
   SdbBoundary<(I1, I2, I3)> upperBoundary(
@@ -188,7 +188,7 @@ extension ScvIndex3RefExt<
     I2 value2,
     I3 value3, {
     bool? include = false,
-  }) => rawRef1.upperBoundary((value1, value2, value3), include: include);
+  }) => SdbUpperBoundary((value1, value2, value3), include: include);
 
   /// Schema
   SdbIndexSchema schema({required List<String> keyPath, bool? unique}) {

@@ -31,6 +31,41 @@ extension ScvClientInternalExt on SdbClient {
   }
 }
 
+/// Put helper handling in-line keys.
+extension _ScvTransactionStoreRefExt<K extends SdbKey>
+    on SdbTransactionStoreRef<K, Model> {
+  /// Put [value] at [key].
+  ///
+  /// For a store with a key path, sdb refuses an explicit key: the key is set
+  /// in a copy of [value] instead.
+  Future<void> scvPut(K key, Model value) {
+    var keyPath = this.keyPath;
+    if (keyPath == null) {
+      return put(key, value);
+    }
+    var inlineValue = Map<String, Object?>.of(value)
+      ..setKeyValue(
+        keyPath.isSingle ? keyPath.keyPaths.first : keyPath.keyPaths,
+        key,
+      );
+    return put(null, inlineValue);
+  }
+}
+
+/// Copy of [value] with [ref], its key field set for a store with a key path.
+V _scvRecordWithRef<K extends SdbKey, V extends ScvRecord<K>>(
+  SdbTransactionStoreRef<K, Model> store,
+  ScvRecordRef<K, V> ref,
+  V value,
+) {
+  var record = value.scvClone()..ref = ref;
+  var keyPath = store.keyPath;
+  if (keyPath != null) {
+    record.setKeyValue(keyPath, ref.key);
+  }
+  return record;
+}
+
 /// Helper extension.
 extension ScvRecordRefDbExt<K extends SdbKey, V extends ScvRecord<K>>
     on ScvRecordRef<K, V> {
@@ -85,8 +120,9 @@ extension ScvRecordRefDbExtInternal<K extends SdbKey, V extends ScvRecord<K>>
 
   /// Put a single record.
   Future<V> txnPutImpl(SdbTransaction txn, V value) async {
-    await txn.store(rawRef.store).put(key, value.toDbMap());
-    var record = value.scvClone()..ref = this;
+    var store = txn.store(rawRef.store);
+    var record = _scvRecordWithRef(store, this, value);
+    await store.scvPut(key, record.toDbMap());
     return record;
   }
 
@@ -105,8 +141,8 @@ extension ScvRecordRefDbExtInternal<K extends SdbKey, V extends ScvRecord<K>>
     if (await store.exists(key)) {
       throw StateError('Record already exists');
     }
-    await store.put(key, value.toDbMap());
-    var record = value.scvClone()..ref = this;
+    var record = _scvRecordWithRef(store, this, value);
+    await store.scvPut(key, record.toDbMap());
     return record;
   }
 }
@@ -115,8 +151,11 @@ extension ScvRecordRefDbExtInternal<K extends SdbKey, V extends ScvRecord<K>>
 extension ScvRecordDbExt<K extends SdbKey, V> on ScvRecord<K> {
   /// put
   Future<void> put(SdbClient db) async {
-    await rawRef.put(db, toMap());
-    //fromMap(data);
+    await db.scvHandleStoreDbOrTxn<void>(
+      ref.store,
+      SdbTransactionMode.readWrite,
+      (txn) => txnPutImpl(txn),
+    );
   }
 
   /// Update inner data.
@@ -163,7 +202,21 @@ extension ScvRecordDbExtInternal<K extends SdbKey> on ScvRecord<K> {
     if (keyPath == null) {
       return idOrNull;
     }
-    return idOrNull ?? (value.getKeyValue(keyPath) as K?);
+    return idOrNull ??
+        (value.getKeyValue(
+              keyPath.isSingle ? keyPath.keyPaths.first : keyPath.keyPaths,
+            )
+            as K?);
+  }
+
+  /// Put a single record (its key field set for a store with a key path).
+  Future<void> txnPutImpl(SdbTransaction txn) async {
+    var store = txn.store(rawRef.store);
+    var keyPath = store.keyPath;
+    if (keyPath != null) {
+      setKeyValue(keyPath, id);
+    }
+    await store.scvPut(id, toDbMap());
   }
 
   /// Add a single record.
@@ -181,23 +234,28 @@ extension ScvRecordDbExtInternal<K extends SdbKey> on ScvRecord<K> {
     var store = txn.store(rawRef.store);
     var id = _idOrNull(txn, store: store, value: addedValue);
 
-    Future<bool> add() async {
-      var id = await store.add(addedValue);
-
+    void setAdded(K id) {
       fromMap(addedValue);
       this.id = id;
-      return true;
+      var keyPath = store.keyPath;
+      if (keyPath != null) {
+        setKeyValue(keyPath, id);
+      }
     }
 
     if (id == null) {
-      return await add();
+      // Generated key.
+      setAdded(await store.add(addedValue));
+      return true;
     }
     var exists = await store.exists(id);
     if (exists) {
       return false;
     }
-
-    return add();
+    // Keep the record key (store.add would generate a new one).
+    await store.scvPut(id, addedValue);
+    setAdded(id);
+    return true;
   }
 
   /// Put a single record.
@@ -216,11 +274,12 @@ extension ScvRecordDbExtInternal<K extends SdbKey> on ScvRecord<K> {
     if (id == null) {
       throw StateError('Missing id');
     }
-    var exists = await txn.store(rawRef.store).exists(id);
+    var store = txn.store(rawRef.store);
+    var exists = await store.exists(id);
     if (!exists) {
       return false;
     }
-    await txn.store(rawRef.store).put(id, value);
+    await store.scvPut(id, value);
     return true;
   }
 

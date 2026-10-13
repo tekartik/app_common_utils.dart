@@ -10,11 +10,10 @@ Future<void> main(List<String> arguments) async {
 
   var result = parser.parse(arguments);
   if (result['help'] as bool) {
-    stdout.writeln(
-      'Create or recreate a project in the command line for a given platform',
-    );
-    stdout.writeln('create_project_and_checkout_from_git [<dir>]');
+    stdout.writeln('Re-order the assets/i18n json files');
+    stdout.writeln('fix_i18n_text_order [<dir>...]');
     stdout.writeln(parser.usage);
+    return;
   }
   var rest = result.rest;
   if (rest.isEmpty) {

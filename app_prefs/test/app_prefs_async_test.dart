@@ -2,7 +2,7 @@ import 'package:tekartik_app_common_prefs/app_prefs_async.dart';
 import 'package:test/test.dart';
 
 void main() async {
-  group('app_prefs_sync', () {
+  group('app_prefs_async', () {
     test('default', () async {
       var prefs = await prefsAsyncFactory.openPreferences('test_prefs.db');
       var value = await prefs.getInt('value') ?? 0;

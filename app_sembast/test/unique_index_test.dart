@@ -36,6 +36,29 @@ void main() {
       expect((await dbIndex.record(2).getSnapshot())!.key, 1);
     });
 
+    test('index record add/put create the record', () async {
+      var store = intMapStoreFactory.store('store');
+      var dbIndex = db.index(store.index<int>('key'));
+
+      var pk = await dbIndex.record(5).add({'v': 1});
+      expect(pk, isNotNull);
+      expect((await store.record(pk!).get(db)), {'v': 1, 'key': 5});
+      expect((await dbIndex.record(5).getSnapshot())!.key, pk);
+      // Existing, not added
+      expect(await dbIndex.record(5).add({'v': 2}), isNull);
+
+      expect(await dbIndex.record(6).put({'v': 1}), {'v': 1, 'key': 6});
+      expect((await dbIndex.record(6).getSnapshot())!.value, {
+        'v': 1,
+        'key': 6,
+      });
+      expect(await dbIndex.record(6).put({'v': 2}, merge: true), {
+        'v': 2,
+        'key': 6,
+      });
+      expect(await store.count(db), 2);
+    });
+
     test('index throw', () async {
       var store = intMapStoreFactory.store('store');
       var index = store.index<int>('key');

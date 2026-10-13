@@ -316,23 +316,16 @@ class DbRecordsRef<K extends RecordKeyBase, V extends DbRecord<K>> {
   }
 
   @override
-  int get hashCode => keys.length;
+  int get hashCode => Object.hash(store, Object.hashAll(keys));
 
   @override
   String toString() => 'CvRecordsRef(${store.name}, ${logTruncateAny(keys)})';
 
+  /// Same store and same keys.
   @override
   bool operator ==(Object other) {
-    if (other is List<DbRecordRef>) {
-      for (var i = 0; i < keys.length; i++) {
-        if (other[i].store != store) {
-          return false;
-        }
-        if (other[i].key != keys[i]) {
-          return false;
-        }
-      }
-      return true;
+    if (other is DbRecordsRef) {
+      return other.store == store && listEquals<Object?>(other.keys, keys);
     }
     return false;
   }

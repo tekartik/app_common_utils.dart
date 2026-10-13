@@ -14,9 +14,11 @@ class CalendarDay implements Comparable<CalendarDay> {
     assert(dateTime.isUtc);
     _dateTime = DateTime.utc(dateTime.year, dateTime.month, dateTime.day);
   }
+
+  /// The day of a local [dateTime] (stored in UTC like the others).
   CalendarDay.fromLocalDateTime(DateTime dateTime) {
     assert(!dateTime.isUtc);
-    _dateTime = DateTime(dateTime.year, dateTime.month, dateTime.day);
+    _dateTime = DateTime.utc(dateTime.year, dateTime.month, dateTime.day);
   }
 
   /// From '2000-01-01'
@@ -25,7 +27,7 @@ class CalendarDay implements Comparable<CalendarDay> {
     if (dateTime != null) {
       _dateTime = DateTime.utc(dateTime.year, dateTime.month, dateTime.day);
     } else {
-      throw ArgumentError('$text $_dateTime');
+      throw ArgumentError.value(text, 'text', 'invalid calendar day');
     }
   }
 
@@ -35,7 +37,7 @@ class CalendarDay implements Comparable<CalendarDay> {
     if (dateTime != null) {
       _dateTime = DateTime.utc(dateTime.year, dateTime.month, dateTime.day);
     } else {
-      throw ArgumentError('CalendarDay(test: $text, dateTime: $dateTime)');
+      throw ArgumentError('CalendarDay(text: $text, dateTime: $dateTime)');
     }
   }
 

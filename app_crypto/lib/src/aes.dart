@@ -12,7 +12,10 @@ String encryptTextPassword16FromText(String password) {
   ).substring(0, 16);
 }
 
-/// aes encrypted using any password (use MD5), random data prepended
+/// aes encrypted using [password] as the key, random data (the IV) prepended.
+///
+/// [password] is used as is (no MD5): it must be 16, 24 or 32 characters
+/// (utf8 bytes), see [encryptTextPassword16FromText] to get one from any text.
 StringEncrypter aesEncrypterFromPassword(String password) {
   return _AesStringEncrypter(_aesEncrypterFromPassword(password));
 }

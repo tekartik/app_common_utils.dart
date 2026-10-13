@@ -286,10 +286,10 @@ void main() {
       expect(dbRecord.idOrNull, isNull);
       expect(dbRecord.recId.v, isNull);
       var readRecord = await dbStore.record(addedRecord.id).get(db);
-      expect(contentAndKeyEquals(addedRecord, readRecord), isNotNull);
+      checkContentAndKeyEquals(addedRecord, readRecord);
       var firstReadRecord =
           (await dbStore.records([addedRecord.id]).getObjects(db)).first;
-      expect(contentAndKeyEquals(addedRecord, firstReadRecord), isNotNull);
+      checkContentAndKeyEquals(addedRecord, firstReadRecord);
     });
 
     test('string with id store', () async {
@@ -307,7 +307,7 @@ void main() {
       expect(dbRecord.idOrNull, isNull);
 
       var readRecord = await dbStore.record(addedRecord.id).get(db);
-      expect(contentAndKeyEquals(addedRecord, readRecord), isNotNull);
+      checkContentAndKeyEquals(addedRecord, readRecord);
     });
   });
   group('index', () {
@@ -478,10 +478,10 @@ void main() {
           var record = await recordRef.add(txn, DbTest()..value.v = 1234);
           expect(record.idOrNull, isNotNull);
           var readRecord = await recordRef.get(txn);
-          expect(contentAndKeyEquals(record, readRecord), isNotNull);
+          checkContentAndKeyEquals(record, readRecord);
           var ref = dbIntTestIndex.record(1234);
           var indexRecord = (await ref.get(db))!;
-          expect(contentAndKeyEquals(record, indexRecord.record), isNotNull);
+          checkContentAndKeyEquals(record, indexRecord.record);
         },
       );
     });

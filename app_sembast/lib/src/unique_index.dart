@@ -296,6 +296,9 @@ class _SembastDatabaseUniqueIndex<K, PK> implements DatabaseIndex<K, PK> {
   Future<bool> _clientExists(DatabaseClient databaseClient, K key) async =>
       (await (await _storeRecord(key))?.exists(databaseClient)) ?? false;
 
+  /// [value] with its index field set to [key].
+  Model _indexedValue(K key, Model value) => {...value, path: key};
+
   /// Create the record if it does not exist.
   ///
   /// Returns the key if inserted, null otherwise.
@@ -303,7 +306,14 @@ class _SembastDatabaseUniqueIndex<K, PK> implements DatabaseIndex<K, PK> {
     DatabaseClient databaseClient,
     K key,
     Model value,
-  ) async => (await (await _storeRecord(key))?.add(databaseClient, value));
+  ) async {
+    var record = await _storeRecord(key);
+    if (record != null) {
+      return await record.add(databaseClient, value);
+    }
+    // New index key, create the record.
+    return await store.add(databaseClient, _indexedValue(key, value));
+  }
 
   /// Save a record, create if needed.
   ///
@@ -315,11 +325,16 @@ class _SembastDatabaseUniqueIndex<K, PK> implements DatabaseIndex<K, PK> {
     K key,
     Model value, {
     bool? merge,
-  }) async =>
-      (await (await _storeRecord(
-            key,
-          ))?.put(databaseClient, value, merge: merge))
-          as Model;
+  }) async {
+    var record = await _storeRecord(key);
+    if (record != null) {
+      return await record.put(databaseClient, value, merge: merge);
+    }
+    // New index key, create the record.
+    var indexedValue = _indexedValue(key, value);
+    await store.add(databaseClient, indexedValue);
+    return indexedValue;
+  }
 
   /// Update a record.
   ///

@@ -27,6 +27,11 @@ void main() {
         break;
       }
     }
+    // A random IV is prepended, the output differs each time.
+    expect(encryptSet.length, greaterThan(1));
+    for (var encrypted in encryptSet) {
+      expect(aesDecrypt(encrypted, password), 'test');
+    }
   });
   test('raw aes encrypt decrypt', () {
     var password = r'E4x*$TwbkJC-xK4KGC4zJF9j*Rh&WLgR';

@@ -10,9 +10,12 @@ Future<void> main(List<String> arguments) async {
 
   var result = parser.parse(arguments);
   if (result['help'] as bool) {
-    stdout.writeln('Generate localization_gen.dart');
-    stdout.writeln('create_project_and_checkout_from_git [<dir>]');
+    stdout.writeln(
+      'Generate localization_gen.dart and re-order the assets/i18n json files',
+    );
+    stdout.writeln('generate_intl [<dir>...]');
     stdout.writeln(parser.usage);
+    return;
   }
   var rest = result.rest;
   if (rest.isEmpty) {
