@@ -7,7 +7,8 @@ description: >-
   reflectClass, MirrorSystem.getName, ClassMirror (declarations, superclass,
   reflectedType, hasReflectedType), DeclarationMirror (simpleName, metadata),
   VariableMirror, TypeMirror, InstanceMirror (reflectee, type), from
-  package:tekartik_app_mirrors/mirrors.dart instead of dart:mirrors.
+  package:tekartik_app_mirrors/mirrors.dart instead of dart:mirrors. Deprecated
+  with dart:mirrors (Dart 3.14): prefer code generation for new code.
 ---
 
 # Safe mirrors subset for code generation (tekartik_app_mirrors)
@@ -21,6 +22,11 @@ not compile.
 
 ## Guidelines
 
+* Deprecated: `dart:mirrors` is deprecated as of Dart 3.14, and
+  `package:tekartik_app_mirrors/mirrors.dart` is marked `@Deprecated` with it.
+  It keeps working on the VM; an existing tool silences the info with
+  `// ignore: deprecated_member_use` on its import line, new code generates
+  its code (`build_runner`) instead of reflecting at runtime.
 * Dependency (git, not on pub.dev - the package lives in the `app_mirrors/`
   directory of the repo):
   ```yaml

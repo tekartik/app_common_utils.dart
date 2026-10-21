@@ -1,4 +1,4 @@
-import 'package:tekartik_app_mirrors/mirrors.dart';
+import 'mirrors_api.dart';
 
 /// Reflects a class declaration.
 ///

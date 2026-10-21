@@ -1,6 +1,9 @@
+// dart:mirrors is deprecated as of Dart 3.14, the public library of this
+// package is deprecated with it.
+// ignore: deprecated_member_use
 import 'dart:mirrors' as vm;
 
-import 'package:tekartik_app_mirrors/mirrors.dart';
+import 'mirrors_api.dart';
 
 abstract class MirrorSystemVm {
   static String getName(Symbol symbol) => vm.MirrorSystem.getName(symbol);

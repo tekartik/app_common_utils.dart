@@ -1,5 +1,5 @@
-import 'package:tekartik_app_mirrors/mirrors.dart';
-import 'package:tekartik_app_mirrors/src/mirrors_vm.dart' as mirrors;
+import 'mirrors_api.dart';
+import 'mirrors_vm.dart' as mirrors;
 
 /// Reflects a class declaration.
 ///

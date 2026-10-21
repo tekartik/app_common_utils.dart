@@ -1,3 +1,4 @@
+// ignore: deprecated_member_use_from_same_package
 import 'package:tekartik_app_serialize/serialize.dart';
 import 'package:test/test.dart';
 

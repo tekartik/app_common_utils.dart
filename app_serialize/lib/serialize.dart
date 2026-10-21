@@ -1,3 +1,12 @@
+/// `dart:mirrors` is deprecated as of Dart 3.14, and so is this library: it
+/// keeps working on the VM, new code should generate its code
+/// (`build_runner`) instead.
+@Deprecated(
+  'dart:mirrors is deprecated as of Dart 3.14, generate the code '
+  '(build_runner) instead',
+)
+library;
+
 import 'dart:convert';
 import 'dart:io';
 
@@ -5,6 +14,8 @@ import 'package:dart_style/dart_style.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:path/path.dart';
 import 'package:process_run/shell.dart';
+// Deprecated with dart:mirrors (Dart 3.14), still working on the VM.
+// ignore: deprecated_member_use
 import 'package:tekartik_app_mirrors/mirrors.dart';
 
 String _fixLinesStringForIoGit(String json) {

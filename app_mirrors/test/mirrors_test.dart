@@ -4,6 +4,7 @@
 library;
 
 import 'package:json_annotation/json_annotation.dart';
+// ignore: deprecated_member_use_from_same_package
 import 'package:tekartik_app_mirrors/mirrors.dart';
 import 'package:test/test.dart';
 
