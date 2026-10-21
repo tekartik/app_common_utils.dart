@@ -35,3 +35,4 @@ workspace:
   - app_text
   - app_cv_sdb
   - app_web_scrapper
+  - app_pb

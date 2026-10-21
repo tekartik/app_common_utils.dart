@@ -1,0 +1,525 @@
+# proto-message: google.testing.platform.proto.api.core.TestSuiteResult
+# 2026-10-21T11:57:46.330542614Z:
+test_suite_meta_data {
+  scheduled_test_case_count: 9
+  device {
+    id: "emulator-5554"
+    friendly_name: "primary"
+  }
+}
+test_status: PASSED
+test_result {
+  test_case {
+    test_class: "LocaleUtilsTest"
+    test_package: "com.tekartik.sqflite"
+    test_method: "localeForLanguateTag"
+    start_time {
+      seconds: 1792583865
+      nanos: 834000000
+    }
+    end_time {
+      seconds: 1792583865
+      nanos: 847000000
+    }
+    device {
+      id: "emulator-5554"
+      friendly_name: "primary"
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/tmp/sqflite/example/build/app/outputs/androidTest-results/connected/debug/Pixel_9a_like(AVD) - 16/logcat-com.tekartik.sqflite.LocaleUtilsTest-localeForLanguateTag.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/tmp/sqflite/example/build/app/outputs/androidTest-results/connected/debug/Pixel_9a_like(AVD) - 16/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/tmp/sqflite/example/build/app/outputs/androidTest-results/connected/debug/Pixel_9a_like(AVD) - 16/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/tmp/sqflite/example/build/app/outputs/androidTest-results/connected/debug/Pixel_9a_like(AVD) - 16/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "RawSqliteTest"
+    test_package: "com.tekartik.sqflite"
+    test_method: "getSetVersion"
+    start_time {
+      seconds: 1792583865
+      nanos: 857000000
+    }
+    end_time {
+      seconds: 1792583865
+      nanos: 857000000
+    }
+    device {
+      id: "emulator-5554"
+      friendly_name: "primary"
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/tmp/sqflite/example/build/app/outputs/androidTest-results/connected/debug/Pixel_9a_like(AVD) - 16/logcat-com.tekartik.sqflite.RawSqliteTest-getSetVersion.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/tmp/sqflite/example/build/app/outputs/androidTest-results/connected/debug/Pixel_9a_like(AVD) - 16/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/tmp/sqflite/example/build/app/outputs/androidTest-results/connected/debug/Pixel_9a_like(AVD) - 16/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/tmp/sqflite/example/build/app/outputs/androidTest-results/connected/debug/Pixel_9a_like(AVD) - 16/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "RawSqliteTest"
+    test_package: "com.tekartik.sqflite"
+    test_method: "substr"
+    start_time {
+      seconds: 1792583865
+      nanos: 858000000
+    }
+    end_time {
+      seconds: 1792583865
+      nanos: 858000000
+    }
+    device {
+      id: "emulator-5554"
+      friendly_name: "primary"
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/tmp/sqflite/example/build/app/outputs/androidTest-results/connected/debug/Pixel_9a_like(AVD) - 16/logcat-com.tekartik.sqflite.RawSqliteTest-substr.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/tmp/sqflite/example/build/app/outputs/androidTest-results/connected/debug/Pixel_9a_like(AVD) - 16/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/tmp/sqflite/example/build/app/outputs/androidTest-results/connected/debug/Pixel_9a_like(AVD) - 16/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/tmp/sqflite/example/build/app/outputs/androidTest-results/connected/debug/Pixel_9a_like(AVD) - 16/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "TestSqflitePluginTest"
+    test_package: "com.tekartik.sqflite"
+    test_method: "walEnabled"
+    start_time {
+      seconds: 1792583865
+      nanos: 858000000
+    }
+    end_time {
+      seconds: 1792583865
+      nanos: 858000000
+    }
+    device {
+      id: "emulator-5554"
+      friendly_name: "primary"
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/tmp/sqflite/example/build/app/outputs/androidTest-results/connected/debug/Pixel_9a_like(AVD) - 16/logcat-com.tekartik.sqflite.TestSqflitePluginTest-walEnabled.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/tmp/sqflite/example/build/app/outputs/androidTest-results/connected/debug/Pixel_9a_like(AVD) - 16/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/tmp/sqflite/example/build/app/outputs/androidTest-results/connected/debug/Pixel_9a_like(AVD) - 16/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/tmp/sqflite/example/build/app/outputs/androidTest-results/connected/debug/Pixel_9a_like(AVD) - 16/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "TestSqflitePluginTest"
+    test_package: "com.tekartik.sqflite"
+    test_method: "emptyFile"
+    start_time {
+      seconds: 1792583865
+      nanos: 859000000
+    }
+    end_time {
+      seconds: 1792583865
+      nanos: 859000000
+    }
+    device {
+      id: "emulator-5554"
+      friendly_name: "primary"
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/tmp/sqflite/example/build/app/outputs/androidTest-results/connected/debug/Pixel_9a_like(AVD) - 16/logcat-com.tekartik.sqflite.TestSqflitePluginTest-emptyFile.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/tmp/sqflite/example/build/app/outputs/androidTest-results/connected/debug/Pixel_9a_like(AVD) - 16/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/tmp/sqflite/example/build/app/outputs/androidTest-results/connected/debug/Pixel_9a_like(AVD) - 16/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/tmp/sqflite/example/build/app/outputs/androidTest-results/connected/debug/Pixel_9a_like(AVD) - 16/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "TestSqflitePluginTest"
+    test_package: "com.tekartik.sqflite"
+    test_method: "databaseExists"
+    start_time {
+      seconds: 1792583865
+      nanos: 859000000
+    }
+    end_time {
+      seconds: 1792583865
+      nanos: 859000000
+    }
+    device {
+      id: "emulator-5554"
+      friendly_name: "primary"
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/tmp/sqflite/example/build/app/outputs/androidTest-results/connected/debug/Pixel_9a_like(AVD) - 16/logcat-com.tekartik.sqflite.TestSqflitePluginTest-databaseExists.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/tmp/sqflite/example/build/app/outputs/androidTest-results/connected/debug/Pixel_9a_like(AVD) - 16/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/tmp/sqflite/example/build/app/outputs/androidTest-results/connected/debug/Pixel_9a_like(AVD) - 16/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/tmp/sqflite/example/build/app/outputs/androidTest-results/connected/debug/Pixel_9a_like(AVD) - 16/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "TestSqflitePluginTest"
+    test_package: "com.tekartik.sqflite"
+    test_method: "nonSqfliteFile"
+    start_time {
+      seconds: 1792583865
+      nanos: 860000000
+    }
+    end_time {
+      seconds: 1792583865
+      nanos: 860000000
+    }
+    device {
+      id: "emulator-5554"
+      friendly_name: "primary"
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/tmp/sqflite/example/build/app/outputs/androidTest-results/connected/debug/Pixel_9a_like(AVD) - 16/logcat-com.tekartik.sqflite.TestSqflitePluginTest-nonSqfliteFile.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/tmp/sqflite/example/build/app/outputs/androidTest-results/connected/debug/Pixel_9a_like(AVD) - 16/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/tmp/sqflite/example/build/app/outputs/androidTest-results/connected/debug/Pixel_9a_like(AVD) - 16/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/tmp/sqflite/example/build/app/outputs/androidTest-results/connected/debug/Pixel_9a_like(AVD) - 16/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "TestSqflitePluginTest"
+    test_package: "com.tekartik.sqflite"
+    test_method: "missingFile"
+    start_time {
+      seconds: 1792583865
+      nanos: 860000000
+    }
+    end_time {
+      seconds: 1792583865
+      nanos: 860000000
+    }
+    device {
+      id: "emulator-5554"
+      friendly_name: "primary"
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/tmp/sqflite/example/build/app/outputs/androidTest-results/connected/debug/Pixel_9a_like(AVD) - 16/logcat-com.tekartik.sqflite.TestSqflitePluginTest-missingFile.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/tmp/sqflite/example/build/app/outputs/androidTest-results/connected/debug/Pixel_9a_like(AVD) - 16/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/tmp/sqflite/example/build/app/outputs/androidTest-results/connected/debug/Pixel_9a_like(AVD) - 16/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/tmp/sqflite/example/build/app/outputs/androidTest-results/connected/debug/Pixel_9a_like(AVD) - 16/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "TestSqflitePluginTest"
+    test_package: "com.tekartik.sqflite"
+    test_method: "checkMetaBoolean"
+    start_time {
+      seconds: 1792583865
+      nanos: 861000000
+    }
+    end_time {
+      seconds: 1792583865
+      nanos: 861000000
+    }
+    device {
+      id: "emulator-5554"
+      friendly_name: "primary"
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/tmp/sqflite/example/build/app/outputs/androidTest-results/connected/debug/Pixel_9a_like(AVD) - 16/logcat-com.tekartik.sqflite.TestSqflitePluginTest-checkMetaBoolean.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/tmp/sqflite/example/build/app/outputs/androidTest-results/connected/debug/Pixel_9a_like(AVD) - 16/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/tmp/sqflite/example/build/app/outputs/androidTest-results/connected/debug/Pixel_9a_like(AVD) - 16/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/tmp/sqflite/example/build/app/outputs/androidTest-results/connected/debug/Pixel_9a_like(AVD) - 16/cpuinfo"
+    }
+  }
+}
+output_artifact {
+  label {
+    label: "test-results.log"
+    namespace: "com.google.testing.platform.runtime.android.driver.AndroidInstrumentationDriver"
+  }
+  source_path {
+    path: "/tmp/sqflite/example/build/app/outputs/androidTest-results/connected/debug/Pixel_9a_like(AVD) - 16/testlog/test-results.log"
+  }
+  type: TEST_DATA
+  mime_type: "text/plain"
+}
