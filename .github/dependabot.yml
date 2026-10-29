@@ -137,3 +137,7 @@ updates:
     directory: "app_agent"
     schedule:
       interval: "monthly"
+  - package-ecosystem: "pub"
+    directory: "app_agent_mcp"
+    schedule:
+      interval: "monthly"

@@ -37,3 +37,4 @@ workspace:
   - app_web_scrapper
   - app_pb
   - app_agent
+  - app_agent_mcp
