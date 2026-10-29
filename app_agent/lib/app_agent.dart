@@ -6,7 +6,8 @@
 ///   through a page evaluate function (Chrome DevTools protocol, Playwright,
 ///   a browser extension).
 /// - [AgentCommand], [AgentCommands] ([agentCommands], the ones of the
-///   app), [AgentSchema]: what an app lets an agent do.
+///   app), [AgentSchema]: what an app lets an agent do;
+/// - [agentVmRegister]: the commands as VM service extensions (a debug run).
 library;
 
 export 'src/agent_command.dart'
@@ -20,5 +21,7 @@ export 'src/agent_command.dart'
         AgentSchema,
         agentCommands;
 export 'src/agent_url_options.dart' show AgentUrlOptions;
+export 'src/agent_vm.dart'
+    show agentVmCommandsExtension, agentVmRegister, agentVmRunExtension;
 export 'src/agent_web_page.dart'
     show AgentEvaluate, AgentWebPage, agentBridgeName;

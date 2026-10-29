@@ -1,3 +1,10 @@
+## 0.3.0
+
+- `agentVmRegister` (moved from tekartik_app_agent_flutter):
+  `ext.tekartik.agent.commands` / `ext.tekartik.agent.run`
+  (`agentVmCommandsExtension`, `agentVmRunExtension`), usable from a Dart
+  program too.
+
 ## 0.2.0
 
 - `AgentCommand`, `AgentCommands` (`agentCommands`, scoped registrations),

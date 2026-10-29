@@ -8,7 +8,9 @@ description: >-
   AgentUrlOptions.fromUri (?semantics, ?agent, also in a hash url fragment),
   AgentWebPage(evaluate) (ids, has, waitFor, text, tap, location,
   waitForLocation, back over the flt-semantics-identifier attributes;
-  commands, run through the window.tekartikAgent js bridge).
+  commands, run through the window.tekartikAgent js bridge),
+  agentVmRegister (the commands as VM service extensions of a debug run).
+  The MCP server driving such an app is tekartik_app_agent_mcp.
 ---
 
 # Agent helpers (tekartik_app_agent)
@@ -54,6 +56,11 @@ are in `tekartik_app_agent_flutter` (`AgentId`, `agentInit`).
   Flutter `AgentCommandsScope` (tekartik_app_agent_flutter) does it for a
   widget's lifetime. Keep pure Dart commands (on a database, a service) in
   a pure Dart package so an MCP server or a tool can reuse them.
+* `agentVmRegister(agentCommands)` (once) registers
+  `ext.tekartik.agent.commands` (`{commands: [...]}`) and
+  `ext.tekartik.agent.run` (`name`, `args` as a json string: `{ok, result}`
+  or `{ok, error}`); `agentInit` of tekartik_app_agent_flutter calls it
+  outside release builds, a Dart program calls it itself.
 * `AgentWebPage.run(name, args)` evaluates
   `window.tekartikAgent.run(name, args)` with `awaitPromise`: the evaluate
   function must honour it (CDP `CdpSession.evaluate` does); it throws an

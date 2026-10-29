@@ -1,6 +1,6 @@
 name: tekartik_app_agent
-description: Helpers for the apps an agent (an LLM, a test tool) drives, pure Dart - the agent url options (?semantics, ?agent), the app commands (AgentCommands, json schema arguments) and a driver of the Flutter web semantics ids and commands through a page evaluate function.
-version: 0.2.0
+description: Helpers for the apps an agent (an LLM, a test tool) drives, pure Dart - the agent url options (?semantics, ?agent), the app commands (AgentCommands, json schema arguments) their VM service extensions, and a driver of the Flutter web semantics ids and commands through a page evaluate function.
+version: 0.3.0
 homepage: https://github.com/tekartik/app_common_utils.dart
 publish_to: none
 

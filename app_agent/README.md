@@ -20,8 +20,13 @@ Helpers for the apps an agent (an LLM, a test tool) drives, pure Dart:
   through the js bridge of an app opened with `?agent`
   (`window.tekartikAgent`): `commands`, `run`.
 
-The Flutter side (the `AgentId` widget, the semantics built from the url
-options) is `tekartik_app_agent_flutter` in
+- `agentVmRegister(commands)`: the commands as the VM service extensions
+  `ext.tekartik.agent.commands` / `ext.tekartik.agent.run` of a debug run,
+  what `tekartik_app_agent_mcp` (an MCP server) and other Dart tools call.
+
+The MCP server is [tekartik_app_agent_mcp](../app_agent_mcp). The Flutter
+side (the `AgentId` widget, the semantics built from the url options) is
+`tekartik_app_agent_flutter` in
 [app_flutter_utils.dart](https://github.com/tekartik/app_flutter_utils.dart).
 
 ## Setup
