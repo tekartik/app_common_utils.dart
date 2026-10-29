@@ -67,19 +67,40 @@ base class AgentMcpServer extends MCPServer with ToolsSupport {
 
   /// The server, on [channel] (`stdioChannel` of dart_mcp for a stdio
   /// server), connected to [connection] when given.
+  ///
+  /// Without [connectTools] the server only serves [connection] (an
+  /// [AgentLocalConnection], say): no `app_connect`, `app_disconnect` nor
+  /// web page tools. [implementation] and [instructions] describe a server
+  /// of its own (a data server).
   AgentMcpServer(
     super.channel, {
     AgentAppConnection? connection,
+    bool connectTools = true,
+    Implementation? implementation,
+    String? instructions,
     this.syncInterval = const Duration(seconds: 2),
     this.chromeArguments = const [],
     super.protocolLogSink,
   }) : super.fromStreamChannel(
-         implementation: Implementation(
-           name: 'tekartik_app_agent_mcp',
-           version: '0.1.0',
-         ),
-         instructions: _instructions,
+         implementation:
+             implementation ??
+             Implementation(name: 'tekartik_app_agent_mcp', version: '0.2.0'),
+         instructions: instructions ?? _instructions,
        ) {
+    if (connectTools) {
+      _registerConnectTools();
+    }
+    _registerCommandTools();
+    if (connectTools) {
+      _registerWebTools();
+    }
+    if (connection != null) {
+      _attach(connection);
+      unawaited(_syncTools().then((_) {}, onError: (_) {}));
+    }
+  }
+
+  void _registerConnectTools() {
     _tool(
       Tool(
         name: 'app_connect',
@@ -116,6 +137,9 @@ base class AgentMcpServer extends MCPServer with ToolsSupport {
         return _text('disconnected');
       },
     );
+  }
+
+  void _registerCommandTools() {
     _tool(
       Tool(
         name: 'app_commands',
@@ -152,6 +176,9 @@ base class AgentMcpServer extends MCPServer with ToolsSupport {
         (request.arguments!['args'] as Map?)?.cast<String, Object?>(),
       ),
     );
+  }
+
+  void _registerWebTools() {
     _tool(
       Tool(
         name: 'app_ids',
@@ -199,10 +226,6 @@ base class AgentMcpServer extends MCPServer with ToolsSupport {
         ],
       ),
     );
-    if (connection != null) {
-      _attach(connection);
-      unawaited(_syncTools().then((_) {}, onError: (_) {}));
-    }
   }
 
   void _attach(AgentAppConnection connection) {

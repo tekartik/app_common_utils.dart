@@ -1,3 +1,10 @@
+## 0.2.0
+
+- `AgentLocalConnection`: the commands of the program itself; `AgentMcpServer`
+  takes `connectTools` (false: no connect nor web page tools),
+  `implementation` and `instructions`, for a server of its own commands (a
+  data server).
+
 ## 0.1.0
 
 - `AgentMcpServer` (dart_mcp, stdio executable `tekartik_app_agent_mcp`):

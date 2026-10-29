@@ -17,17 +17,22 @@ class McpTestClient {
 
   McpTestClient._();
 
-  /// Starts both, the client initialized.
-  static Future<McpTestClient> start() async {
+  /// Starts both ([newServer] creates the server, a default one when
+  /// null), the client initialized.
+  static Future<McpTestClient> start({
+    AgentMcpServer Function(StreamChannel<String> channel)? newServer,
+  }) async {
     var client = McpTestClient._();
     var channel = StreamChannelController<String>();
-    client.server = AgentMcpServer(
-      channel.foreign,
-      // The CI runners may refuse the Chrome sandbox.
-      chromeArguments: [
-        if (Platform.environment['CI'] == 'true') '--no-sandbox',
-      ],
-    );
+    client.server =
+        newServer?.call(channel.foreign) ??
+        AgentMcpServer(
+          channel.foreign,
+          // The CI runners may refuse the Chrome sandbox.
+          chromeArguments: [
+            if (Platform.environment['CI'] == 'true') '--no-sandbox',
+          ],
+        );
     var mcpClient = MCPClient(Implementation(name: 'test', version: '0.0.0'));
     client.connection = mcpClient.connectServer(channel.local);
     await client.connection.initialize(

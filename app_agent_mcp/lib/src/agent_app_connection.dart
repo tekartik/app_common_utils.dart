@@ -20,6 +20,31 @@ abstract class AgentAppConnection {
   Future<void> close();
 }
 
+/// The commands of this program ([registry], [agentCommands] by default),
+/// in process: an MCP server serving commands of its own (a data server,
+/// `AgentMcpServer` without its connect tools).
+class AgentLocalConnection implements AgentAppConnection {
+  /// The commands.
+  final AgentCommands registry;
+
+  @override
+  final String description;
+
+  /// The commands of [registry].
+  AgentLocalConnection({AgentCommands? registry, this.description = 'local'})
+    : registry = registry ?? agentCommands;
+
+  @override
+  Future<List<Map<String, Object?>>> commands() async => registry.describe();
+
+  @override
+  Future<AgentCommandResult> run(String name, [Map<String, Object?>? args]) =>
+      registry.run(name, args);
+
+  @override
+  Future<void> close() async {}
+}
+
 /// The [AgentCommandResult] of its json (`{ok, result}` or `{ok, error}`).
 AgentCommandResult agentCommandResultFromJson(Object? json) {
   if (json is! Map) {

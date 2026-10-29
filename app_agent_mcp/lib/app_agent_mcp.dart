@@ -8,10 +8,13 @@
 ///   extensions;
 /// - [AgentChromeConnection]: a web page opened with `?agent` (release
 ///   builds included), through its js bridge over the Chrome DevTools
-///   protocol, in a Chrome it starts or a running one.
+///   protocol, in a Chrome it starts or a running one;
+/// - [AgentLocalConnection]: commands of the program itself (a data server
+///   on [AgentMcpServer] without its connect tools).
 library;
 
-export 'src/agent_app_connection.dart' show AgentAppConnection;
+export 'src/agent_app_connection.dart'
+    show AgentAppConnection, AgentLocalConnection;
 export 'src/agent_chrome_connection.dart'
     show AgentChromeConnection, agentChromeExecutable, agentChromePages;
 export 'src/agent_mcp_server.dart' show AgentMcpServer;
