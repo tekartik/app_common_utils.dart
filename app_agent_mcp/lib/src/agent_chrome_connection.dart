@@ -279,7 +279,8 @@ class AgentChromeConnection implements AgentAppConnection {
     while (!await page.hasCommands()) {
       if (stopwatch.elapsed > timeout) {
         throw TimeoutException(
-          'no window.$agentBridgeName: is the app opened with ?agent and does '
+          'no window.$agentBridgeName: is the app opened with ?agent '
+          '(?agent=<key> for a release build) and does '
           'it call agentInit?',
           timeout,
         );

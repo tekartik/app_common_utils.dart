@@ -1,3 +1,15 @@
+## 0.4.0
+
+- `AgentKey`: the key a release build asks (`?agent=<key>`), held as its
+  SHA-256 hash (`AgentKey.hashed`, `hashOf`, `generate`), never shown.
+- `AgentUrlOptions.agentAllowed(release:, releaseKey:)`: `?agent` lets an
+  agent in (the default), a release build of an app with a key asks it,
+  `?agent=<key>` (read and checked only when the url has `?agent`).
+- `package:tekartik_app_agent/agent_constants_io.dart`: the agent constants
+  of a project (`AgentKeyApp`, `agentConstantsGenerate` writing
+  `lib/src/agent_constants.dart` or dumping it, the keys kept, their links
+  documented, the constants `@internal`).
+
 ## 0.3.0
 
 - `agentVmRegister` (moved from tekartik_app_agent_flutter):

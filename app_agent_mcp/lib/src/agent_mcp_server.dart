@@ -11,7 +11,8 @@ import 'agent_vm_connection.dart';
 const _instructions =
     'Drives a running app built with tekartik_app_agent by its commands. '
     'First app_connect: the VM service uri a debug run prints (flutter run, '
-    'dart run --enable-vm-service), or a web build url with ?agent opened '
+    'dart run --enable-vm-service), or a web build url with ?agent '
+    '(?agent=<key> for a release build) opened '
     'in a headless Chrome (open), or a page of a Chrome started with '
     '--remote-debugging-port (chrome). The commands of the app then appear '
     'as tools of their own name (and run with app_run); they change with '
@@ -108,7 +109,8 @@ base class AgentMcpServer extends MCPServer with ToolsSupport {
             'Connects to a running app (one of): vmService, the VM service '
             'uri of a debug or profile run (http://127.0.0.1:port/token=/ '
             'as printed by flutter run); open, a url to open in a new '
-            'Chrome (add ?agent for the commands), headless unless headless '
+            'Chrome (add ?agent for the commands, ?agent=<key> for a release '
+            'build), headless unless headless '
             'is false; chrome, the debugging endpoint of a running Chrome '
             '(http://127.0.0.1:9222) with page, a part of the page url. '
             'Returns the commands of the app, now tools too.',

@@ -27,7 +27,8 @@ description: >-
   it (the build messages of `dart run` stay off stdout, the MCP channel).
 * Connect: `app_connect` with `vmService` (the uri `flutter run` prints,
   `http://127.0.0.1:port/token=/`, also its DevTools link or the `ws://`
-  form, see `agentVmServiceWsUri`), or `open` (a url with `?agent`, a new
+  form, see `agentVmServiceWsUri`), or `open` (a url with `?agent`,
+  `?agent=<key>` for a release build, the key of the app, a new
   headless Chrome with the WebGL flags Flutter needs; `headless: false` to
   watch), or `chrome` + `page` (a Chrome started with
   `--remote-debugging-port`).
@@ -40,7 +41,7 @@ description: >-
 * Errors come back as tool errors with the message only: the
   `AgentCommandException` message of the app, `not connected to an app:
   app_connect first`, `a web page only (...)`, a timeout saying what to
-  check (`agentInit`, `?agent`).
+  check (`agentInit`, `?agent`, the key of a release build).
 * A hot restart changes the isolate: the VM connection finds the isolate
   with the extensions again on the next call.
 * Debug runs without a screen: `xvfb-run -a flutter run -d linux --machine`

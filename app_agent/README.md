@@ -20,6 +20,8 @@ Helpers for the apps an agent (an LLM, a test tool) drives, pure Dart:
   through the js bridge of an app opened with `?agent`
   (`window.tekartikAgent`): `commands`, `run`.
 
+- `AgentKey`: the key a release build of an app given one asks before
+  exposing its commands (`?agent=<key>`), see [Agent keys](#agent-keys).
 - `agentVmRegister(commands)`: the commands as the VM service extensions
   `ext.tekartik.agent.commands` / `ext.tekartik.agent.run` of a debug run,
   what `tekartik_app_agent_mcp` (an MCP server) and other Dart tools call.
@@ -36,4 +38,47 @@ side (the `AgentId` widget, the semantics built from the url options) is
     git:
       url: https://github.com/tekartik/app_common_utils.dart
       path: app_agent
+```
+
+## Agent keys
+
+`?agent` lets an agent in by default. An app given a key
+(`agentInit(releaseKey:)` of tekartik_app_agent_flutter) exposes its
+commands in a release build only when opened with `?agent=<key>`. The app
+holds only the hash of its key (`AgentKey.hashed`), checked only when the
+url has `?agent` (`AgentUrlOptions.agentAllowed(release:, releaseKey:)`);
+`?agent` alone stays enough in a debug build.
+
+The keys of a project are generated in its private common package by a
+tool calling `agentConstantsGenerate`
+(`package:tekartik_app_agent/agent_constants_io.dart`): it writes
+`lib/src/agent_constants.dart` (or prints it with `dump: true`), for each
+app its `<app>AgentKey` (the hash, for the app) and `<app>AgentKeyText`
+(the key, for the tools only), both `@internal`, the links
+(`<url>?agent=<key>`) in their documentation. The keys are kept from one
+run to the next, `renew: true` makes new ones.
+
+```dart
+// tool/agent_constants.dart of the private common package.
+import 'package:tekartik_app_agent/agent_constants_io.dart';
+
+Future<void> main(List<String> args) => agentConstantsGenerate([
+  AgentKeyApp(
+    name: 'orga',
+    title: 'Festen Orga',
+    urls: ['https://orga.example.com/'],
+  ),
+], dump: args.contains('--dump'), renew: args.contains('--renew'));
+```
+
+An app passes its key to `agentInit`, each internal use explicit:
+
+```dart
+// ignore: implementation_imports
+import 'package:my_common_prv/src/agent_constants.dart';
+
+void main() {
+  // ignore: invalid_use_of_internal_member
+  agentInit(releaseKey: orgaAgentKey);
+}
 ```

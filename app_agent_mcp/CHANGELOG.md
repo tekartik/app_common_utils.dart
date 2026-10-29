@@ -4,6 +4,8 @@
   takes `connectTools` (false: no connect nor web page tools),
   `implementation` and `instructions`, for a server of its own commands (a
   data server).
+- The connect messages and tool descriptions mention `?agent=<key>`, what a
+  release build asks.
 
 ## 0.1.0
 

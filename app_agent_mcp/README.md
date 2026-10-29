@@ -12,6 +12,7 @@ Two channels, the same commands behind each:
   `ext.tekartik.agent.commands` / `ext.tekartik.agent.run`
   (`agentVmRegister`, called by `agentInit` outside release builds).
 - **Web page** (`AgentChromeConnection`): a web build opened with `?agent`
+  (`?agent=<key>` for a release build, the key of the app)
   (release builds included), through its js bridge `window.tekartikAgent`
   over the Chrome DevTools protocol, in a Chrome the server starts
   (headless by default) or a running Chrome started with
@@ -22,7 +23,7 @@ Two channels, the same commands behind each:
 
 | Tool | What it does |
 |---|---|
-| `app_connect` | `vmService` (the uri `flutter run` prints), or `open` (a url, `?agent`, in a new Chrome; `headless`, `width`, `height`), or `chrome` (`http://127.0.0.1:9222`) with `page` (a part of its url) |
+| `app_connect` | `vmService` (the uri `flutter run` prints), or `open` (a url, `?agent`, `?agent=<key>` for a release build, in a new Chrome; `headless`, `width`, `height`), or `chrome` (`http://127.0.0.1:9222`) with `page` (a part of its url) |
 | `app_disconnect` | Disconnects, closes a Chrome it started |
 | `app_commands` | The commands of the app now (name, description, input schema) |
 | `app_run` | Runs a command: `name`, `args` |
@@ -63,7 +64,8 @@ Options: `--vm-service <uri>`, `--open <url>` (`--no-headless`), `--chrome
 ## Use
 
 1. Run the app: `flutter run -d linux` (note the VM service uri it prints)
-   or serve a web build and give its url with `?agent`.
+   or serve a web build and give its url with `?agent=<key>` (a release
+   build asks the key of the app).
 2. In the agent: `app_connect` with `vmService` or `open`.
 3. Call the commands as tools (`festivals`, `open_festival`, `persons`...);
    new screens bring new commands (a project opened, a record shown): the
@@ -79,7 +81,7 @@ import 'package:tekartik_app_agent_mcp/app_agent_mcp.dart';
 
 Future<void> main() async {
   var connection = await AgentChromeConnection.launch(
-    Uri.parse('http://localhost:8080/?agent'),
+    Uri.parse('http://localhost:8080/?agent=<key>'),
   );
   print(await connection.commands());
   print((await connection.run('festivals')).toJson());

@@ -1,6 +1,9 @@
 /// Helpers for the apps an agent (an LLM, a test tool) drives:
 ///
-/// - [AgentUrlOptions]: the `?semantics` and `?agent` options of a page url;
+/// - [AgentUrlOptions]: the `?semantics` and `?agent` options of a page url,
+///   [AgentKey]: the key a release build asks (`?agent=<key>`), held as its
+///   hash (the generator of the agent constants of a project is
+///   `package:tekartik_app_agent/agent_constants_io.dart`);
 /// - [AgentWebPage]: a driver of the Flutter web semantics ids
 ///   (`flt-semantics-identifier`) and of the app commands (its js bridge)
 ///   through a page evaluate function (Chrome DevTools protocol, Playwright,
@@ -20,6 +23,7 @@ export 'src/agent_command.dart'
         AgentCommandsRegistration,
         AgentSchema,
         agentCommands;
+export 'src/agent_key.dart' show AgentKey;
 export 'src/agent_url_options.dart' show AgentUrlOptions;
 export 'src/agent_vm.dart'
     show agentVmCommandsExtension, agentVmRegister, agentVmRunExtension;
