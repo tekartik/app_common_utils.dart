@@ -1,10 +1,20 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'agent_command.dart';
+
+/// The global object of the web js bridge of an app opened with `?agent`
+/// (`window.tekartikAgent`): `commands()` (the descriptions of its
+/// commands), `run(name, args)` (a promise of `{ok, result}` or `{ok,
+/// error}`), `help()`.
+const agentBridgeName = 'tekartikAgent';
+
 /// Evaluates a javascript [expression] in a page and returns its json value
 /// (`Runtime.evaluate` with `returnByValue` of the Chrome DevTools protocol,
-/// Playwright `page.evaluate`...).
-typedef AgentEvaluate = Future<Object?> Function(String expression);
+/// Playwright `page.evaluate`...), awaiting its promise when
+/// [awaitPromise].
+typedef AgentEvaluate =
+    Future<Object?> Function(String expression, {bool awaitPromise});
 
 /// Drives a Flutter web app by its semantics ids: the
 /// `flt-semantics-identifier` attributes of the semantics DOM, set by
@@ -116,5 +126,36 @@ class AgentWebPage {
   /// The browser back button.
   Future<void> back() async {
     await evaluate('history.back()');
+  }
+
+  /// True when the app exposes its commands (opened with `?agent`).
+  Future<bool> hasCommands() async =>
+      await evaluate('typeof window.$agentBridgeName === "object"') == true;
+
+  /// The descriptions of the commands of the app (`name`, `description`,
+  /// `inputSchema`), through its js bridge (`?agent`).
+  Future<List<Map<String, Object?>>> commands() async {
+    var value = await evaluate('window.$agentBridgeName.commands()');
+    return [
+      for (var command in (value as List?) ?? const [])
+        (command as Map).cast<String, Object?>(),
+    ];
+  }
+
+  /// Runs the command [name] of the app with [args] through its js bridge,
+  /// returns its result; throws an [AgentCommandException] with its error.
+  Future<Object?> run(String name, [Map<String, Object?>? args]) async {
+    var value = await evaluate(
+      'window.$agentBridgeName.run(${jsonEncode(name)}, '
+      '${jsonEncode(args ?? const <String, Object?>{})})',
+      awaitPromise: true,
+    );
+    if (value is! Map) {
+      throw AgentCommandException('$name: no result ($value)');
+    }
+    if (value['ok'] != true) {
+      throw AgentCommandException('${value['error']}');
+    }
+    return value['result'];
   }
 }

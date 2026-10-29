@@ -10,7 +10,10 @@ class _FakePage {
   final clicks = <String>[];
   var location = '/';
 
-  Future<Object?> evaluate(String expression) async {
+  Future<Object?> evaluate(
+    String expression, {
+    bool awaitPromise = false,
+  }) async {
     String? idOf() {
       var match = RegExp(
         r'flt-semantics-identifier=\\"([^\\]*)\\"',
@@ -62,6 +65,70 @@ void main() {
       expect(of('https://x.org/#/home?agent').agent, isTrue);
       expect(of('https://x.org/#/home?semantics=on').semantics, isTrue);
       expect(of('https://x.org/#/home').needsSemantics, isFalse);
+    });
+  });
+
+  group('AgentCommands', () {
+    test('describe, run, errors, registrations', () async {
+      var commands = AgentCommands();
+      var registration = commands.add([
+        AgentCommand(
+          name: 'echo',
+          description: 'Returns its text.',
+          inputSchema: AgentSchema.object(
+            {'text': AgentSchema.string('The text')},
+            required: ['text'],
+          ),
+          run: (args) => {'text': args['text']},
+        ),
+        AgentCommand(
+          name: 'fail',
+          description: 'Fails.',
+          run: (_) => throw AgentCommandException('no way'),
+        ),
+        AgentCommand(
+          name: 'object',
+          description: 'Returns an object that is not json.',
+          run: (_) => Object(),
+        ),
+      ]);
+      expect(commands.describe().map((c) => c['name']), [
+        'echo',
+        'fail',
+        'object',
+      ]);
+      expect(commands.describe().first['inputSchema'], {
+        'type': 'object',
+        'properties': {
+          'text': {'type': 'string', 'description': 'The text'},
+        },
+        'required': ['text'],
+      });
+      expect((await commands.run('echo', {'text': 'hi'})).toJson(), {
+        'ok': true,
+        'result': {'text': 'hi'},
+      });
+      expect((await commands.run('echo')).error, 'echo: missing text');
+      expect((await commands.run('fail')).error, 'no way');
+      expect(
+        (await commands.run('object')).error,
+        startsWith('object: result is not json'),
+      );
+      expect(
+        (await commands.run('other')).error,
+        'unknown command other, known: echo, fail, object',
+      );
+      // A later registration hides a command of the same name.
+      var other = commands.add([
+        AgentCommand(name: 'echo', description: 'Other.', run: (_) => 'other'),
+      ]);
+      expect((await commands.run('echo')).result, 'other');
+      other.remove();
+      expect((await commands.run('echo', {'text': 'back'})).result, {
+        'text': 'back',
+      });
+      registration.remove();
+      expect(commands.describe(), isEmpty);
     });
   });
 
