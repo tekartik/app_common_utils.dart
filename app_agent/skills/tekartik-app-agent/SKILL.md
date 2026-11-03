@@ -80,7 +80,10 @@ are in `tekartik_app_agent_flutter` (`AgentId`, `agentInit`).
   `ext.tekartik.agent.commands` (`{commands: [...]}`) and
   `ext.tekartik.agent.run` (`name`, `args` as a json string: `{ok, result}`
   or `{ok, error}`); `agentInit` of tekartik_app_agent_flutter calls it
-  outside release builds, a Dart program calls it itself.
+  outside release builds, a Dart program calls it itself. It returns false
+  (no throw) when the names are already taken in the isolate, by the menu
+  agent of a dev_build test menu started first: the menu keeps them, so
+  call `agentInit` before starting a test menu.
 * `AgentWebPage.run(name, args)` evaluates
   `window.tekartikAgent.run(name, args)` with `awaitPromise`: the evaluate
   function must honour it (CDP `CdpSession.evaluate` does); it throws an

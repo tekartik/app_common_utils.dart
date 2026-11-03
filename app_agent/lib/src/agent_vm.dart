@@ -17,16 +17,24 @@ var _registered = false;
 /// the Dart tooling of a debug or profile run (tekartik_app_agent_mcp, DTD,
 /// `callServiceExtension`). `agentInit` of tekartik_app_agent_flutter calls
 /// it; a Dart program (a CLI, a server) can too.
-void agentVmRegister(AgentCommands commands) {
+///
+/// Returns false, without throwing, when the extensions are already
+/// registered by someone else in this isolate (the menu agent of a dev_build
+/// test menu started first uses the same names): theirs are kept.
+bool agentVmRegister(AgentCommands commands) {
   if (_registered) {
-    return;
+    return true;
+  }
+  try {
+    registerExtension(agentVmCommandsExtension, (method, parameters) async {
+      return ServiceExtensionResponse.result(
+        jsonEncode({'commands': commands.describe()}),
+      );
+    });
+  } on ArgumentError {
+    return false;
   }
   _registered = true;
-  registerExtension(agentVmCommandsExtension, (method, parameters) async {
-    return ServiceExtensionResponse.result(
-      jsonEncode({'commands': commands.describe()}),
-    );
-  });
   registerExtension(agentVmRunExtension, (method, parameters) async {
     var name = parameters['name'];
     if (name == null) {
@@ -43,4 +51,5 @@ void agentVmRegister(AgentCommands commands) {
     var result = await commands.run(name, args);
     return ServiceExtensionResponse.result(jsonEncode(result.toJson()));
   });
+  return true;
 }

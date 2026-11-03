@@ -1,3 +1,9 @@
+## 0.4.1
+
+- `agentVmRegister` returns a `bool`: false, instead of throwing an
+  `ArgumentError`, when the VM service extensions are already registered in
+  the isolate (the menu agent of a dev_build test menu started first).
+
 ## 0.4.0
 
 - `AgentKey`: the key a release build asks (`?agent=<key>`), held as its
