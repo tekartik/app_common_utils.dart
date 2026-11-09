@@ -37,16 +37,24 @@ extension TekartikRxStreamExt<T> on Stream<T> {
     return subject;
   }
 
-  /// It won't listen to the stream until the first listener is added and stop
-  /// when it is closed.
+  /// A broadcast stream replaying the last value (a sync `BehaviorSubject`).
+  ///
+  /// It won't listen to the stream until the first listener is added and
+  /// stops when it is closed (not when the listeners cancel): call
+  /// [BroadcastValueStream.close].
   BroadcastValueStream<T> toBroadcastValueStream() =>
       _BroadcastValueStream(this);
 
+  /// A broadcast stream without replay (a sync `PublishSubject`).
+  ///
+  /// Same life cycle as [toBroadcastValueStream]: call
+  /// [BroadcastStream.close].
   BroadcastStream<T> toBroadcastStream() => _BroadcastStream<T>(this);
 }
 
 /// Stream subscription is closed when then stream is closed.
 abstract class BroadcastStream<T> extends Stream<T> {
+  /// Cancels the source subscription and closes the stream.
   Future<void> close();
 }
 
@@ -115,6 +123,7 @@ class _BroadcastStream<T> extends _SubjectBroadcastStream<T>
 
 /// Stream subscription is closed when then stream is closed.
 abstract class BroadcastValueStream<T> extends ValueStream<T> {
+  /// Cancels the source subscription and closes the stream.
   Future<void> close();
 }
 
@@ -152,12 +161,9 @@ class _BroadcastValueStream<T> extends _SubjectBroadcastStream<T>
   @override
   T? get valueOrNull => _subject.valueOrNull;
 
-  /// Returns the last emitted event (either data/value or error event).
+  /// Returns the last emitted event (either data/value or error event, with
+  /// its stack trace), as the [BehaviorSubject] does.
   /// `null` if no value or error events have been emitted yet.
   @override
-  StreamNotification<T>? get lastEventOrNull => hasValue
-      ? StreamNotification<T>.data(value)
-      : hasError
-      ? StreamNotification<T>.error(error)
-      : null;
+  StreamNotification<T>? get lastEventOrNull => _subject.lastEventOrNull;
 }

@@ -6,19 +6,31 @@ import 'package:quiver/collection.dart';
 import 'package:tekartik_app_emit/emit.dart';
 import 'package:tekartik_app_pager/src/data.dart';
 
-/// Provider to implement.
+/// The source of a [Pager], read by offset/limit.
 abstract class PagerDataProvider<T> {
-  /// Get the total number of items
+  /// Get the total number of items (called by [Pager.getItemCount] each
+  /// time).
   Future<int> getItemCount();
 
-  /// Get a page of result.
+  /// Get at most [limit] items from [offset], fewer (or none) past the end.
+  ///
+  /// An error completes the items waiting for this page with it.
   Future<List<T>> getData(int offset, int limit);
 }
 
-/// A pager helps on getting/caching items by page
+/// Reads items by index from a [PagerDataProvider], a page at a time.
+///
+/// Pages are kept in an LRU cache of `cachePageCount` pages, at most
+/// `poolSize` [PagerDataProvider.getData] run at once, and a page whose
+/// readers all cancelled before its fetch started is not fetched.
 class Pager<T> {
+  /// Default number of items per page.
   static const int defaultPageSize = 50;
+
+  /// Default number of pages kept in the cache.
   static const int defaultCachePageCount = 4;
+
+  /// Default number of concurrent [PagerDataProvider.getData] calls.
   static const int defaultPoolSize = 4;
 
   final Pool _pool;
@@ -54,12 +66,18 @@ class Pager<T> {
     return page * _pageSize;
   }
 
-  /// Use the provider
+  /// The item count of the provider (not cached).
   Future<int> getItemCount() {
     return _provider.getItemCount();
   }
 
-  /// If you don't want the item any more, you can call cancel
+  /// The item at [index] (`>= 0`), null past the end.
+  ///
+  /// Already completed when its page is cached (`toFutureOr()` is then the
+  /// item itself). Cancel the subscription of `listen` when the item is no
+  /// longer needed: a page whose readers all cancelled before its fetch is
+  /// not fetched. A [PagerDataProvider.getData] error completes the item
+  /// with that error.
   EmitFutureOr<T?> getItemFutureOr(int index) {
     var page = _getItemIndexPage(index);
     var data = _pageCache[page];
@@ -70,8 +88,9 @@ class Pager<T> {
         _pageCache[page] = data;
       }
       data.indecies.add(inPageIndex);
-      // can be cancelled later
-      final controller = EmitFutureOrController<T>();
+      // can be cancelled later. Typed T? as the returned value: an index past
+      // the end of the page completes with null.
+      final controller = EmitFutureOrController<T?>();
 
       bool needFetch() {
         return !(controller.isCompleted) && (data!.needFetch);
@@ -79,20 +98,28 @@ class Pager<T> {
 
       unawaited(
         _pool.withResource(() async {
-          // Don't fetch if not needed
-          if (needFetch()) {
-            await data!.lock.synchronized(() async {
-              if (needFetch()) {
-                data!.items = await _provider.getData(
-                  _getPageProviderOffset(page),
-                  _pageSize,
-                );
-                // Complete if needed too
-              }
-            });
-          }
-          if (!controller.isCompleted && data!.items != null) {
-            controller.complete(data.getItem(inPageIndex));
+          try {
+            // Don't fetch if not needed
+            if (needFetch()) {
+              await data!.lock.synchronized(() async {
+                if (needFetch()) {
+                  data!.items = await _provider.getData(
+                    _getPageProviderOffset(page),
+                    _pageSize,
+                  );
+                  // Complete if needed too
+                }
+              });
+            }
+            if (!controller.isCompleted && data!.items != null) {
+              controller.complete(data.getItem(inPageIndex));
+            }
+          } catch (e, st) {
+            // A provider error goes to the item (the page is fetched again
+            // on the next access).
+            if (!controller.isCompleted) {
+              controller.completeError(e, st);
+            }
           }
         }),
       );

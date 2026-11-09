@@ -27,7 +27,6 @@ with `{{p1}}` placeholders.
       git:
         url: https://github.com/tekartik/app_common_utils.dart
         path: app_intl
-      version: '>=0.1.0'
   ```
 * Imports: `package:tekartik_app_intl/intl.dart` for everything (render
   helpers + locale codes); `package:tekartik_app_intl/intl_codes.dart` when a
@@ -52,8 +51,8 @@ with `{{p1}}` placeholders.
 * `String intlRender(String template, {Map<String, String?>? data})` only does
   the `{{key}}` substitution; use it when you already hold the template
   (typical when a generated mixin's `t()` walks a list of maps). Values in
-  `data` must not be null for keys present in the template: `intlRender` does
-  `value!` and throws on a null.
+  `data` must not be null: `intlRender` does `value!` on every entry, even
+  for a name absent from the template, and throws on a null.
 * `TextLocale` is a simple value class around a name such as `en_US`; it has
   `==`/`hashCode`, so it works as a map key. Build one from a Flutter `Locale`
   with `TextLocale(locale.toString())`. Prefer the `enUsTextLocale` /

@@ -29,7 +29,6 @@ single import is enough.
       git:
         url: https://github.com/tekartik/app_common_utils.dart
         path: app_sqflite
-      version: '>=0.2.0'
   ```
 * Import `package:tekartik_app_sqflite/sqflite.dart` only: it re-exports
   `package:sqflite_common/sqlite_api.dart`, so `Database`, `DatabaseFactory`,
@@ -44,25 +43,33 @@ single import is enough.
     `databaseFactoryFfiWeb`.
   * `DatabaseFactory getDatabaseFactory({String? packageName, String? rootPath,
     bool autoInit = true})` - same factory, with a per app databases location.
-  * `void sqfliteWindowsFfiInit()` - initializes `sqflite_common_ffi` (needed
-    on Windows during development to find `sqlite3.dll`); it is a no-op-ish
-    call on the other io platforms and throws `UnimplementedError` on the web.
+  * `void sqfliteWindowsFfiInit()` - `sqfliteFfiInit()` of
+    `sqflite_common_ffi`: on Windows it opens SQLite once in the main isolate
+    (needed before using the ffi factory there), a no-op on the other io
+    platforms; it throws `UnimplementedError` on the web (guard it in shared
+    code).
 * `packageName`/`rootPath` only change anything on **desktop** (Linux, Windows,
   macOS): the returned factory resolves relative paths under
   `<userAppDataPath>/<packageName>/databases` (or under `rootPath`), creates
   the parent directory on open/write, and returns that path from
   `getDatabasesPath()`. On mobile and the web both arguments are ignored.
   Pass one of them (typically a reverse DNS `packageName`) instead of relying
-  on the default desktop databases path.
+  on the default desktop databases path. Give an **absolute** `rootPath`: a
+  relative one is resolved a second time by the ffi factory (the files land in
+  `.dart_tool/sqflite_common_ffi/databases/<rootPath>`, not where
+  `getDatabasesPath()` says). `inMemoryDatabasePath`, `file:` uris and
+  `setDatabasesPath` work on such a factory since 2026-11-09 (before,
+  `:memory:` became a file and `setDatabasesPath` threw a
+  `LateInitializationError`).
 * `autoInit` (default `true`) makes `getDatabaseFactory()` call
   `sqfliteWindowsFfiInit()` for you. Keep it, or call
   `sqfliteWindowsFfiInit()` once at startup (that is what a plain
   `databaseFactory` user must do on Windows).
 * An absolute path is always used as-is; on mobile the plugin resolves a
-  relative path under its own databases directory. For a real Flutter app,
-  prefer `path_provider` + `package:path`'s `join` to build an absolute path,
-  as the README says, because `getDatabasesPath()` is only meaningful on
-  Android/iOS.
+  relative path under its own databases directory (`databases` next to
+  `files` on Android, Documents on iOS/macOS). For another folder in a
+  Flutter app, build an absolute path with `path_provider` + `package:path`'s
+  `join`.
 * Web: `databaseFactoryFfiWeb` needs its assets in `web/` - run
   `dart run sqflite_common_ffi_web:setup` once (it copies `sqlite3.wasm` and
   `sqflite_sw.js`). Without them the database fails to open at runtime.
@@ -74,9 +81,9 @@ single import is enough.
   `sqflite` plugin. Always `await db.close()` when done.
 * Tests: `inMemoryDatabasePath` (`:memory:`) with `databaseFactory` gives a
   fast, isolated database; `singleInstance` is forced to false for it.
-  Prefer it over a temporary file. On Linux/Windows the test process needs the
-  sqlite3 native library (`libsqlite3` / `sqlite3.dll`); call
-  `sqfliteWindowsFfiInit()` at the top of `main()`.
+  Prefer it over a temporary file. SQLite itself is bundled by the `sqlite3`
+  build hooks (`dart test`/`dart run` run them, nothing to install); call
+  `sqfliteWindowsFfiInit()` at the top of `main()` for Windows.
 * Only need a document/key-value store rather than SQL? `tekartik_app_sembast`
   layers sembast on top of the same factories.
 * Anti-patterns: importing `sqflite_common_ffi` in shared code; calling
@@ -130,6 +137,7 @@ Future<void> main() async {
 ### Per application databases location (desktop)
 
 ```dart
+import 'package:path/path.dart';
 import 'package:tekartik_app_sqflite/sqflite.dart';
 
 Future<void> main() async {
@@ -154,7 +162,10 @@ Future<void> main() async {
   await db.close();
 
   // Or an explicit root directory (tests, portable app, custom location).
-  var rootFactory = getDatabaseFactory(rootPath: '.dart_tool/my_app/databases');
+  // Absolute: a relative rootPath is resolved again by the ffi factory.
+  var rootFactory = getDatabaseFactory(
+    rootPath: absolute(join('.dart_tool', 'my_app', 'databases')),
+  );
   print(await rootFactory.databaseExists('data.db'));
   await rootFactory.deleteDatabase('data.db');
 }

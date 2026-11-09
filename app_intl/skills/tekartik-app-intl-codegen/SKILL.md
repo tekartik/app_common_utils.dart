@@ -28,7 +28,6 @@ mixin with one getter or method per key.
       git:
         url: https://github.com/tekartik/app_common_utils.dart
         path: app_intl
-      version: '>=0.1.0'
   ```
 * Import `package:tekartik_app_intl/build_intl.dart`; it exports exactly one
   name, `LocalizationProject`. It uses `dart:io`, so call it from a script or
@@ -39,8 +38,9 @@ mixin with one getter or method per key.
   `LocalizationProject(path, i18nPath: 'assets/l10n')`.
 * `LocalizationProject(String path, {String? i18nPath})` - `path` is the
   package directory (posix separators are fine, they are converted).
-  Useful members: `intlGetLocales()` (the `TextLocale`s found on disk, empty
-  and a message on stderr if the folder is missing), `intlLoadLocaleMap(
+  Useful members: `intlGetLocales()` (the `TextLocale`s found on disk, sorted
+  by name since 2026-11-09, empty and a message on stderr if the folder is
+  missing), `intlLoadLocaleMap(
   locale)`, `intlGetAssetFilePath(locale)` / `intlGetAbsoluteAssetFilePath(
   locale)`, `getAbsolutePath()`.
 * `intlFixJson({List<TextLocale>? localeList})` rewrites each JSON file with
@@ -50,7 +50,8 @@ mixin with one getter or method per key.
   (default `lib/src/text/localization_gen.dart`) from the `en_US` map and then
   runs `dart format` on it through `process_run`. It silently does nothing
   when `en_US.json` is missing unless `noEnUs: true`, in which case the first
-  locale found is used as the reference.
+  locale by name is used as the reference (since 2026-11-09; before, the
+  first of the directory listing, which depends on the file system).
 * `intlFixAndGenerate({bool noEnUs = false})` is the usual entry point: it is
   `intlGenerateFile` + `intlFixJson` in one call. The normal integration is a
   4 line `tool/generate_intl.dart` in the app that calls it (first example
@@ -64,6 +65,11 @@ mixin with one getter or method per key.
   (lower camel case, `_` separated words), a key `count{{n}}` becomes
   `String count({required String n}) => t('count', {'n': n});`, and the mixin
   ends with the abstract `String t(String key, [Map<String, String>? data]);`.
+  Parameter names are trimmed (`{{points, total}}` gives `'total': total`,
+  since 2026-11-09; the key was `' total'` before and `{{total}}` stayed in
+  the text). A key with an unclosed `{{` stops the generator with a
+  `RangeError`; a key that is not a valid Dart name once camel cased (`-`,
+  `.`, quotes) gives a file that does not compile.
   Implement `t` in your own `AppLocalizations` class using `intlText` /
   `intlRender` - see
   [tekartik-app-intl-text](../tekartik-app-intl-text/SKILL.md).
@@ -125,7 +131,7 @@ import 'package:tekartik_app_intl/build_intl.dart';
 Future<void> main() async {
   var project = LocalizationProject('test/project_no_en_us');
   // Without noEnUs, generation is skipped when en_US.json is missing;
-  // with it, the first locale found is used as the reference.
+  // with it, the first locale by name is used as the reference.
   await project.intlFixAndGenerate(noEnUs: true);
 }
 ```

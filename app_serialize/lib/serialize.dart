@@ -24,6 +24,12 @@ String _fixLinesStringForIoGit(String json) {
   return '${lines.join(separator)}$separator';
 }
 
+/// Writes `<entity>FromMap` and `<entity>ToMap` for [type] in
+/// `<dirname(src)>/<basenameWithoutExtension(src)>.g.dart`, which imports
+/// `basename(src)`: [src] is the file declaring [type].
+///
+/// Only the public, non final, nullable fields of [type] itself; reads
+/// `@JsonKey(name:)` and `@JsonKey(includeIfNull: false)`. Dart VM only.
 Future genSerializer({required String src, required Type type}) async {
   var classMirror = reflectClass(type);
 

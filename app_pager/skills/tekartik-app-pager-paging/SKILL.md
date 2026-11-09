@@ -29,7 +29,6 @@ the fetch started.
       git:
         url: https://github.com/tekartik/app_common_utils.dart
         path: app_pager
-      version: '>=0.1.0'
     tekartik_app_emit:
       git:
         url: https://github.com/tekartik/app_common_utils.dart
@@ -41,7 +40,10 @@ the fetch started.
 * Implement `PagerDataProvider<T>`: `Future<int> getItemCount()` and
   `Future<List<T>> getData(int offset, int limit)`. `getData` must honour
   both arguments and may return fewer than `limit` items at the end of the
-  source (return an empty list past the end, never throw).
+  source (return an empty list past the end). A `getData` error completes
+  the items waiting for that page with that error (since 2026-11-09: it was
+  uncaught and the items never completed); the page is fetched again on the
+  next access.
 * Create one `Pager<T>(provider: myProvider, pageSize: ..., cachePageCount:
   ..., poolSize: ...)` per source/query. Defaults are
   `Pager.defaultPageSize` (50), `Pager.defaultCachePageCount` (4 pages kept in
@@ -53,20 +55,21 @@ the fetch started.
   is already cached, the returned `EmitFutureOr` is already completed, so
   `toFutureOr()` gives the item synchronously - use that to render without a
   frame of placeholder.
-* Always keep `index` inside `0 ..< getItemCount()`. The declared value type
-  is `T?`, but the internal completer is typed `T`: for a non nullable `T`,
-  an index past the end (the page returned fewer items) completes with `null`
-  and throws an unhandled `TypeError` in the pool. Declare `Pager<T?>` /
-  `PagerDataProvider<T?>` if out of range reads must return `null` instead.
+* An index past the end (the page returned fewer items) gives `null`, cached
+  or not (since 2026-11-09: for a non nullable `T` on a page not cached yet,
+  it was an unhandled `TypeError` in the pool and an item that never
+  completed). Keep `index >= 0`: a negative index reads the end of page 0
+  (`-1 ~/ 50` is 0, `-1 % 50` is 49).
 * `pager.getItemCount()` just forwards to the provider on each call: it is not
   cached, so cache it yourself (typically once before building the list).
 * Cancellation is the reason to use this package: `var subscription =
   pager.getItemFutureOr(i).listen((item) {...}, onError: (_) {});` and call
   `subscription.cancel()` when the row is disposed/scrolled away. If every
   index of a page cancels before the pool starts the fetch, `getData` is never
-  called at all; a cancelled consumer sees an `EmitCancelException`, so always
-  pass an `onError` (or catch it around `toFuture()`) to avoid an unhandled
-  error.
+  called at all. A cancelled item completes with an `EmitCancelException`:
+  `toFuture()` throws it, `onError` gets it, a `listen` without `onError`
+  ignores it (app_emit, since 2026-11-09). Pass an `onError` anyway: a
+  provider error without one is uncaught.
 * Read a pending item with `await emitFutureOr.toFuture()`, or branch on
   `toFutureOr()` (`is Future<T?>`) to stay synchronous when cached. See
   `tekartik-app-emit-future-or`
@@ -123,7 +126,8 @@ Future<void> main() async {
   // Second page: getData(20, 20).
   print(await pager.getItemFutureOr(25).toFuture()); // item_25
 
-  // Never ask for an index >= getItemCount() with a non nullable item type.
+  // Past the end: null.
+  print(await pager.getItemFutureOr(1000).toFuture()); // null
 }
 ```
 
@@ -190,7 +194,7 @@ class RowController {
   RowController(Pager<String> pager, int index)
     : subscription = pager.getItemFutureOr(index).listen(
         (value) => print('row $index: $value'),
-        // Mandatory: a cancelled row completes with EmitCancelException.
+        // Gets the EmitCancelException of a cancel and the provider errors.
         onError: (Object error) {
           if (error is! EmitCancelException) {
             print('row $index failed: $error');

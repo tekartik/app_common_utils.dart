@@ -6,6 +6,9 @@ import 'package:process_run/process_run.dart';
 import 'package:sqflite_common/sqflite.dart' as sqflite;
 import 'package:sqflite_common_ffi/sqflite_ffi.dart' as ffi;
 
+/// sqflite_common `file:` uri prefix (`file::memory:`, `file:x.db?mode=ro`).
+const _fileUriPrefix = 'file:';
+
 sqflite.DatabaseFactory get _defaultDatabaseFactory =>
     // ignore: invalid_use_of_visible_for_testing_member
     sqflite.databaseFactoryOrNull ?? ffi.databaseFactoryFfi;
@@ -40,18 +43,26 @@ class _DatabaseFactory implements sqflite.DatabaseFactory {
   final String? packageName;
   final String? rootPath;
   final sqflite.DatabaseFactory delegate;
-  late final String databasesPath;
+
+  /// Changed by [setDatabasesPath].
+  String databasesPath;
   _DatabaseFactory({
     required this.packageName,
     required this.rootPath,
     required this.delegate,
-  }) {
-    databasesPath = packageName != null
-        ? join(userAppDataPath, packageName, 'databases')
-        : rootPath!;
-  }
+  }) : databasesPath = packageName != null
+           ? join(userAppDataPath, packageName, 'databases')
+           : rootPath!;
+
+  /// In memory (`:memory:`, `file::memory:`) and `file:` uri paths are given
+  /// as is to the delegate, as sqflite_common does.
+  bool _isSpecialPath(String path) =>
+      path == sqflite.inMemoryDatabasePath || path.startsWith(_fileUriPrefix);
 
   String _fixPath(String path) {
+    if (_isSpecialPath(path)) {
+      return path;
+    }
     if (!isAbsolute(path)) {
       path = join(databasesPath, path);
     }
@@ -59,6 +70,9 @@ class _DatabaseFactory implements sqflite.DatabaseFactory {
   }
 
   String _fixAndCreatePath(String path) {
+    if (_isSpecialPath(path)) {
+      return path;
+    }
     path = _fixPath(path);
     try {
       var dir = Directory(dirname(path));

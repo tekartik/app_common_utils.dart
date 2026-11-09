@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+/// The lookup key of a JSON key: without its `{{...}}` parameter suffix
+/// (`welcome{{name}}` gives `welcome`).
 String intlSafeKey(String key) {
   var paramIndex = key.indexOf('{{');
   if (paramIndex != -1) {
@@ -10,6 +12,8 @@ String intlSafeKey(String key) {
   return key;
 }
 
+/// A decoded JSON localization [map] with its keys passed to [intlSafeKey],
+/// as [intlText] expects.
 Map<String, String> intlSafeLocalizationMap(Map map) {
   var newMap = <String, String>{};
   for (var entry in map.entries) {
@@ -18,7 +22,11 @@ Map<String, String> intlSafeLocalizationMap(Map map) {
   return newMap;
 }
 
-/// Localization map must be a safe localization map
+/// The text of [key] rendered with [data] (see [intlRender]), from
+/// [localizationMap], else from [defaultLocalizationMap], else `[key]`.
+///
+/// Localization maps must be safe localization maps
+/// ([intlSafeLocalizationMap]).
 String intlText(
   Map<String, String> localizationMap,
   String key, {
@@ -30,6 +38,9 @@ String intlText(
   return intlRender(text, data: data);
 }
 
+/// [template] with each `{{name}}` replaced by `data[name]`.
+///
+/// A null value in [data] throws, even for a name absent from [template].
 String intlRender(String template, {Map<String, String?>? data}) {
   var text = template;
   data?.forEach((key, value) {
@@ -38,7 +49,8 @@ String intlRender(String template, {Map<String, String?>? data}) {
   return text;
 }
 
-/// Load localization map from an asset
+/// Decodes a JSON localization map (the content of an
+/// `assets/i18n/<locale>.json` file) as a safe localization map.
 Map<String, String> intlDecodeLocalizationMap(String json) {
   var src = jsonDecode(json) as Map;
   return intlSafeLocalizationMap(src);

@@ -18,6 +18,11 @@ script reflects one class with `dart:mirrors` and writes the `fromMap`/`toMap`
 pair next to the model file. The generated file is plain Dart with no runtime
 dependency on this package.
 
+The library is `@Deprecated`, as `dart:mirrors` (Dart 3.14): it keeps
+working on the VM (import it with `// ignore: deprecated_member_use`), new
+code should generate with `build_runner` (`json_serializable`) or use `cv`
+models.
+
 ## Guidelines
 
 * Not on pub.dev, depend on it through git. It is a dev-time tool (the
@@ -32,7 +37,6 @@ dependency on this package.
       git:
         url: https://github.com/tekartik/app_common_utils.dart
         path: app_serialize
-      version: '>=0.1.0'
   ```
 * The whole API is one function, from
   `package:tekartik_app_serialize/serialize.dart`:
@@ -98,6 +102,8 @@ dependency on this package.
 // tool/generate_serializers.dart, run with:
 //   dart run tool/generate_serializers.dart
 import 'package:json_annotation/json_annotation.dart';
+// Deprecated with dart:mirrors (Dart 3.14), still working on the VM.
+// ignore: deprecated_member_use
 import 'package:tekartik_app_serialize/serialize.dart';
 
 // In a real project this class lives in the file passed as `src` and is
@@ -174,6 +180,8 @@ void main() {
 ### Inherited fields are not generated
 
 ```dart
+// Deprecated with dart:mirrors (Dart 3.14), still working on the VM.
+// ignore: deprecated_member_use
 import 'package:tekartik_app_serialize/serialize.dart';
 
 class Base {

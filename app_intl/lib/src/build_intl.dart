@@ -25,16 +25,20 @@ Map<String, String?> intlFixMap(Map<String, String> map) {
   return newMap;
 }
 
+/// A package with localization files in `<path>/<i18nPath>/<locale>.json`:
+/// sorts them ([intlFixJson]) and generates the Dart accessors
+/// ([intlGenerateFile]), both with [intlFixAndGenerate].
 class LocalizationProject {
-  /// The path
+  /// The package path
   late final String path;
 
   /// Can be relative (to path) or absolute
   late final String i18nPath;
+
+  /// Shell in the package (runs `dart format`).
   late final shell = Shell(workingDirectory: getAbsolutePath());
 
-  /// [u18nPath] default to assets/i18n
-  /// posix [path] ok
+  /// [i18nPath] defaults to `assets/i18n`, [path] can be posix.
   LocalizationProject(String path, {String? i18nPath}) {
     this.path = toNativePath(path);
     this.i18nPath = i18nPath ?? _i18nPath;
@@ -61,7 +65,8 @@ class LocalizationProject {
         .cast<String, String>();
   }
 
-  // Read local from json files
+  /// Read locales from json files, sorted by name (the directory listing
+  /// order depends on the file system).
   Future<List<TextLocale>> intlGetLocales() async {
     try {
       var jsonFilenames =
@@ -74,7 +79,9 @@ class LocalizationProject {
                     withoutExtension(element).split('_').length == 2 &&
                     extension(element) == '.json',
               )
-              .map((e) => basenameWithoutExtension(e));
+              .map((e) => basenameWithoutExtension(e))
+              .toList()
+            ..sort();
       return jsonFilenames.map((e) => TextLocale(e)).toList();
     } catch (e) {
       stderr.writeln('intlGetLocales error $e');
@@ -82,6 +89,7 @@ class LocalizationProject {
     }
   }
 
+  /// Rewrites the json file of each locale (default: all) with sorted keys.
   Future<void> intlFixJson({List<TextLocale>? localeList}) async {
     localeList ??= await intlGetLocales();
     for (var locale in localeList) {
@@ -97,7 +105,8 @@ class LocalizationProject {
     ).writeAsString(_fixLinesStringForIoGit(jsonPretty(intlFixMap(map))!));
   }
 
-  // Default to
+  /// [intlGenerateFile] then [intlFixJson]. Does nothing without `en_US`
+  /// unless [noEnUs] (the first locale by name is then the reference).
   Future intlFixAndGenerate({bool noEnUs = false}) async {
     var localeList = await intlGetLocales();
     if (!noEnUs) {
@@ -109,7 +118,9 @@ class LocalizationProject {
     await intlFixJson(localeList: localeList);
   }
 
-  // Default to
+  /// Writes `mixin AppLocalizationsMixinGen` (one getter or method per key of
+  /// the `en_US` file, or of the first locale by name with [noEnUs]) to
+  /// [file] (default `lib/src/text/localization_gen.dart`) and formats it.
   Future intlGenerateFile({String? file, bool noEnUs = false}) async {
     var localeList = await intlGetLocales();
     if (!noEnUs && !localeList.contains(enUsTextLocale)) {
@@ -132,7 +143,12 @@ class LocalizationProject {
           key = key.substring(0, paramIndex);
         }
 
-        params = paramText.substring(0, endIndex).split(',');
+        // Trimmed: `{{points, total}}` placeholders are `{{total}}`.
+        params = paramText
+            .substring(0, endIndex)
+            .split(',')
+            .map((param) => param.trim())
+            .toList();
       }
       var dartKey = fixKeyName(key);
       if (params != null) {

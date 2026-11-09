@@ -27,7 +27,6 @@ explicitly (or by an `AutoDispose` holder).
       git:
         url: https://github.com/tekartik/app_common_utils.dart
         path: app_rx
-      version: '>=0.1.0'
   ```
 * Three entry points, each re-exporting `package:rxdart/rxdart.dart` so a
   single import is enough:
@@ -43,15 +42,19 @@ explicitly (or by an `AutoDispose` holder).
   `BehaviorSubject`. It does not listen to the source until the first
   `listen()`/`first`, every listener gets the current value immediately, and
   `value`, `valueOrNull`, `hasValue`, `hasError`, `error`, `errorOrNull`,
-  `stackTrace` and `lastEventOrNull` are available.
+  `stackTrace` and `lastEventOrNull` are available. `lastEventOrNull` is the
+  last event, a value or an error with its stack trace, as for a
+  `BehaviorSubject` (since 2026-11-09: an error after a value gave the
+  value).
 * `stream.toBroadcastStream()` is the same without value replay (a
   `PublishSubject`): use it for events, where a late listener must not see the
   previous one. Beware of the name: this is the extension from this package,
   it shadows nothing but is not `Stream.asBroadcastStream()`.
 * `toBehaviorSubject()` is `@Deprecated('Use toBroadcastValueStream')`. It
   differs in one way: it cancels the source subscription when the last
-  listener leaves and never re-subscribes. Migrate to
-  `toBroadcastValueStream()`.
+  listener leaves and listens to the source again on the next first
+  listener, which throws `Bad state: Stream has already been listened to`
+  for a single subscription source. Migrate to `toBroadcastValueStream()`.
 * Both wrappers subscribe once and keep the subscription until `close()`, even
   when all listeners cancel. Always `await stream.close()` (it cancels the
   source subscription and closes the subject) - a leak otherwise, especially
