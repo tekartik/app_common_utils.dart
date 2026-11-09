@@ -50,9 +50,14 @@ or in a plain server class.
   `audiDispose(_maybeSub)` is safe); `audiDisposeFunction(fn)` does the same
   for a function registered with `audiAddFunction`. Both are no-ops if the
   entry was already disposed, which makes re-subscription loops safe.
-* Objects are keyed by identity in a map: registering the *same* object twice
+* Objects are keys of a map (compared with `==`, identity for subscriptions
+  and controllers): registering the *same* (or an equal) object twice
   replaces the first disposer. Register each subscription/controller instance
   once.
+* `audiDisposeAll()` iterates the registered objects: a dispose callback must
+  not call `audiDispose`/`audiAdd` on the same owner (concurrent modification
+  error). Functions registered with `audiAddFunction` run first, then the
+  object disposers.
 * Implement `AutoDisposable` (a single `void selfDispose()`) on anything a
   parent should be able to dispose; `AutoDisposableMixin` gives a no-op
   implementation for leaf classes that have nothing to release.

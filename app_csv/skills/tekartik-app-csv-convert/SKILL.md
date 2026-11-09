@@ -54,24 +54,30 @@ so it runs on the VM, the web and Flutter.
     number, bool or date parsing. Convert explicitly, for instance with
     `int.tryParse` / `double.tryParse` or the `parseInt`/`parseBool` helpers
     of `tekartik_common_utils`.
-  * Rows shorter than the header throw a `RangeError`; sanitize or fix the
-    input first.
+  * A row shorter than the header gives `null` for its missing cells (it
+    threw a `RangeError` before 2026-11-09); the cells beyond the header are
+    dropped.
   * The default converter handles `\r\n` and `\n` line endings and quoted
     fields containing newlines (Google Sheets / Excel exports).
+  * Without `fieldDelimiter`, the delimiter is guessed from the first 10
+    lines (the most frequent of `,` `;` tab `|`, quotes not taken into
+    account): a one column file whose values contain `;` (`Doe; John`) is
+    split and loses the end of the values. Pass
+    `CsvToListConverter(fieldDelimiter: ',')` when you know it.
 * Converters: pass `converter: CsvToListConverter(fieldDelimiter: ';')` for
   semicolon files (common in French/German Excel exports).
   `CsvToListConverter` also accepts `eol:` and `csvSettingsDetector:` for
-  source compatibility with older code, but line endings are auto-detected by
-  the decoder. `csvToMapListDefaultCsvSettingsDetector` is the default
-  `FirstOccurrenceSettingsDetector(eols: ['\r\n', '\n'], textDelimiters:
-  ['"', "'"])` kept for the same reason. `ListToCsvConverter()` is const and
+  source compatibility with older code, but both are ignored: line endings
+  are auto-detected by the decoder and only `"` quotes a field.
+  `csvToMapListDefaultCsvSettingsDetector` (`FirstOccurrenceSettingsDetector(
+  eols: ['\r\n', '\n'], textDelimiters: ['"', "'"])`) is kept for the same
+  reason, its `'` text delimiter has no effect. `ListToCsvConverter()` is const and
   `convert(List<List>)` gives raw row-level encoding when you do not want the
   map API.
 * Excel: write the file as UTF-8 prefixed with `csvExcelCompatibilityBom`
-  (a `Uint8List` BOM) so Excel shows accented characters correctly.
-  `csvToMapList` tolerates a BOM-prefixed string on the way back only if you
-  strip it - decode the bytes with `utf8.decode` and remove the leading
-  `﻿` if your source may contain one.
+  (a `Uint8List` BOM) so Excel shows accented characters correctly. On the
+  way back `csvToMapList` ignores a leading BOM (`utf8.decode` drops it
+  too).
 * Anti-patterns: expecting typed values from `csvToMapList`; relying on key
   order across maps with different shapes instead of passing `columns:`;
   hand-joining strings with commas instead of using the converters (quoting

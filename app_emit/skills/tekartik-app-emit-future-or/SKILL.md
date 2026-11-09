@@ -37,9 +37,10 @@ available. Small pure Dart package: VM, web and Flutter.
   `StateError` (plain `Completer` semantics).
 * `EmitFutureOrController(value: v)` is completed at construction;
   `EmitFutureOrController<T?>(nullValue: true)` completes with `null`
-  (`value` wins over `nullValue`). `EmitFutureOr.withValue(v)` is the
-  shortcut for an immediate non-null value; do not pass `null` to it (it
-  would stay pending), build a controller with `nullValue: true` instead.
+  (`value` wins over `nullValue`; `value: null` alone stays pending).
+  `EmitFutureOr.withValue(v)` is the shortcut for an immediate value, `null`
+  included for a nullable `T` (since 2026-11-09; before, `withValue(null)`
+  stayed pending).
 * `cancel({reason})` completes a pending controller with
   `EmitCancelException(reason)` and sets `isCancelled`; it is safe to call
   at any time and more than once, also after a normal completion (then
@@ -55,17 +56,23 @@ available. Small pure Dart package: VM, web and Flutter.
   the value is already there `onValue` runs synchronously inside `listen`,
   otherwise when the value arrives. `onError` is called with
   `(error, stackTrace)` or, if that signature fails, with `(error)`.
-  `onValue` may be `null`. A controller supports a single listener.
+  `onValue` may be `null`. Several `listen` calls each get the value, but
+  a `subscription.cancel` cancels the controller for all of them.
 * `subscription.cancel({reason})` cancels the underlying controller (the
   producer sees `isCancelled`); `subscription.asFutureOr()` is the same as
   `toFutureOr()`.
 * The completer is synchronous: `then` callbacks and listeners run during
   `complete`/`cancel`, before it returns. Keep them cheap and never call
   `complete` on the same controller from inside one.
-* Attach the consumer (`listen` with `onError`, `expectLater`, a `then`
-  with error handling) before cancelling a pending controller: cancelling
-  a future nobody listens to reports an unhandled `EmitCancelException`
-  in the current zone immediately, which fails a `test`.
+* A cancel is never an uncaught error by itself: a cancel or `close()`
+  nobody listens to is silent, a later `toFuture()` / `listen` still gets
+  the `EmitCancelException`, and a `listen` without `onError` ignores it
+  (any other error without `onError` is uncaught, as for a stream). Before
+  2026-11-09 both cases reported an unhandled `EmitCancelException` in the
+  zone (a failed `test`, a Flutter error report).
+* `complete` after a completion throws `StateError` but already replaced
+  the value `toFutureOr()` returns: never catch it to "complete if
+  needed", check `isCompleted` first.
 * `toString()` prints `toDebugModel()` (a `package:cv` `Model` with the
   completer identity, `completed`, `error` and `value`), handy in logs.
 * Tests: `dart test` (pure Dart, also fine with `-p chrome`).

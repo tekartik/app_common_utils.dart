@@ -98,6 +98,13 @@ Flutter, web with `sembast_web`).
   fills such models with deterministic values in tests.
 * Records compare by content (`==` from cv), not by key: compare `rawRef`
   when identity matters.
+* The lists returned by `find`, `getRecords`, `snapshots.cv()` and
+  `records(keys).get` are read-only (lazy conversion): copy them
+  (`toList()`) before sorting or adding.
+* Require sembast 3.10.1 or later: in a transaction that changed records,
+  older versions gave wrong `find` results with a `limit`/`offset` and no
+  sort order, and wrong delete counts (`List<DbRecord>.delete` with a
+  record twice, `store.delete(client, finder:)`).
 * Compat aliases (`CvStoreRef`, `CvRecordRef`, `CvRecordsRef`,
   `CvQueryRef`, `cvIntStoreFactory`, `cvStringStoreFactory`) exist for old
   code and `cvIntRecordFactory` / `cvStringRecordFactory` are deprecated:

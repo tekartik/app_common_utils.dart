@@ -43,11 +43,16 @@ This skill covers the small standalone helpers; see the sibling skills for
     parse errors through.
   * `Model? decodeYamlMapOrNull(String? yaml)` - returns `null` for a null
     input or a non-map document, so it is the right call for optional config
-    files.
-* The result is a plain deep-converted model: nested maps become `Model`s,
-  read them with the `cv` accessors (`model['key']`,
-  `model.getValue<String>('key')`) or build a `CvModel` from it. Unlike
-  `loadYaml`, the result is mutable and JSON-encodable.
+    files. Invalid YAML still throws a `YamlException`.
+* The result is a read-only `Model` view of the `YamlMap` (not a deep
+  copy): read it with the `cv` accessors (`model['key']`,
+  `model.getValue<String>('key')`) or build a `CvModel` from it
+  (`model.cv<MyModel>()`). Nested maps are `YamlMap`s: cast them to `Map`,
+  not to `Model` (`as Model` throws a `TypeError`), and lists are
+  `YamlList`s. Writing throws `UnsupportedError`; copy it first
+  (`Map<String, Object?>.of(model)`, nested values stay read-only) when you
+  need to change it. A key that is not a string (`1: a`) throws a
+  `TypeError` when read. `jsonEncode(model)` works for string keys.
 
 ### Assets
 
@@ -95,7 +100,7 @@ flags:
   Model model = decodeYamlMap(text);
   print(model['name']); // my_app
   print(model.getValue<String>('version')); // 1.2.3
-  print((model['flags'] as Model)['debug']); // true
+  print((model['flags'] as Map)['debug']); // true (a YamlMap)
 
   // Optional file content: null in, null out, no throw on a non map document.
   Model? optional = decodeYamlMapOrNull(null);

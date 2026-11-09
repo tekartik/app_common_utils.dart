@@ -41,10 +41,10 @@ AES key for the package's encryption helpers.
   helpers of this package (`encrypt`, `aesEncrypterFromPassword`,
   `defaultEncryptCodec`), which need a key of exactly that many UTF-8 bytes.
   The generated characters are all ASCII, so length == byte count.
-* It uses `Random()` (not `Random.secure()`), so treat it as a convenience
-  generator for local/dev secrets, seeds and test fixtures. For a
-  high-value secret, generate it with `Random.secure()` or outside the app,
-  and store it in your secret manager - not in the repo.
+* It uses `Random.secure()` (since 2026-11-09, `Random()` before: regenerate
+  the keys generated with an older version if they matter). 32 characters
+  out of 55 carry about 185 bits. Store a generated key in your secret
+  manager - not in the repo.
 * Anti-patterns: calling `generatePassword()` at each run and wondering why
   previously encrypted data no longer decrypts (persist the generated
   password); assuming `generatePassword` includes symbols (it does not);

@@ -33,7 +33,8 @@ class EncryptCodec with Codec<String, String> {
       EncryptConverter(encrypter: encrypter);
 }
 
-/// String password - fixed IV with 0
+/// String password - fixed IV with 0 (legacy, see `encrypt` for its
+/// weakness).
 EncryptCodec defaultEncryptCodec({required String rawPassword}) =>
     EncryptCodec(encrypter: defaultEncryptedFromRawPassword(rawPassword));
 

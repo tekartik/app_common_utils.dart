@@ -5,7 +5,8 @@ import 'package:tekartik_encrypt/encrypt.dart';
 
 import 'encrypt.dart';
 
-/// Simple md5 hash
+/// A 16 characters AES password from any text: base64 of its MD5 (one
+/// unsalted hash, as strong as the text only).
 String encryptTextPassword16FromText(String password) {
   return base64Encode(
     md5.convert(utf8.encode(password)).bytes,
@@ -81,8 +82,9 @@ class AesWithIVEntrypter extends _AesStringEncrypter {
 ///
 /// returns a base 64 encrypted string.
 ///
-/// Encryption used is AES. Calling multiple times will not return the same
-/// result as a salt is added to the input.
+/// Encryption used is AES (CTR mode) with a random IV prepended to the
+/// output: calling multiple times will not return the same result. There is
+/// no integrity check (no MAC): a modified text can decrypt to a chosen text.
 String aesEncrypt(String decoded, String password) =>
     aesEncrypterFromPassword(password).encrypt(decoded);
 

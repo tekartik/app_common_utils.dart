@@ -2,11 +2,15 @@ import 'package:tekartik_common_utils/date_time_utils.dart';
 
 import 'calendar_time.dart';
 
-/// Calendar day
+/// A date without time nor time zone (`2024-05-07`), stored as midnight UTC.
+///
+/// Immutable, comparable and usable as a map key. Build it from a [text], a
+/// [DateTime] or [CalendarDay.fromLocalDateTime] for the user's date.
 class CalendarDay implements Comparable<CalendarDay> {
   late final DateTime _dateTime;
 
-  /// Today
+  /// The UTC date of now (at 00:30 in Paris, still yesterday): use
+  /// `CalendarDay.fromLocalDateTime(DateTime.now())` for the local date.
   factory CalendarDay.today() {
     return CalendarDay.fromTimestamp(DateTime.timestamp());
   }
@@ -103,13 +107,22 @@ CalendarDay? parseCalendarDay(String text) {
   }
 }
 
-// Return a time in the even timezone as UTC
+/// The UTC date time of [time] on [day] (both read as UTC).
 DateTime dayTimeToDateTime(CalendarDay day, CalendarTime time) {
   var dateTime = day.dateTime;
   return dateTime.add(Duration(seconds: time.seconds));
 }
 
+/// The local date time of [time] on [day] (wall clock time, also on daylight
+/// saving time change days).
 DateTime dayTimeToLocalDateTime(CalendarDay day, CalendarTime time) {
-  var dateTime = day.localDateTime;
-  return dateTime.add(Duration(seconds: time.seconds));
+  var dateTime = day.dateTime;
+  return DateTime(
+    dateTime.year,
+    dateTime.month,
+    dateTime.day,
+    0,
+    0,
+    time.seconds,
+  );
 }

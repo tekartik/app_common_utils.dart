@@ -78,11 +78,15 @@ and indexes) so stores are typed by a record class: an `ScvRecord` is a
   field is used as the key). Without either, write with
   `store.record(key).put(db, record)` or through a record whose `ref` is
   set.
-* On a `keyPath` store only `add` (store or record), `get`, `delete` and
-  the queries work: `put` and `update` pass an explicit key, which
-  IndexedDB rejects on an in-line key store (the transaction aborts with
-  `DatabaseException: Aborted`). Use a plain `autoIncrement` store (no
-  `keyPath`) for records that get updated in place.
+* On a `keyPath` store every method works: `put` and `update` write the
+  key in the key path field of the value (IndexedDB refuses an explicit key
+  on an in-line key store, the helpers handle it).
+* A failed write (a duplicate on a `unique` index...) throws the error of
+  the write: a `DatabaseError` (an `Error`, from
+  `package:idb_shim/idb.dart`) since idb_shim 2.11.3 (it was a
+  `DatabaseException: Aborted`).
+* Index queries return read-only lists (copy with `toList()` before
+  sorting); the store queries return regular lists.
 * `ScvRecordRef<K, V>` (`key`, `store`, `rawRef`): `get(client)` (`V?`),
   `exists(client)`, `put(client, value)` (upsert, returns a clone of
   `value` carrying the ref, the argument is untouched), `add(client,
@@ -197,8 +201,7 @@ Future<void> main() async {
 import 'package:tekartik_app_cv_sdb/app_cv_sdb.dart';
 
 /// The key also lives in the record (`id` field, keyPath) and is generated
-/// by the store (autoIncrement). Such records are inserted and deleted, not
-/// updated in place.
+/// by the store (autoIncrement).
 class DbEvent extends ScvIntRecordBase {
   final recId = CvField<int>('id');
   final name = CvField<String>('name');

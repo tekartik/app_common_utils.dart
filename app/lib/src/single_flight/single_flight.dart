@@ -1,6 +1,7 @@
 import 'package:tekartik_app_common_utils/common_utils_import.dart';
 
-/// Single flight
+/// Shares one execution of an async action between concurrent callers and
+/// keeps its last result.
 abstract class SingleFlight<T> {
   /// Single flight
   factory SingleFlight(Future<T> Function() action) => _SingleFlight<T>(action);
@@ -9,6 +10,8 @@ abstract class SingleFlight<T> {
   ///
   /// If an action is already running, this will schedule a new run after the current one finishes
   /// (if one is not already scheduled).
+  ///
+  /// Throws a [StateError] (synchronously) after [close].
   Future<T> run();
 
   /// Wait for current execution if running, or return the last result. null if never ran.
@@ -16,7 +19,8 @@ abstract class SingleFlight<T> {
 
   /// Ensure a result is available.
   ///
-  /// If never ran returns trigger a run.
+  /// Returns the running or last result, runs the action if it never ran (or
+  /// gave null). Concurrent first calls share a single run.
   Future<T> waitOrRun();
 
   /// Close the single flight and release resources. After this, the instance should not be used.
@@ -178,7 +182,15 @@ class _SingleFlight<T> implements SingleFlight<T> {
   ///
   /// If never ran start execution.
   Future<T> _waitOrRun({int? timestamp}) async {
-    var result = await wait();
+    // Checked synchronously: concurrent first callers share a single run
+    // (awaiting wait() first let each of them start its own).
+    var pending = _nextFuture ?? _currentFuture;
+    T? result;
+    if (pending != null) {
+      result = await pending;
+    } else if (_hasResult) {
+      result = _lastResult;
+    }
     if (result == null) {
       return _run(timestamp: timestamp);
     }

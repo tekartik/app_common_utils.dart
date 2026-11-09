@@ -4,7 +4,11 @@ import 'package:tekartik_common_utils/list_utils.dart';
 
 const _typeKey = 'type';
 
-/// JSON shema using the cv package
+/// JSON schema using the cv package.
+///
+/// Built with its subclasses ([CvJsonSchemaMap], [CvJsonSchemaString]...),
+/// converted with [CvJsonSchemaExt.toJsonSchema]. Write only: a stored map
+/// cannot be read back into a [CvJsonSchema] (no cv builder).
 abstract class CvJsonSchema extends CvModelBase {
   /// Description
   CvField<String> get description;
@@ -166,7 +170,8 @@ abstract class CvJsonSchemaMap implements CvJsonSchema {
   /// Properties
   CvModelMapField<CvJsonSchema> get properties;
 
-  /// Optional properties
+  /// Required properties: the properties not in `optionalProperties` (null
+  /// when none).
   CvListField<String> get required;
 
   /// Constructor
@@ -183,7 +188,7 @@ abstract class CvJsonSchemaMap implements CvJsonSchema {
     optionalProperties: optionalProperties,
   );
 
-  /// Optional properties getter
+  /// Optional properties getter (null when none).
   List<String>? get optionalProperties;
 }
 
@@ -346,6 +351,7 @@ class _CvJsonSchemaMap extends _CvJsonSchemaBase implements CvJsonSchemaMap {
 
   @override
   List<String>? get optionalProperties {
-    return _mapKeysWithout(properties.v!, required.v!);
+    // required is null when no property is required.
+    return _mapKeysWithout(properties.v!, required.v);
   }
 }

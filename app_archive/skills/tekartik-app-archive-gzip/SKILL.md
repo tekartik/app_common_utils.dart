@@ -40,17 +40,27 @@ exist in a browser.
   `package:tekartik_common_utils/byte_utils.dart` before calling.
 * `noDate: true` zeroes the 4 mtime bytes (header offsets 4..7) of the gzip
   header. Pass it whenever the output is hashed, compared, cached by content
-  or stored in a git-tracked file: without it the same input produces
-  different bytes on every call.
+  or stored in a git-tracked file: on the web the encoder writes the current
+  time (in seconds) there, so the same input gives other bytes a second
+  later (the VM and Flutter, through `dart:io` zlib, already write 0).
 * `operatingSystem:` overwrites header byte 9. Use the provided constants
   `gzipOperatingSystemLinux` (3) or `gzipOperatingSystemUnknown` (255) to pin
-  it, again for reproducible output (the value `package:archive` writes can
-  change between versions).
+  it, again for reproducible output (`dart:io` zlib writes its own OS code,
+  3 on Linux; the web encoder writes 255).
+* Reproducible means identical bytes from one call to the next on one
+  platform. The compressed body comes from `dart:io` zlib on the VM and in
+  Flutter and from `package:archive`'s Dart port on the web: identical
+  output between them is not guaranteed.
 * There is no streaming API and no file API: everything is in memory, so keep
   payload sizes reasonable (a few MB) especially on the web.
-* Decoding invalid data throws from `package:archive` (`ArchiveException` /
-  `FormatException`); catch around `ungzipBytes`/`ungzipText` when the input
-  comes from the network or from user files.
+* Decoding invalid, cut or modified data throws an `ArchiveException` (a
+  `FormatException`; `ArchiveChecksumException` for a wrong CRC), and
+  `ungzipText` throws a `FormatException` for bytes that are not UTF-8:
+  catch `FormatException` around `ungzipBytes`/`ungzipText` when the input
+  comes from the network or from user files. Since 2026-11-09 the decoding
+  checks the CRC (`verify: true`): with `package:archive` 4.6.0, whose
+  decoders no longer throw by default, a damaged input gave empty, partial
+  or wrong bytes without error.
 * Anti-patterns: expecting `gzipBytes` output to be stable without
   `noDate: true`; passing a `List<int>` where a `Uint8List` is required;
   reaching for `dart:io`'s `GZipCodec` in code shared with web targets.

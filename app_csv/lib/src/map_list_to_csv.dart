@@ -38,11 +38,13 @@ String mapListToCsv(
     // Fix missing key
     map.forEach((key, value) {
       value ??= nullValue;
-      var keyIndex = keyIndexMap[key];
+      // Columns are named by the key text (the map can have any key type).
+      var keyText = key.toString();
+      var keyIndex = keyIndexMap[keyText];
       if (keyIndex == null) {
         // New key is found
         // Add it and fix previous data
-        keyIndex = addKey(key.toString());
+        keyIndex = addKey(keyText);
         // grow our list
         dataRow = List.from(dataRow, growable: true)..add(value);
       } else {

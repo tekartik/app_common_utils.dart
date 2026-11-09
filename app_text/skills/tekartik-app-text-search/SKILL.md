@@ -44,7 +44,9 @@ used as an id: accents removed, non alphanumeric runs collapsed, lower case.
   `'ele_ve'`. Use it for slug-like database ids and as a comparison key.
   Warning (as the doc comment says): it is lossy, different texts can produce
   the same string, so never use it as a unique key without a disambiguator.
-  Non latin scripts collapse to an empty string.
+  Only `[a-zA-Z0-9]` survives: non Latin scripts (Cyrillic, Greek, CJK) and
+  a text without letter nor digit (`'!'`, `' - '`, `'мир'`) give `''`
+  (before 2026-11-09 the second case threw a `RangeError`).
 * `sanitizeText(text)` returns a `SanitizedText` holding both `text` (the
   original) and `sanitizedString`. `sanitizedText.sanitizedWords` (extension
   `SanitizedTextExt`) splits the sanitized string on `_`, which is the word
@@ -55,7 +57,9 @@ used as an id: accents removed, non alphanumeric runs collapsed, lower case.
   while `hashCode` is the `sanitizedString` hash. Two values with the same
   sanitized string are unequal yet share a hash bucket - fine for a `Set`, but
   do not rely on it for deduplication; deduplicate on `sanitizedString`
-  yourself.
+  yourself. Build values with `sanitizeText`: two hand built values with the
+  same `text` and different `sanitizedString`s are `==` with different hash
+  codes.
 * `SearchTextFinder(searchText: input)` from
   `package:tekartik_app_text/search.dart` sanitizes the query once; build it
   once per query and reuse it for every candidate (in a list filter, a
@@ -66,9 +70,11 @@ used as an id: accents removed, non alphanumeric runs collapsed, lower case.
   * `findAllIn(text)` - the whole sanitized query must appear as a substring of
     the sanitized text, so word order and adjacency matter: `'ma el'` does not
     match `'Elev ma'` but matches `'ma Elev mca'`.
-  * an empty or blank `searchText` makes both return true for every text:
-    check `searchText.trim().isEmpty` first if an empty query should show
-    everything (or nothing) explicitly.
+  * an empty or blank `searchText`, and one made only of punctuation or non
+    Latin letters (`'?'`, `'мир'`), makes both return true for every text;
+    a non Latin word is dropped from a query (`'мир x'` matches
+    `'hello x'`). Check `sanitizeString(query).isEmpty` first if such a
+    query should show everything (or nothing) explicitly.
 * `stringSplitByWhitespace(input)` from `package:tekartik_app_text/split.dart`
   trims, splits on `\s+` and returns `[]` for an empty/blank string - unlike
   `input.split(' ')`, it never returns empty words. Punctuation is kept

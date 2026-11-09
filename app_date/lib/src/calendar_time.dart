@@ -13,6 +13,10 @@ String from2Digits(int value) {
   return sb.toString();
 }
 
+/// A time of day in [seconds] from midnight (`10:30`), that can go past
+/// 24:00 (`26:40`) or be negative (`-0:30`): also usable as a duration.
+///
+/// No `==`: compare [seconds] or use [compareTo].
 class CalendarTime implements Comparable<CalendarTime> {
   late int _seconds; // in seconds from midnight
   int get seconds => _seconds;
@@ -41,42 +45,38 @@ class CalendarTime implements Comparable<CalendarTime> {
   /// Seconds in the minute (>=0 <60)
   int get minuteSeconds => seconds % 60;
 
-  /// From '2000-01-01'
+  /// From '10:00', '1000', '10', '1:01:12' or '-0:30' (the sign applies to
+  /// the whole time).
   CalendarTime.fromText(String text) {
     try {
-      late List<String> parts;
-
-      if (text.length == 4) {
-        parts = [text.substring(0, 2), text.substring(2, 4)];
-        var hours = int.tryParse(parts[0]);
-        var minutes = int.tryParse(parts[1]);
-        if (hours != null && minutes != null) {
-          _seconds = (hours * 60 + minutes) * 60;
-          return;
-        }
-      }
-      parts = text.split(':');
-      var hourPart = parts[0];
-      var hours = parseInt(hourPart)!;
-      _seconds = hours * 60 * 60;
-
-      var negative = (_seconds < 0);
-      if (negative) {
-        _seconds = -_seconds;
-      }
-      if (parts.length > 1) {
-        _seconds += parseInt(parts[1])! * 60;
-        if (parts.length > 2) {
-          _seconds += parseInt(parts[2])!;
-        }
-      }
-
+      var negative = text.startsWith('-');
+      _seconds = _parseUnsignedSeconds(negative ? text.substring(1) : text);
       if (negative) {
         _seconds = -_seconds;
       }
     } catch (e) {
       throw ArgumentError.value('invalid $text $e');
     }
+  }
+
+  /// Seconds of 'HHMM' or 'H[:M[:S]]'.
+  static int _parseUnsignedSeconds(String text) {
+    if (text.length == 4) {
+      var hours = int.tryParse(text.substring(0, 2));
+      var minutes = int.tryParse(text.substring(2, 4));
+      if (hours != null && minutes != null) {
+        return (hours * 60 + minutes) * 60;
+      }
+    }
+    var parts = text.split(':');
+    var seconds = parseInt(parts[0])! * 60 * 60;
+    if (parts.length > 1) {
+      seconds += parseInt(parts[1])! * 60;
+      if (parts.length > 2) {
+        seconds += parseInt(parts[2])!;
+      }
+    }
+    return seconds;
   }
 
   CalendarTime.fromSeconds(int seconds) {
@@ -109,6 +109,8 @@ class CalendarTime implements Comparable<CalendarTime> {
   @override
   String toString() => 'Time($text)';
 
+  /// `HH:MM`, or `HH:MM:SS` when the seconds are not zero, `-` first when
+  /// negative (only 2 digits of hours are printed).
   String get text {
     if (isNegative) {
       return '-${negative.text}';

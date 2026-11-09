@@ -34,7 +34,8 @@ class TkAssetBundleMemory implements TkAssetBundle {
 
   @override
   Future<ByteData> loadByteData(String key) async {
-    return _loadBytes(key).buffer.asByteData();
+    // The stored bytes can be a view on a bigger buffer.
+    return ByteData.sublistView(_loadBytes(key));
   }
 
   Uint8List _loadBytes(String key) {

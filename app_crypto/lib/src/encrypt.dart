@@ -35,7 +35,10 @@ String _decrypt(String encoded, String password) {
 ///
 /// returns a base 64 encrypted string.
 ///
-/// Encryption used is AES.
+/// Encryption used is AES in CTR mode with a fixed all-zero IV: every value
+/// encrypted with a password uses the same key stream (one known value
+/// reveals the others) and nothing detects a modified text. Kept to read
+/// existing data, prefer `aesEncrypt` and never use it for secrets.
 String encrypt(String decoded, String password) => _encrypt(decoded, password);
 
 /// decrypt the [encoded] text using [password].
@@ -46,7 +49,10 @@ String encrypt(String decoded, String password) => _encrypt(decoded, password);
 /// Encryption used is AES.
 String decrypt(String encoded, String password) => _decrypt(encoded, password);
 
-/// Encrypt, decrypt helper
+/// Encrypt, decrypt helper.
+///
+/// None of the implementations of this package authenticates the text: a
+/// modified ciphertext can decrypt to a chosen text without error.
 abstract class StringEncrypter {
   String encrypt(String input);
 
@@ -67,7 +73,7 @@ class _DefaultEncrypter implements StringEncrypter {
   String encrypt(String input) => _encrypt(input, password);
 }
 
-/// Using AES,
+/// Using AES with a fixed zero IV (see [encrypt] for its weakness),
 /// [password] must be ascii character of length 16, 24 or 32.
 StringEncrypter defaultEncryptedFromRawPassword(String password) =>
     _DefaultEncrypter(password);

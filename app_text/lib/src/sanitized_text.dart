@@ -31,7 +31,7 @@ class SanitizedText implements Comparable<SanitizedText> {
 
 /// Extension for String to get sanitized text
 extension SanitizedTextExt on SanitizedText {
-  /// Search words (split by whitespace)
+  /// Search words (the sanitized string split on `_`).
   List<String> get sanitizedWords => sanitizedString.split('_');
 }
 
@@ -40,17 +40,18 @@ extension SanitizedTextExt on SanitizedText {
 /// can result the same sanitized string
 ///
 /// 'Héllo (world)' => 'hello_world'
+///
+/// Only `[a-zA-Z0-9]` is kept after removing the diacritics: a non Latin
+/// text (or one without letter nor digit) gives `''`.
 String sanitizeString(String text) {
   text = text.trim();
   text = removeDiacritics(text);
   text = replaceNonAlphaNumericWithSingle(text, replace: '_');
+  // Separately: a text with no letter nor digit is a single '_'.
   if (text.startsWith('_')) {
-    if (text.endsWith('_')) {
-      text = text.substring(1, text.length - 1);
-    } else {
-      text = text.substring(1);
-    }
-  } else if (text.endsWith('_')) {
+    text = text.substring(1);
+  }
+  if (text.endsWith('_')) {
     text = text.substring(0, text.length - 1);
   }
   text = text.toLowerCase();

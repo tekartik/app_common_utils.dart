@@ -33,12 +33,20 @@ extension LazyRunnerExtension on LazyRunner {
   bool get disposed => _self._disposed;
 }
 
-/// Lazy runner
+/// Runs an action in the background, never twice at the same time: the
+/// triggers arriving during a run give a single next run.
+///
+/// [trigger] does not report the action errors (printed in debug mode), use
+/// [triggerAndWait] to get the result or the error. Call [close] when done.
 abstract class LazyRunner<T> {
-  /// Trigger the action
+  /// Trigger the action (returns at once).
   void trigger();
 
-  /// Trigger the action and wait for it to finish and returns its future (error or success)
+  /// Trigger the action, wait for the run and return its result (or throw
+  /// its error).
+  ///
+  /// Fails with `StateError('disposed')` once closed, also when waiting
+  /// behind the last run.
   Future<T> triggerAndWait();
 
   /// Create a lazy runner controller
@@ -57,10 +65,10 @@ abstract class LazyRunner<T> {
 
   /// Wait for current and triggered action to finish
   ///
-  /// like waitCurrent if never ran
+  /// like waitCurrent if not triggered (null if never ran)
   Future<T?> waitTriggered();
 
-  /// dispose and wait for current action to finish
+  /// dispose and wait for current action to finish (no new run starts).
   Future<void> close();
 
   /// Get the last result
@@ -212,7 +220,14 @@ class _LazyRunner<T> implements LazyRunner<T> {
     _disposed = true;
     _lock.synchronized(() async {
       _triggerCompleter.safeComplete();
+      _completeDisposedWaiters();
     });
+  }
+
+  /// No action runs once disposed: the waiters added during the last action
+  /// get the error `_callAction` gives when disposed.
+  void _completeDisposedWaiters() {
+    _completeActionError(StateError('disposed'));
   }
 
   /// Dispose
@@ -225,6 +240,7 @@ class _LazyRunner<T> implements LazyRunner<T> {
 
     await _lock.synchronized(() async {
       _triggerCompleter.safeComplete();
+      _completeDisposedWaiters();
     });
   }
 
@@ -233,8 +249,13 @@ class _LazyRunner<T> implements LazyRunner<T> {
     if (_debug) {
       _log('manual trigger');
     }
-    var completer = _ActionCompleter<T>();
+    var completer = _newActionCompleter();
     await _lock.synchronized(() async {
+      if (_disposed) {
+        // No action will run any more.
+        completer.completeError(StateError('disposed'));
+        return;
+      }
       _triggerCompleter.safeComplete();
       _actionCompleters.add(completer);
     });
@@ -253,10 +274,13 @@ class _LazyRunner<T> implements LazyRunner<T> {
 
   _ActionCompleter<T> _newActionCompleter() {
     var completer = _ActionCompleter<T>();
+    // It can fail before its caller awaits it (disposed): not an uncaught
+    // error, the caller still gets it.
+    completer.future.ignore();
     return completer;
   }
 
-  /// Throws if never ran.
+  /// Returns the last result (null if never ran) when not triggered.
   @override
   Future<T?> waitTriggered() async {
     var completer = _newActionCompleter();

@@ -11,6 +11,10 @@ int dayOffsetUtcToLocal(int utcDayOffset) {
 }
 
 /// Time offset typically between -99:99 and 99:99
+///
+/// The minutes are kept in `0..59` by carrying into the hour: minus 90
+/// minutes is `TimeOffset(-2, 30)`, printed `-02:30`, and `parse('-01:30')`
+/// is minus 30 minutes. Compute with [seconds].
 class TimeOffset {
   late int _hour;
   late int _minute;

@@ -51,8 +51,12 @@ deduplicates awaited calls and keeps the last result.
   `LazyRunnerExtension`) is the number of runs started; `disposed` tells
   whether it was closed.
 * `await close()` stops the loop and waits for the in-flight run; `dispose()`
-  is the non-awaiting variant. Pending `triggerAndWait()` futures then complete
-  with a `StateError('disposed')`; do not trigger a closed runner.
+  is the non-awaiting variant. A `triggerAndWait()` still waiting (queued
+  behind the last run) then fails with `StateError('disposed')`, and so does
+  a `triggerAndWait()` called after `close()`; `trigger()` is then a no-op.
+* This `LazyRunner` is not the one of `tekartik_common_utils`
+  (`package:tekartik_common_utils/lazy_runner/lazy_runner.dart`: no result,
+  no `triggerAndWait`, no `close`): import only one of them in a file.
 * `debugLazyRunner` is a compile-time `const false` flag in the package
   sources; it cannot be set at runtime - edit it only when debugging the
   package itself.
@@ -68,9 +72,10 @@ deduplicates awaited calls and keeps the last result.
 * `wait()` never starts anything: it returns the in-flight (or scheduled)
   future, else the last result, else `null`.
 * `waitOrRun()` returns the last/in-flight result and only runs when there is
-  none - the read-through cache accessor.
+  none (or when the last result is null) - the read-through cache accessor.
+  Concurrent first calls share a single run.
 * `await close()` waits for pending work; `run()` after `close()` throws a
-  `StateError`.
+  `StateError` synchronously (not a failed future).
 * Anti-patterns: creating a `SingleFlight` or `LazyRunner` per call (defeats
   the deduplication); using `LazyRunner.trigger()` when the caller needs the
   result or the error; forgetting `close()` on a periodic runner (its loop

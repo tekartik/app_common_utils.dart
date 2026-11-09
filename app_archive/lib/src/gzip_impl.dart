@@ -22,9 +22,18 @@ Uint8List gzipText(String text, {bool? noDate, int? operatingSystem}) {
 }
 
 /// Un Gzip some data into text
+///
+/// Throws an `ArchiveException` (a [FormatException]) for data that is not
+/// valid gzip (bad header, cut or modified data), a [FormatException] for
+/// bytes that are not UTF-8.
 String ungzipText(Uint8List data) {
-  return utf8.decode(const GZipDecoder().decodeBytes(data));
+  return utf8.decode(_ungzip(data));
 }
+
+/// Checked: without `verify`, archive 4 returns empty, partial or wrong
+/// bytes for invalid data instead of throwing.
+List<int> _ungzip(Uint8List data) =>
+    const GZipDecoder().decodeBytes(data, verify: true);
 
 /// GZip some bytes
 Uint8List gzipBytes(Uint8List bytes, {bool? noDate, int? operatingSystem}) {
@@ -44,7 +53,9 @@ Uint8List gzipBytes(Uint8List bytes, {bool? noDate, int? operatingSystem}) {
 }
 
 /// Un Gzip some data into bytes
-/// Un Gzip some data into text
+///
+/// Throws an `ArchiveException` (a [FormatException]) for data that is not
+/// valid gzip (bad header, cut or modified data).
 Uint8List ungzipBytes(Uint8List data) {
-  return asUint8List(const GZipDecoder().decodeBytes(data));
+  return asUint8List(_ungzip(data));
 }

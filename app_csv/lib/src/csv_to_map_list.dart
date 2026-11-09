@@ -33,7 +33,9 @@ List<Map<String, Object?>> csvToMapList(
 
   for (var row in data) {
     var map = <String, Object?>{
-      for (var i = 0; i < keys.length; i++) keys[i]: row[i],
+      // A row shorter than the header gives null for its missing cells.
+      for (var i = 0; i < keys.length; i++)
+        keys[i]: i < row.length ? row[i] : null,
     };
     list.add(map);
   }

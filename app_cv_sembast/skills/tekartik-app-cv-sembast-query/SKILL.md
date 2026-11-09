@@ -57,6 +57,8 @@ shot reads and for change streams. Records and stores are described in the
 * Filters run in memory: keep stores reasonably sized, add `limit` /
   `offset` for pagination and keep sort orders stable (append
   `SortOrder(Field.key)`).
+* `getRecords` / `find` return a read-only list: sort in the `Finder`, or
+  copy it (`toList()`) first.
 * JSON (extensions on `DbRecord` and on `List<DbRecord>`):
   `toJsonEncodable({columns, includeMissingValue, codec})` converts the
   map with `sembastDefaultJsonEncodableCodec` (a `Timestamp` becomes

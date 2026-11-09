@@ -15,7 +15,8 @@ description: >-
 
 `tekartik_app_mirrors` re-declares the small part of `dart:mirrors` needed to
 inspect a class (its fields, their types and their annotations) and resolves to
-the real implementation only when `dart:io` is available. That makes
+the real implementation only where `dart:mirrors` is available (the JIT VM).
+That makes
 `package:tekartik_app_mirrors/mirrors.dart` importable from any project -
 including web and Flutter code - where a direct `import 'dart:mirrors'` would
 not compile.
@@ -63,11 +64,13 @@ not compile.
   annotation object itself is `instanceMirror.reflectee`, so use a plain
   `is MyAnnotation` test on it (`reflectee` is `dynamic`).
 * Platform reality: the implementation is selected by
-  `if (dart.library.io)`, but the underlying `dart:mirrors` only works on the
-  **JIT VM**. Use it from `dart run`/`dart test` scripts and generators. On
-  the web (and anywhere the stub is picked) every call throws
-  `UnsupportedError('Cannot reflectClass without dart:mirrors')`; under AOT
-  (`dart compile exe`) or Flutter, `dart:mirrors` is unavailable. Mark tests
+  `if (dart.library.mirrors)`, true on the **JIT VM** only. Use it from
+  `dart run`/`dart test` scripts and generators. On the web, under AOT
+  (`dart compile exe`) and in Flutter the stub is picked: the program
+  compiles and every call throws
+  `UnsupportedError('Cannot reflectClass without dart:mirrors')`. Before
+  2026-11-09 the selection used `dart.library.io`, so an AOT or Flutter
+  build of a program importing the library failed to compile. Mark tests
   with `@TestOn('vm')`.
 * Because mirrors defeat tree shaking, keep them in build-time tools: generate
   Dart source (or a JSON description) once and commit it, rather than
@@ -85,6 +88,7 @@ not compile.
 @TestOn('vm')
 library;
 
+// ignore: deprecated_member_use
 import 'package:tekartik_app_mirrors/mirrors.dart';
 import 'package:test/test.dart';
 
@@ -125,6 +129,7 @@ void main() {
 ### Read field annotations (the code generation use case)
 
 ```dart
+// ignore: deprecated_member_use
 import 'package:tekartik_app_mirrors/mirrors.dart';
 
 /// Annotation declared like any other const class.
@@ -171,6 +176,7 @@ void main() {
 ### Walk the superclass chain
 
 ```dart
+// ignore: deprecated_member_use
 import 'package:tekartik_app_mirrors/mirrors.dart';
 
 class Base {
@@ -211,6 +217,7 @@ void main() {
 ```dart
 import 'dart:io';
 
+// ignore: deprecated_member_use
 import 'package:tekartik_app_mirrors/mirrors.dart';
 
 class Settings {

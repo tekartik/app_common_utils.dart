@@ -40,7 +40,8 @@ duration), plus a `DateTime` extension.
 
 * Build with `CalendarDay(text: '2024-05-07')`, `CalendarDay.fromText(text)`
   (accepts `2024-05-07`, `20240507` and any iso date-time, the time part is
-  dropped), `CalendarDay(dateTime: dt)` (year, month and day of `dt` as
+  dropped; with a zone offset it is the date of the UTC instant,
+  `2024-05-07T23:30:00-05:00` gives `2024-05-08`), `CalendarDay(dateTime: dt)` (year, month and day of `dt` as
   given; `dateTime` wins over `text`), `CalendarDay.fromTimestamp(utc)`
   (asserts `isUtc`), `CalendarDay.fromLocalDateTime(local)` (asserts a
   local `DateTime`) and `CalendarDay.today()` (the UTC date of now; use
@@ -56,8 +57,9 @@ duration), plus a `DateTime` extension.
   `hashCode`): usable as map keys and sortable with `list.sort()`.
 * Combine with a time: `dayTimeToDateTime(day, time)` returns a UTC
   `DateTime` (`day.dateTime` plus `time.seconds`),
-  `dayTimeToLocalDateTime(day, time)` a local one; a time past 24:00 rolls
-  into the next day.
+  `dayTimeToLocalDateTime(day, time)` a local one (the wall clock time,
+  also on daylight saving time change days since 2026-11-09, one hour off
+  before); a time past 24:00 rolls into the next day.
 
 ### CalendarTime
 
@@ -67,7 +69,9 @@ duration), plus a `DateTime` extension.
   (hour, minute and second of `dt`, in whatever zone `dt` is) and
   `CalendarTime.zero()`. Accepted texts: `HH:MM`, `HHMM` (exactly 4
   digits), `H`, `H:MM:SS`, hours past 24 (`26:40`) and a leading `-` for
-  negative times. Anything else throws `ArgumentError`.
+  negative times, applied to the whole time (`-0:30` is minus 30 minutes,
+  `-0130` minus 90; before 2026-11-09 the first was plus 30 minutes and the
+  second minus 30). Anything else throws `ArgumentError`.
 * `parseCalendarTimeOrNull(text)` (alias of `parseStartCalendarTimeOrNull`)
   parses the part before the first `-` of a `10:00-12:00` range and
   `parseEndCalendarTimeOrNull(text)` the part after it; both return `null`
@@ -77,7 +81,8 @@ duration), plus a `DateTime` extension.
   `hourMinutes` and `minuteSeconds` (always `0..59`), `isNegative`,
   `isFullHours`, `isFullMinutes`, `negative` (the opposite time) and
   `text` (`HH:MM`, or `HH:MM:SS` when seconds are not zero, `-` prefix
-  when negative; hours are never wrapped, `25:00` stays `25:00`).
+  when negative; hours past 24 are kept, `25:00` stays `25:00`, but only
+  2 digits are printed, `100:00` prints `00:00`).
   `toString()` is `Time(10:30)`.
 * `time.addOffset(TimeOffset(1, 30))` shifts by an offset (negative offsets
   subtract). Times are comparable with `compareTo`; `==` is not
@@ -94,8 +99,10 @@ duration), plus a `DateTime` extension.
   offset) and `TimeOffset.fromSeconds(seconds)` (negative allowed).
 * `text` prints the sign, `hour.abs()` and `minute` as stored (`-01:01`
   for `TimeOffset(-1, 1)`, `-02:58` for `TimeOffset.fromSeconds(-3720)`):
-  it is not the absolute duration. Use `seconds` for arithmetic and `==` /
-  `hashCode` for comparisons.
+  it is not the absolute duration. `parse` reads it back the same way, so
+  `TimeOffset.parse('-01:30')` is minus 30 minutes (`-1 h + 30 min`), not
+  minus 90: never write a negative offset text by hand. Use `seconds` for
+  arithmetic and `==` / `hashCode` for comparisons.
 
 ### DateTime extension
 

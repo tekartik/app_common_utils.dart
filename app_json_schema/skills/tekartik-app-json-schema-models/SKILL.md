@@ -19,7 +19,8 @@ description: >-
 `tekartik_app_json_schema` provides a small, dependency-free `JsonSchema` model
 (the subset of OpenAPI 3.0 used by the Vertex AI / Gemini SDKs for structured
 output and function declarations) plus an equivalent `cv` model tree so a
-schema can itself be stored, serialized and diffed like any other `cv` model.
+schema can be built from data, serialized and compared like any other `cv`
+model (written only, not read back).
 
 ## Guidelines
 
@@ -65,13 +66,26 @@ schema can itself be stored, serialized and diffed like any other `cv` model.
   through `cv` fields (`schema.type.v`, `schema.description.v`,
   `schema.enumValues.v`, `map.properties.v`, `list.items.v`).
 * `CvJsonSchemaExt` adds `toJsonSchema()` (convert to the plain `JsonSchema`)
-  and `toSchemaJsonMap()` (`toMap()`, same wire format as
-  `toJsonSchema().toJson()`). `CvJsonSchemaMap` also exposes the stored
-  `required` field and a computed `optionalProperties` getter.
-* Use the `cv` models when the schema itself must be persisted (sembast,
-  firestore), copied or built dynamically; use the plain `JsonSchema` for a
-  static, hand-written schema. `toJsonSchema()` throws `UnsupportedError` for
-  a `CvJsonSchema` subtype it does not know.
+  and `toSchemaJsonMap()` (`toMap()`, the same wire format as
+  `toJsonSchema().toJson()` except that an object with no required property
+  has no `required` key, where `toJson()` writes `"required": []`).
+  `CvJsonSchemaMap` also exposes the stored `required` field (null when no
+  property is required) and a computed `optionalProperties` getter (null
+  when none). A map whose properties are all optional, or that has none,
+  converts since 2026-11-09 (`toJsonSchema()` threw a null check error
+  before).
+* Use the `cv` models when the schema is built dynamically (from columns, a
+  form definition) or written out with the other `cv` data; use the plain
+  `JsonSchema` for a static, hand-written schema. They are write only:
+  `fromMap` / `fromJson` on a stored schema throws
+  `Missing builder for 'CvJsonSchema'` (the subclass depends on the `type`
+  value, cv has no builder for it), so keep the Dart definition as the
+  source of truth. `toJsonSchema()` throws `UnsupportedError` for a
+  `CvJsonSchema` subtype it does not know.
+* The output is the Gemini / Vertex AI dialect (upper case `type`,
+  `nullable`, `format: 'enum'`), not a standard JSON Schema document (lower
+  case types, no `nullable`): do not feed it to a JSON Schema validator or
+  to an API that expects standard JSON Schema.
 * Anti-patterns: putting a `'required'` key in `properties`; using raw
   lowercase type strings instead of `JsonSchemaType`; assuming a property is
   optional because it is `nullable` (nullable and required are independent).
