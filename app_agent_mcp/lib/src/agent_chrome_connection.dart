@@ -12,6 +12,10 @@ class _CdpSession {
   var _lastId = 0;
   final _pending = <int, Completer<Map<String, Object?>>>{};
 
+  /// True once the socket is done (the page closed, Chrome gone) or closed:
+  /// a request would never be answered.
+  var _done = false;
+
   _CdpSession(this._socket) {
     _socket.listen(
       (data) {
@@ -29,6 +33,7 @@ class _CdpSession {
         }
       },
       onDone: () {
+        _done = true;
         for (var completer in _pending.values) {
           completer.completeError(StateError('cdp: page closed'));
         }
@@ -44,13 +49,19 @@ class _CdpSession {
     String method, [
     Map<String, Object?> params = const {},
   ]) {
+    if (_done) {
+      return Future.error(StateError('cdp: page closed'));
+    }
     var id = ++_lastId;
     var completer = _pending[id] = Completer<Map<String, Object?>>();
     _socket.add(jsonEncode({'id': id, 'method': method, 'params': params}));
     return completer.future;
   }
 
-  Future<void> close() => _socket.close();
+  Future<void> close() {
+    _done = true;
+    return _socket.close();
+  }
 }
 
 /// The Chrome executables looked for on the PATH, after `CHROME_EXECUTABLE`.
