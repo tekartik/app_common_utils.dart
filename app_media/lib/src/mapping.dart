@@ -19,7 +19,8 @@ var _mimeTypeExtMap = Map.fromEntries(
 
 String _ext(String path) {
   final index = path.lastIndexOf('.');
-  if (index < 0 || index + 1 >= path.length) return path;
+  // A bare extension (`json`, `YAML`) is lower cased too.
+  if (index < 0 || index + 1 >= path.length) return path.toLowerCase();
   return path.substring(index + 1).toLowerCase();
 }
 

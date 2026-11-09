@@ -66,6 +66,26 @@ void main() {
       expect(of('https://x.org/#/home?semantics=on').semantics, isTrue);
       expect(of('https://x.org/#/home').needsSemantics, isFalse);
     });
+
+    test('malformed escapes are ignored, never thrown', () {
+      // Uri.queryParameters throws on these (invalid utf-8).
+      expect(of('https://x.org/?utm=%FF').needsSemantics, isFalse);
+      expect(of('https://x.org/?utm=%FF&agent').agent, isTrue);
+      expect(of('https://x.org/?semantics&utm=%E0%A4').semantics, isTrue);
+      expect(of('https://x.org/#/home?x=%FF&agent=1').agent, isTrue);
+      expect(of('https://x.org/?u=%FF#/home?v=%FF').needsSemantics, isFalse);
+      // A malformed agent value is no value: the agent stays out.
+      expect(of('https://x.org/?agent=%FF').agent, isFalse);
+      var key = AgentKey.generate();
+      var keyed = of('https://x.org/?utm=%FF&agent=$key');
+      expect(
+        keyed.agentAllowed(
+          release: true,
+          releaseKey: () => AgentKey.hashed(AgentKey.hashOf(key)),
+        ),
+        isTrue,
+      );
+    });
   });
 
   group('AgentCommands', () {

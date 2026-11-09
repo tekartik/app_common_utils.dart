@@ -37,18 +37,15 @@ class AgentUrlOptions {
   });
 
   /// The options of [uri] (`Uri.base` in an app).
+  ///
+  /// Never throws: a malformed parameter (an invalid percent escape, the
+  /// page url is whatever a link gave) is ignored, the others are read.
   factory AgentUrlOptions.fromUri(Uri uri) {
-    var parameters = <String, String>{...uri.queryParameters};
+    var parameters = _queryParameters(uri.query);
     var fragment = uri.fragment;
     var queryStart = fragment.indexOf('?');
     if (queryStart >= 0) {
-      try {
-        parameters.addAll(
-          Uri.splitQueryString(fragment.substring(queryStart + 1)),
-        );
-      } on FormatException {
-        // An invalid fragment query: ignored.
-      }
+      parameters.addAll(_queryParameters(fragment.substring(queryStart + 1)));
     }
     bool on(String name) {
       var value = parameters[name];
@@ -85,4 +82,23 @@ class AgentUrlOptions {
 
   @override
   String toString() => 'AgentUrlOptions(semantics: $semantics, agent: $agent)';
+}
+
+/// The parameters of the encoded [query], the malformed ones (an invalid
+/// percent escape, `?utm=%FF`) left out instead of throwing as
+/// [Uri.queryParameters] does.
+Map<String, String> _queryParameters(String query) {
+  try {
+    return <String, String>{...Uri.splitQueryString(query)};
+  } on FormatException {
+    var parameters = <String, String>{};
+    for (var part in query.split('&')) {
+      try {
+        parameters.addAll(Uri.splitQueryString(part));
+      } on FormatException {
+        // A malformed parameter: ignored.
+      }
+    }
+    return parameters;
+  }
 }

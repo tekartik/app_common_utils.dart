@@ -42,6 +42,16 @@ void main() {
       expect(filenameMimeType('test.txt'), 'text/plain');
       expect(filenameMimeType('test2.gif'), 'image/gif');
     });
+    test('extensionMimeType ignores case, with or without leading .', () {
+      for (var extension in ['json', 'JSON', '.json', '.JSON', 'a.Json']) {
+        expect(extensionMimeType(extension), mimeTypeApplicationJson);
+      }
+      // The extra types (not known by package:mime) too.
+      for (var extension in ['yaml', 'YAML', '.YAML', 'a.YAML']) {
+        expect(extensionMimeType(extension), 'application/yaml');
+      }
+      expect(filenameMimeType('README'), mimeTypeOctetStream);
+    });
     test('compat', () {
       for (var entry in _mimeTypeMap.entries) {
         var ext = entry.key;
