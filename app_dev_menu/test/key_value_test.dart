@@ -1,5 +1,4 @@
 import 'package:tekartik_app_dev_menu/dev_menu.dart';
-import 'package:tekartik_ci/ci_github.dart';
 import 'package:tekartik_common_utils/env_utils.dart';
 import 'package:test/test.dart';
 
@@ -30,7 +29,11 @@ void main() {
         /// Might involve process run setup...
       },
       timeout: const Timeout(Duration(minutes: 2)),
-      skip: !kDartIsWeb && runningInGithubActions,
+      // On io the values are in .local/ds_env.yaml, also written by
+      // key_value_var_test.dart running at the same time: the concurrent
+      // read-modify-write of the file loses updates (flaky). That file
+      // covers io.
+      skip: kDartIsWeb ? false : 'io covered by key_value_var_test.dart',
     );
   });
 }

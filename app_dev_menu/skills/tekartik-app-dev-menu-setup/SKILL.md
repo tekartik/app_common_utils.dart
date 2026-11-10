@@ -59,10 +59,12 @@ keep developer settings (API keys, ids, urls) in persisted key values.
   the console. `await prompt('question')` asks the user for a line
   (`Future<String>`). An exception thrown by an item is displayed and the
   menu keeps running.
-* Console: `dart run example/main.dart`. Extra arguments are the commands
-  to execute first and `-` exits, so `dart run example/main.dart 1 0 -`
-  enters menu 1, runs its item 0 and quits (`-h` prints this help, `-v` is
-  verbose). Browser: `dart pub global run webdev serve web:8080` (the
+* Console: `dart run example/main.dart`. Type the number of an entry; `.`
+  goes back one menu and exits from the top one, `?` shows the menu again.
+  Extra arguments are the commands typed first, so
+  `dart run example/main.dart 1 0 . .` enters menu 1, runs its item 0 and
+  quits (`-h` prints a short help, `-v` is verbose, `--agent` lets an LLM
+  agent drive the menu through the VM service). Browser: `dart pub global run webdev serve web:8080` (the
   package keeps this in `tool/serve.dart`); reload the page to re-run the
   last item.
 * Key values: declare `var apiKey = 'MY_API_KEY'.kvFromVar(defaultValue:

@@ -1,7 +1,6 @@
 name: tekartik_app_dev_menu
 version: 0.6.1
-homepage: https://github.com/tekartik/test_menu.dart
-# https://github.com/tekartik/tekartik_test_menu.dart
+homepage: https://github.com/tekartik/app_common_utils.dart
 description: Simple test menu for web and io
 
 publish_to: none
