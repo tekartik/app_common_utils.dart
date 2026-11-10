@@ -1,5 +1,5 @@
 name: tekartik_app_firebase_local
-description: All firebase local import
+description: One dependency for the local Firebase implementations (app, Firestore, Auth, Storage, Functions io).
 version: 1.0.0
 publish_to: none
 
