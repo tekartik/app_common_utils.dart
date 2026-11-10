@@ -9,6 +9,7 @@ environment:
 
 dependencies:
   args: ">=2.6.0"
+  process_run: ">=1.4.3"
   dart_mcp: ">=0.5.2"
   vm_service: ">=15.0.0"
   tekartik_app_agent:

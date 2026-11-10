@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:process_run/shell.dart'
+    show Shell, ShellLinesController, ShellOptions;
 import 'package:tekartik_app_agent/app_agent.dart';
 
 import 'agent_app_connection.dart';
@@ -188,7 +190,7 @@ class AgentChromeConnection implements AgentAppConnection {
     List<String> arguments = const [],
   }) async {
     var userDataDir = await Directory.systemTemp.createTemp('agent_chrome_');
-    var process = await Process.start(executable ?? agentChromeExecutable(), [
+    var started = await _startChrome(executable ?? agentChromeExecutable(), [
       if (headless) ...[
         '--headless=new',
         // WebGL for the Flutter renderers without a GPU.
@@ -204,20 +206,17 @@ class AgentChromeConnection implements AgentAppConnection {
       ...arguments,
       url.toString(),
     ]);
+    var process = started.process;
     try {
       var devTools = Completer<Uri>();
-      process.stderr
-          .transform(utf8.decoder)
-          .transform(const LineSplitter())
-          .listen((line) {
-            var match = RegExp(
-              r'DevTools listening on (ws://\S+)',
-            ).firstMatch(line);
-            if (match != null && !devTools.isCompleted) {
-              devTools.complete(Uri.parse(match.group(1)!));
-            }
-          });
-      process.stdout.drain<void>().ignore();
+      started.stderrLines.listen((line) {
+        var match = RegExp(
+          r'DevTools listening on (ws://\S+)',
+        ).firstMatch(line);
+        if (match != null && !devTools.isCompleted) {
+          devTools.complete(Uri.parse(match.group(1)!));
+        }
+      });
       var browserWs = await devTools.future.timeout(
         const Duration(seconds: 30),
       );
@@ -244,6 +243,55 @@ class AgentChromeConnection implements AgentAppConnection {
       await _deleteDir(userDataDir);
       rethrow;
     }
+  }
+
+  /// Starts [executable] on a shell of process_run (no input, its output
+  /// read as lines, not kept): the process, as the shell gives it, and the
+  /// lines of its error output (where Chrome says its DevTools port).
+  static Future<({Process process, Stream<String> stderrLines})> _startChrome(
+    String executable,
+    List<String> arguments,
+  ) async {
+    var out = ShellLinesController(
+      encoding: const Utf8Codec(allowMalformed: true),
+    );
+    var err = ShellLinesController(
+      encoding: const Utf8Codec(allowMalformed: true),
+    );
+    var started = Completer<Process>();
+    unawaited(
+      Shell(
+            options: ShellOptions(
+              stdin: const Stream<List<int>>.empty(),
+              stdout: out.sink,
+              stderr: err.sink,
+              stdoutEncoding: const Utf8Codec(allowMalformed: true),
+              stderrEncoding: const Utf8Codec(allowMalformed: true),
+              verbose: false,
+              throwOnError: false,
+            ),
+          )
+          .runExecutableArguments(
+            executable,
+            arguments,
+            onProcess: started.complete,
+          )
+          .then<void>(
+            (_) {},
+            onError: (Object error, StackTrace stackTrace) {
+              // It could not start.
+              if (!started.isCompleted) {
+                started.completeError(error, stackTrace);
+              }
+            },
+          )
+          .whenComplete(() {
+            out.close();
+            err.close();
+          }),
+    );
+    out.stream.drain<void>().ignore();
+    return (process: await started.future, stderrLines: err.stream);
   }
 
   static Future<void> _deleteDir(Directory dir) async {

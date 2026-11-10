@@ -5,6 +5,7 @@ import 'dart:io';
 import 'dart:isolate';
 
 import 'package:path/path.dart';
+import 'package:process_run/shell.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -13,11 +14,17 @@ void main() {
       // Run from an empty directory, that must not be processed.
       var dir = await Directory.systemTemp.createTemp('app_intl_help');
       try {
-        var result = await Process.run(Platform.resolvedExecutable, [
-          '--packages=${(await Isolate.packageConfig)!.toFilePath()}',
-          absolute(join('lib', 'bin', '$name.dart')),
-          '-h',
-        ], workingDirectory: dir.path);
+        var result =
+            await Shell(
+              workingDirectory: dir.path,
+              stdin: const Stream<List<int>>.empty(),
+              verbose: false,
+              throwOnError: false,
+            ).runExecutableArguments(Platform.resolvedExecutable, [
+              '--packages=${(await Isolate.packageConfig)!.toFilePath()}',
+              absolute(join('lib', 'bin', '$name.dart')),
+              '-h',
+            ]);
         var out = result.stdout.toString();
         expect(result.exitCode, 0);
         expect(out, contains('$name [<dir>...]'));
