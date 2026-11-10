@@ -28,7 +28,6 @@ ready made `SembastCodec` bundling them.
       git:
         url: https://github.com/tekartik/app_common_utils.dart
         path: app_sembast_firestore_type_adapters
-      version: '>=0.1.0'
   ```
 * `import
   'package:tekartik_app_sembast_firestore_type_adapters/type_adapters.dart';`
@@ -43,8 +42,10 @@ ready made `SembastCodec` bundling them.
 * Pass the codec on **every** open of that database:
   `await factory.openDatabase(path, codec: sembastFirestoreCodec);`. The codec
   signature is `'firestore'`; opening an existing database without it (or with
-  another signature) fails, and opening a plain database with it fails too.
-  Pick the codec before the database exists.
+  another signature) fails, and opening a plain database with it fails too
+  (`Invalid codec signature`, on any factory with a storage: io, sqflite,
+  web; the in memory `newDatabaseFactoryMemory()` checks nothing). Pick the
+  codec before the database exists.
 * Stored form (plain json, readable in the `.db` file and in an export):
   `Timestamp` -> `{'@FirestoreTimestamp': {'seconds': ..., 'nanoseconds': ...}}`,
   `Blob` -> `{'@FirestoreBlob': '<base64>'}`, `GeoPoint` ->
@@ -89,7 +90,6 @@ ready made `SembastCodec` bundling them.
 ```dart
 import 'dart:typed_data';
 
-import 'package:sembast/sembast.dart';
 import 'package:sembast/sembast_memory.dart';
 import 'package:tekartik_app_sembast_firestore_type_adapters/type_adapters.dart';
 import 'package:tekartik_firebase_firestore/firestore.dart';
@@ -123,7 +123,6 @@ Future<void> main() async {
 ### Sort by Timestamp and export
 
 ```dart
-import 'package:sembast/sembast.dart';
 import 'package:sembast/sembast_memory.dart';
 import 'package:sembast/utils/sembast_import_export.dart';
 import 'package:tekartik_app_sembast_firestore_type_adapters/type_adapters.dart';

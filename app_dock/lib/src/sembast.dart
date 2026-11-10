@@ -11,7 +11,8 @@ export 'sembast_stub.dart'
 /// Databases sub directory.
 const dockSembastDatabasesDirPath = 'sembast_databases';
 
-/// Application databases path (`databases` in the application data path).
+/// Application databases path (`sembast_databases` in the application data
+/// path): sembast databases, sdb databases and prefs on io.
 String dockGetAppSembastDatabasesPath({String? packageName}) => join(
   dockGetAppDataPath(packageName: packageName),
   dockSembastDatabasesDirPath,

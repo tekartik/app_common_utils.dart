@@ -1,9 +1,13 @@
-// ignore_for_file: avoid_print
+import 'dart:convert';
 
 import 'package:tekartik_app_http/app_http.dart';
 import 'package:test/test.dart';
 
-var simplePublicUrl = 'https://cdn.ampproject.org/v0.js';
+/// A static file of the test fixtures site (CORS enabled, so readable from a
+/// browser test too).
+final connectedFixtureUri = Uri.parse(
+  'https://tekartik-test-fixtures.web.app/http/connected.json',
+);
 
 void main() {
   group('app_http', () {
@@ -11,12 +15,15 @@ void main() {
       expect(httpClientFactory, httpClientFactoryUniversal);
     });
     test('simple', () async {
-      // If this fails, update the url!
-      var response = await httpClientFactoryUniversal.newClient().get(
-        Uri.parse(simplePublicUrl),
-      );
-      print(response.body);
-      expect(response.statusCode, httpStatusCodeOk);
+      var client = httpClientFactoryUniversal.newClient();
+      try {
+        var response = await client.get(connectedFixtureUri);
+        expect(response.statusCode, httpStatusCodeOk);
+        var map = jsonDecode(response.body) as Map;
+        expect(map['name'], 'tekartik_http_test');
+      } finally {
+        client.close();
+      }
     });
   });
 }

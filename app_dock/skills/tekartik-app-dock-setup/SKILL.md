@@ -52,32 +52,46 @@ libraries is safe on every platform; on an unsupported one the getters throw
   `dockGetPrefsAsyncFactory({packageName})` returns a `PrefsAsyncFactory`
   (`PrefsAsync`, every call returns a `Future`). Prefer the async one in
   code shared with Flutter. On io both store sembast databases in the app
-  databases directory, the web uses localStorage. They are distinct
+  databases directory, the web uses localStorage. Each returns one factory
+  per `packageName` (the same object on every call: since 2026-11-10 on
+  io, two calls used to give two caches on one file). They are distinct
   factories: do not open the same preferences name with both.
-* `package:tekartik_app_dock/sembast.dart` (re-exports `sembast.dart` and
-  `sembast_io.dart`): `dockGetSembastDatabaseFactory({packageName})` is
-  `databaseFactoryIo` sandboxed in
-  `dockGetAppSembastDatabasesPath(packageName:)` (`<app data>/` followed by
-  `dockSembastDatabasesDirPath`, i.e. `sembast_databases`) on io and
-  `databaseFactoryWeb` on the web. Open with relative names
-  (`openDatabase('cache.db')`), never absolute paths. Do not touch the
-  re-exported `databaseFactoryIo` in shared code: it throws on the web.
 * `package:tekartik_app_dock/sdb.dart` (re-exports `idb_shim/sdb.dart`):
   `dockGetSdbFactory({packageName})` is `sdbFactoryIo` sandboxed in the
   same databases directory on io (one cached factory per `packageName`)
-  and `sdbFactoryWeb` (IndexedDB) on the web. sdb needs a version and
-  either a `schema` or an `onVersionChange` callback in
-  `SdbOpenDatabaseOptions`.
+  and `sdbFactoryWeb` (IndexedDB, names prefixed by `packageName`) on the
+  web. sdb needs a version and either a `schema` or an `onVersionChange`
+  callback in `SdbOpenDatabaseOptions`. Use sdb for any new local database.
+* `package:tekartik_app_dock/sembast.dart` (re-exports `sembast.dart` and
+  `sembast_io.dart`), for existing sembast databases:
+  `dockGetSembastDatabaseFactory({packageName})` is `databaseFactoryIo`
+  sandboxed in `dockGetAppSembastDatabasesPath(packageName:)` (`<app
+  data>/` followed by `dockSembastDatabasesDirPath`, i.e.
+  `sembast_databases`) on io and `databaseFactoryWeb` (names prefixed by
+  `packageName`) on the web. Open with relative names
+  (`openDatabase('cache.db')`): an absolute path is moved below the
+  sandbox root. Do not touch the re-exported `databaseFactoryIo` in shared
+  code: it throws on the web.
+* On io, sembast databases, sdb databases and prefs all live in
+  `sembast_databases/`: a name used by two of them is one file. Give
+  databases an extension (`notes.db`) and prefs a plain name
+  (`settings`).
 * `package:tekartik_app_dock/fs.dart` (re-exports `fs_shim.dart` and
   `fs_memory.dart`): `dockGetAppDataFileSystem(packageName:)` returns a
   `FileSystem` rooted at the app data directory (`fileSystemIo.sandbox` on
   io, the IndexedDB based `fileSystemWeb.sandbox` on the web); use
   `fs.path.join`, `fs.directory`, `fs.file`, `create(recursive: true)`,
   `writeAsString`, `readAsString` with paths relative to that root.
-  `dockGetAppDataPath({packageName})` is the underlying path (absolute on
-  io, `/<packageName>` on the web) for display or for other io tools.
-  Sembast and prefs files live in `sembast_databases/` under that root:
-  keep your own files in another sub directory.
+  `dockGetAppDataPath({packageName})` is the underlying path
+  (`<userAppDataPath>/<packageName>` on io, `.` without `packageName`;
+  `/<packageName>` on the web) for display or for other io tools.
+  `userAppDataPath` is `%APPDATA%` on Windows and `~/.config` elsewhere,
+  `TEKARTIK_PROCESS_RUN_USER_APP_DATA_PATH` overrides it. Sdb, sembast and
+  prefs files live in `sembast_databases/` under that root: keep your own
+  files in another sub directory.
+* Platforms: the Dart VM (Linux, macOS, Windows), the browser (dart2js and
+  dart2wasm), Flutter desktop and web. Not meant for Flutter Android/iOS
+  (no user application data folder there).
 * Tests: put `platforms: [vm, chrome]` in `dart_test.yaml` and run
   `dart test`; use a dedicated `packageName` such as
   `com.example.my_app_test` and `deleteDatabase(name)` before opening so
@@ -85,8 +99,6 @@ libraries is safe on every platform; on an unsupported one the getters throw
   in memory `FileSystem` for pure logic tests. Guard VM-only code with
   `kDartIsWeb` from `package:tekartik_common_utils/env_utils.dart` or with
   `try { databaseFactoryIo; } on UnimplementedError catch (_) {}`.
-* The README still shows `dbGet*` names and a bare `fs` getter; the public
-  API is `dockGet*` and `dockGetAppDataFileSystem`.
 
 ## Examples
 
@@ -96,29 +108,34 @@ libraries is safe on every platform; on an unsupported one the getters throw
 import 'package:tekartik_app_dock/fs.dart';
 import 'package:tekartik_app_dock/prefs.dart';
 import 'package:tekartik_app_dock/sdb.dart';
-import 'package:tekartik_app_dock/sembast.dart';
 
 const packageName = 'com.example.my_app';
+
+final noteStore = SdbStoreRef<int, SdbModel>('note');
 
 /// Everything the app persists, resolved for the current platform.
 class AppStorage {
   final PrefsAsync prefs;
-  final Database db;
-  final SdbFactory sdbFactory;
+  final SdbDatabase db;
   final FileSystem fs;
 
-  AppStorage._(this.prefs, this.db, this.sdbFactory, this.fs);
+  AppStorage._(this.prefs, this.db, this.fs);
 
   static Future<AppStorage> open() async {
     var prefs = await dockGetPrefsAsyncFactory(
       packageName: packageName,
     ).openPreferences('settings');
-    var db = await dockGetSembastDatabaseFactory(
-      packageName: packageName,
-    ).openDatabase('app.db');
-    var sdbFactory = dockGetSdbFactory(packageName: packageName);
+    var db = await dockGetSdbFactory(packageName: packageName).openDatabase(
+      'app.db',
+      options: SdbOpenDatabaseOptions(
+        version: 1,
+        schema: SdbDatabaseSchema(
+          stores: [noteStore.schema(autoIncrement: true)],
+        ),
+      ),
+    );
     var fs = dockGetAppDataFileSystem(packageName: packageName);
-    return AppStorage._(prefs, db, sdbFactory, fs);
+    return AppStorage._(prefs, db, fs);
   }
 
   Future<void> close() async {

@@ -29,7 +29,6 @@ VM, in a browser and in Flutter without a conditional import of your own.
       git:
         url: https://github.com/tekartik/app_common_utils.dart
         path: app_http
-      version: '>=0.1.0'
   ```
 * Main import: `package:tekartik_app_http/app_http.dart`. It re-exports
   `package:tekartik_http/http.dart` (so `Client`, `HttpClientFactory`,
@@ -68,8 +67,10 @@ VM, in a browser and in Flutter without a conditional import of your own.
   `File` here is the `fs_shim` `File` (the library re-exports
   `package:fs_shim/fs_shim.dart`), not `dart:io`'s.
 * `fsDownloadFile` is a no-op when the file already exists: pass `force: true`
-  to re-download. It streams the body to the file, throws `ClientException` on
-  a non successful status and deletes any partial file on error. The factory
+  to re-download. It streams the body to the file (creating the parent
+  directory), throws `ClientException` on a non successful status (the file
+  is left untouched) and deletes the file when the transfer fails in the
+  middle (with `force: true` the previous copy is lost too). The factory
   variant creates and closes its own client.
 * Anti-patterns: importing `dart:io`'s `HttpClient` or `package:http` directly
   in shared code; using `dart:io` `File` with `fsDownloadFile`; calling
@@ -86,7 +87,7 @@ import 'package:tekartik_app_http/app_http.dart';
 Future<void> main() async {
   var client = httpClientFactoryUniversal.newClient();
   try {
-    var response = await client.get(Uri.parse('https://www.github.com'));
+    var response = await client.get(Uri.parse('https://example.com/'));
     if (isHttpStatusCodeSuccessful(response.statusCode)) {
       print('${response.statusCode} ${response.body.length} bytes');
     } else {
@@ -111,7 +112,7 @@ class ApiClient {
     : httpClientFactory = httpClientFactory ?? httpClientFactoryUniversal;
 
   Future<String> fetch(String path) async {
-    var client = this.httpClientFactory.newClient();
+    var client = httpClientFactory.newClient();
     try {
       return await httpClientRead(client, httpMethodGet, baseUri.resolve(path));
     } finally {
@@ -123,7 +124,7 @@ class ApiClient {
 Future<void> main() async {
   // In a test: ApiClient(httpClientFactory: httpClientFactoryMemory, ...)
   var api = ApiClient(baseUri: Uri.parse('https://example.com'));
-  print(await api.fetch('index.html'));
+  print(await api.fetch('/'));
 }
 ```
 
@@ -161,8 +162,8 @@ import 'package:tekartik_app_http/app_http_fs_download_file.dart';
 
 Future<void> main() async {
   var fs = fileSystemDefault;
-  var file = fs.file(fs.path.join('.local', 'v0.js'));
-  var url = Uri.parse('https://cdn.ampproject.org/v0.js');
+  var file = fs.file(fs.path.join('.local', 'example.html'));
+  var url = Uri.parse('https://example.com/');
 
   // Skipped if the file is already there.
   await httpFsDownloadFile(url, file);

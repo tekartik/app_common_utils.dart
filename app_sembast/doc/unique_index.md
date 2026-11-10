@@ -67,3 +67,19 @@ await db.transaction((transaction) async {
   print(book['title']);
 });
 ```
+
+A runnable version is in
+[example/unique_index_example.dart](../example/unique_index_example.dart).
+
+## Limits
+
+* The index is a map in memory, filled when `db.index(...)` is called (one
+  scan of the store) and updated after each write. When a transaction fails
+  after writing indexed records, sembast rolls the store back but not the
+  map: call `dispose()` and `db.index(...)` again after such a failure. A
+  write refused by `throwOnConflict` leaves the map as it was.
+* `dbIndex.record(key).put(value)` keeps the index field set to `key` unless
+  `value` sets it (then the record moves to that key).
+* The indexed field is a top level field of the record (no dotted path).
+* For new code, sdb (`package:idb_shim/sdb.dart`) has real, persisted
+  indexes.

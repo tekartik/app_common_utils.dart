@@ -18,6 +18,11 @@ app use? It picks `sembast_sqflite` (over `sqflite`/`sqflite_common_ffi`) on the
 Dart VM, Flutter mobile and desktop, and `sembast_web` (IndexedDB) on the web,
 and re-exports the whole sembast API so a single import is enough.
 
+For new local database code, use sdb (`package:idb_shim/sdb.dart`) instead:
+`dockGetSdbFactory` of `tekartik_app_dock` (pure Dart app) or `getSdbFactory`
+of `tekartik_app_flutter_idb` (Flutter app). This package is for apps already
+on sembast.
+
 ## Guidelines
 
 * Not on pub.dev, depend on it through git:
@@ -27,7 +32,6 @@ and re-exports the whole sembast API so a single import is enough.
       git:
         url: https://github.com/tekartik/app_common_utils.dart
         path: app_sembast
-      version: '>=0.1.0'
   ```
 * `import 'package:tekartik_app_sembast/sembast.dart';` gives
   `getDatabaseFactory(...)`, `databaseFactoryMemory` and everything of
@@ -44,17 +48,23 @@ and re-exports the whole sembast API so a single import is enough.
     plugin factory and its default databases directory;
   * Linux/Windows/macOS: pass `packageName: 'com.example.myapp'` to store the
     databases under the user application data directory
-    (`<appData>/<packageName>/databases`), or `rootPath: '.dart_tool/myapp'`
-    to choose the directory yourself. Relative database names are resolved
-    below it, absolute paths are used as is. With neither, the process
-    current directory is used.
+    (`<userAppDataPath>/<packageName>/databases`, `~/.config` or
+    `%APPDATA%`), or an absolute `rootPath` to choose the directory
+    yourself. Relative database names are resolved below it, absolute paths
+    are used as is. A relative `rootPath` is resolved a second time by the
+    ffi factory: the files land in
+    `.dart_tool/sqflite_common_ffi/databases/<rootPath>`. With neither, the
+    databases are in `.dart_tool/sqflite_common_ffi/databases` (relative to
+    the current directory).
   * `autoInit` (default true) calls `sqfliteWindowsFfiInit()` for you on io;
     pass `autoInit: false` only when you initialize sqflite ffi yourself.
 * Call `getDatabaseFactory(...)` once and keep the factory (and the opened
   `Database`) for the whole app lifetime: `var db = await
-  factory.openDatabase('my_app.db');`. Sembast databases are cached per path,
-  reopening is cheap but closing/reopening around each write is an
-  anti-pattern. Do not `close()` in a Flutter app.
+  factory.openDatabase('my_app.db');`. Each call returns a new factory and a
+  factory caches its databases per path: the same file opened through two
+  factories is two `Database` objects, one reading stale data until it
+  writes. Closing/reopening around each write is an anti-pattern. Do not
+  `close()` in a Flutter app.
 * Unit tests: use `databaseFactoryMemory` (this package's getter, backed by
   sembast's `databaseFactoryMemoryFs`, so paths and `deleteDatabase` behave
   like a file system) or `newDatabaseFactoryMemory()` from
@@ -67,7 +77,8 @@ and re-exports the whole sembast API so a single import is enough.
 * For a VM/desktop only program that never runs on the web, importing
   `package:tekartik_app_sembast/setup/sembast_sqflite_ffi.dart` and using the
   ready made `databaseFactorySqfliteFfi` is simpler (it also re-exports
-  `package:sembast/sembast.dart`).
+  `package:sembast/sembast.dart`); a relative name is opened in
+  `.dart_tool/sqflite_common_ffi/databases`, pass an absolute path.
 * Store/record API is plain sembast: declare `StoreRef` objects globally
   (`intMapStoreFactory.store('book')`, `stringMapStoreFactory.store('config')`,
   `StoreRef<String, String>.main()`), and read/write with
@@ -130,6 +141,7 @@ Future<void> main() async {
 ### A local directory instead of the application data folder
 
 ```dart
+import 'package:path/path.dart';
 import 'package:tekartik_app_sembast/sembast.dart';
 import 'package:tekartik_app_sqflite/sqflite.dart' show sqfliteWindowsFfiInit;
 
@@ -138,8 +150,9 @@ Future<void> main() async {
   sqfliteWindowsFfiInit();
 
   // Databases are created below this directory (io only, ignored on the web).
+  // Absolute: a relative rootPath would be resolved again by the ffi factory.
   var factory = getDatabaseFactory(
-    rootPath: '.dart_tool/my_app/db',
+    rootPath: absolute('.dart_tool', 'my_app', 'db'),
     autoInit: false,
   );
 
@@ -193,11 +206,14 @@ void main() {
 
 ```dart
 // No web support needed: use the sqflite ffi factory directly.
+import 'package:path/path.dart';
 import 'package:tekartik_app_sembast/setup/sembast_sqflite_ffi.dart';
 
 Future<void> main() async {
+  // Absolute: a relative name is opened in
+  // .dart_tool/sqflite_common_ffi/databases.
   var db = await databaseFactorySqfliteFfi.openDatabase(
-    '.dart_tool/my_tool/tool.db',
+    absolute('.dart_tool', 'my_tool', 'tool.db'),
   );
   var store = StoreRef<String, Object>.main();
   await store.record('count').put(db, 1);

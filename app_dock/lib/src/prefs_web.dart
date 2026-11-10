@@ -3,7 +3,7 @@ import 'package:tekartik_prefs_browser/prefs_async.dart';
 
 /// Prefs factory (web, local storage based).
 ///
-/// [packageName] is ignored on the web.
+/// On the web, [packageName] prefixes the prefs names (`<packageName>/<name>`).
 PrefsFactory dockGetPrefsFactory({String? packageName}) {
   if (packageName == null) {
     return prefsFactoryBrowser;
@@ -14,7 +14,7 @@ PrefsFactory dockGetPrefsFactory({String? packageName}) {
 
 /// Async prefs factory (web, local storage based).
 ///
-/// [packageName] is ignored on the web.
+/// On the web, [packageName] prefixes the prefs names (`<packageName>/<name>`).
 PrefsAsyncFactory dockGetPrefsAsyncFactory({String? packageName}) {
   if (packageName == null) {
     return prefsAsyncFactoryBrowser;

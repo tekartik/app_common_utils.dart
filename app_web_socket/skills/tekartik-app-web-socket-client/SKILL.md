@@ -30,7 +30,6 @@ Flutter, `tekartik_web_socket_browser` on the web, and re-exports the
       git:
         url: https://github.com/tekartik/app_common_utils.dart
         path: app_web_socket
-      version: '>=0.1.0'
   ```
 * Import `package:tekartik_app_web_socket/web_socket.dart` only. It declares
   the single `webSocketChannelClientFactory` getter and re-exports
@@ -74,9 +73,10 @@ Flutter, `tekartik_web_socket_browser` on the web, and re-exports the
   defaulting to `webSocketChannelClientFactory`) so tests can swap it.
 * Anti-patterns: calling `connect` without a type argument (messages become
   `dynamic`); listening to `channel.stream` twice; assuming `connect` throws on
-  a bad url (the error arrives on `ready`/`stream`); keeping a channel after
-  `sink.close()`; hard-coding `webSocketChannelClientFactory` deep in the code
-  instead of injecting it.
+  a bad url (a well formed url fails on `ready`/`stream`; a url without a
+  scheme throws right away on io and memory but not in a browser); keeping a
+  channel after `sink.close()`; hard-coding `webSocketChannelClientFactory`
+  deep in the code instead of injecting it.
 
 ## Examples
 

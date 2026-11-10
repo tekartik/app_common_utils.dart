@@ -90,12 +90,17 @@ abstract class DatabaseClientIndexRecord<K, PK> {
 
   /// Create the record if it does not exist.
   ///
+  /// A new record gets the index field set to [key].
+  ///
   /// Returns the key if inserted, null otherwise.
   Future<PK?> add(Model value);
 
   /// Save a record, create if needed.
   ///
   /// if [merge] is true and the field exists, data is merged
+  ///
+  /// The saved value holds the index field set to [key], unless [value] sets
+  /// it (an existing record then moves to that index key).
   ///
   /// Returns the updated value.
   Future<Model> put(Model value, {bool? merge});
@@ -206,14 +211,15 @@ class _SembastDatabaseUniqueIndex<K, PK> implements DatabaseIndex<K, PK> {
 
   void _throwConflict(RecordSnapshot snapshot) {
     throw StateError(
-      'Index conflict for key $path = ${key(snapshot.cast())} for $snapshot}',
+      'Index conflict for key $path = ${key(snapshot.cast())} for $snapshot',
     );
   }
 
   void _addNewKey(K? indexKey, PK pk, RecordSnapshot snapshot) {
     if (indexKey != null) {
       if (throwOnConflict) {
-        if (pkMap.containsKey(indexKey)) {
+        var existingPk = pkMap[indexKey];
+        if (existingPk != null && existingPk != pk) {
           _throwConflict(snapshot);
         }
       }
@@ -231,11 +237,64 @@ class _SembastDatabaseUniqueIndex<K, PK> implements DatabaseIndex<K, PK> {
     }
   }
 
+  /// Throws on the first change creating a duplicate, before any change is
+  /// applied: sembast rolls the write back, the map must stay as it is.
+  void _checkConflicts(List<RecordChange<PK, Model>> changes) {
+    // Index keys as they would be after the changes already checked.
+    var removed = <K>{};
+    var added = <K, PK>{};
+    PK? currentPk(K indexKey) {
+      if (added.containsKey(indexKey)) {
+        return added[indexKey];
+      }
+      if (removed.contains(indexKey)) {
+        return null;
+      }
+      return pkMap[indexKey];
+    }
+
+    void remove(K? indexKey, PK pk) {
+      if (indexKey != null && currentPk(indexKey) == pk) {
+        added.remove(indexKey);
+        removed.add(indexKey);
+      }
+    }
+
+    void add(K? indexKey, PK pk, RecordSnapshot snapshot) {
+      if (indexKey != null) {
+        var existingPk = currentPk(indexKey);
+        if (existingPk != null && existingPk != pk) {
+          _throwConflict(snapshot);
+        }
+        added[indexKey] = pk;
+      }
+    }
+
+    for (var change in changes) {
+      var pk = change.ref.key;
+      if (change.isDelete) {
+        remove(key(change.oldSnapshot!), pk);
+      } else if (change.isAdd) {
+        add(key(change.newSnapshot!), pk, change.newSnapshot!);
+      } else {
+        var oldIndexKey = key(change.oldSnapshot!);
+        var newIndexKey = key(change.newSnapshot!);
+        if (oldIndexKey != newIndexKey) {
+          remove(oldIndexKey, pk);
+          add(newIndexKey, pk, change.newSnapshot!);
+        }
+      }
+    }
+  }
+
   FutureOr<void> _onChange(
     Transaction transaction,
     List<RecordChange<PK, Model>> changes,
   ) async {
     await indexLock.synchronized(() {
+      if (throwOnConflict) {
+        _checkConflicts(changes);
+      }
       // Change in map
       for (var change in changes) {
         var pk = change.ref.key;
@@ -328,7 +387,12 @@ class _SembastDatabaseUniqueIndex<K, PK> implements DatabaseIndex<K, PK> {
   }) async {
     var record = await _storeRecord(key);
     if (record != null) {
-      return await record.put(databaseClient, value, merge: merge);
+      // Keep the index field (unless the value moves the record to another
+      // index key).
+      return await record.put(databaseClient, {
+        path: key,
+        ...value,
+      }, merge: merge);
     }
     // New index key, create the record.
     var indexedValue = _indexedValue(key, value);

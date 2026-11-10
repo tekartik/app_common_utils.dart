@@ -42,18 +42,28 @@ unique field. It is an experimentation shipped as a single file - read
 * `throwOnConflict: true` makes the index throw a `StateError` when two records
   end up with the same index key - either while filling the index at creation
   (surfaced by the first index operation you await) or on the write that
-  creates the duplicate. Without it the last writer wins silently and reads
-  must be done in a transaction to be safe.
+  creates the duplicate (sembast rolls that write back and the index stays as
+  it was, since 2026-11-10). Without it the last writer wins silently: check
+  then write in one transaction to avoid duplicates.
+* The map is in memory and updated after each write, inside the transaction:
+  when a transaction fails after writing indexed records (an exception in
+  your block, or a conflict refused in `addAll` after earlier records), the
+  store is rolled back but the map is not. Call `dispose()` and `db.index(...)`
+  again after such a failure.
 * Lookup: `await dbCodeIndex.record('BOOK001').getSnapshot()` returns a
   `RecordSnapshot<PK, Model>?` (null when the key is unknown) - use
   `snapshot.key` for the primary key and `snapshot.value` / `snapshot['field']`
   for the data. `exists()` returns a bool. Inside a transaction use
   `dbCodeIndex.transactionRecord(txn, key)` so the read joins the transaction.
 * `DatabaseClientIndexRecord` also has `add(value)`, `put(value, merge: true)`,
-  `update(value)` and `delete()`, but they all act on the record the index key
-  currently points to: on an unknown index key `add` and `update` return null
-  and `put` throws (nothing is created). Insert new records through the store
-  (`bookStore.add(db, {...})`) and let the listener index them.
+  `update(value)` and `delete()`, acting on the record the index key points
+  to. On an unknown index key, `add` and `put` create a record holding the
+  index field (`add` returns its primary key), `update` returns null and
+  `delete` does nothing. On a known one `add` returns null (nothing written)
+  and `put` keeps the index field unless the value sets it (since 2026-11-10:
+  a `put` without `merge` used to drop it, the record left the index); a
+  value with another index key moves the record. Inserting through the store
+  (`bookStore.add(db, {...})`) works too: the listener indexes the record.
 * `indexRef.key(snapshot)` / `dbIndex.key(snapshot)` extract the index key from
   a record snapshot (typed `K?`, null when the field is missing). Records
   without the indexed field are simply not in the index.
@@ -63,11 +73,11 @@ unique field. It is an experimentation shipped as a single file - read
   reopen: cost is one `store.find(db)` over the store.
 * One field, unique values, single store only. For multi-field, non unique or
   persisted indexes, keep the data denormalized in another store or use
-  `tekartik_app_cv_sdb` instead.
+  `tekartik_app_cv_sdb` instead (sdb has real indexes, the choice for new
+  code).
 * Anti-patterns: creating the index lazily on each lookup; creating it inside
-  `db.transaction`; using `record(key).put(...)` to insert a brand new record;
-  sharing a `DatabaseIndex` across two `Database` instances; forgetting
-  `dispose()` in a test that reopens the database.
+  `db.transaction`; sharing a `DatabaseIndex` across two `Database` instances;
+  forgetting `dispose()` in a test that reopens the database.
 
 ## Examples
 
@@ -158,7 +168,7 @@ Future<void> main() async {
   var db = await databaseFactoryMemory.openDatabase('books.db');
   var dbCodeIndex = db.index(codeIndex);
 
-  // Insert through the store, never through the index.
+  // Insert through the store (or dbCodeIndex.record('BOOK001').add(...)).
   await bookStore.add(db, {'code': 'BOOK001', 'title': 'A book'});
 
   // Partial update of the record found by code.
@@ -166,7 +176,7 @@ Future<void> main() async {
   await dbCodeIndex.record('BOOK001').put({'read': true}, merge: true);
   print((await dbCodeIndex.record('BOOK001').getSnapshot())!.value);
 
-  // Unknown key: update/add return null, they do not insert.
+  // Unknown key: update returns null, it does not insert.
   print(await dbCodeIndex.record('BOOK404').update({'title': 'x'})); // null
 
   // Changing the indexed field moves the index entry.

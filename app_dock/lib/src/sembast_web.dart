@@ -3,8 +3,7 @@ import 'package:sembast_web/sembast_web.dart' show databaseFactoryWeb;
 
 /// Sembast database factory (web).
 ///
-/// [packageName] is ignored, the sembast database being an indexed db
-/// database.
+/// The database is an IndexedDB database, [packageName] prefixes its name.
 DatabaseFactory dockGetSembastDatabaseFactory({String? packageName}) {
   if (packageName == null) {
     return databaseFactoryWeb;

@@ -27,7 +27,6 @@ subscription and inner bloc it created.
       git:
         url: https://github.com/tekartik/app_common_utils.dart
         path: app_rx_bloc
-      version: '>=0.1.0'
   ```
 * Pick one import, each one re-exports what its classes need:
   * `package:tekartik_app_rx_bloc/state_base_bloc.dart` - `StateBaseBloc` plus
@@ -38,8 +37,9 @@ subscription and inner bloc it created.
     (`AutoDispose`, `AutoDisposeMixin`, `AutoDisposable`,
     `AutoDisposeRxExtension`, rxdart).
   * `package:tekartik_app_rx_bloc/auto_dispose_state_base_bloc.dart` -
-    `AutoDisposeStateBaseBloc` plus both of the above. This is the usual
-    choice.
+    `AutoDisposeStateBaseBloc` plus `StateBaseBloc`, rxdart and the auto
+    dispose API (not `AutoDisposeBaseBloc`: import both files to use both
+    classes). This is the usual choice.
 * `StateBaseBloc<T>` owns a private `BehaviorSubject<T>`: publish with
   `add(state)` / `addError(error, [stackTrace])`, read through
   `ValueStream<T> get state`. There is no seeded value, so `state.hasValue` is
