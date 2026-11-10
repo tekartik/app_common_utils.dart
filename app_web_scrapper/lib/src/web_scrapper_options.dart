@@ -75,6 +75,9 @@ class WebScrapperOptions {
   /// Maps an url to the relative posix path of the file saved in the output
   /// directory, return null to not save it.
   ///
+  /// A path that is absolute or leaves the output directory (`../x`) fails
+  /// the entry (`ArgumentError`), nothing is written.
+  ///
   /// Defaults to [webScrapperDefaultLocalPath] (`<host>/<path>`). Html
   /// contents always get `.html` appended when their path does not end with
   /// `.html` or `.htm`.

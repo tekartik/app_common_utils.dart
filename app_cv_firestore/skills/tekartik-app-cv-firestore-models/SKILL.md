@@ -49,8 +49,9 @@ reading and writing them.
   value with `.v` (`doc.text.v = 'a'`), nullable by nature.
 * Register a builder once at startup (before any `cv<T>()` conversion), for
   every document type *and* sub model type:
-  `cvFirestoreAddBuilder<MyDoc>((_) => MyDoc());`. Without it, reads throw
-  because `cvBuildModel<T>` cannot construct the type. `cvAddConstructor(
+  `cvFirestoreAddBuilder<MyDoc>((_) => MyDoc());`. Without it, reads,
+  `clone()` and `fsClone()` throw (`Missing builder for 'MyDoc'`) because
+  `cvBuildModel<T>` cannot construct the type. `cvAddConstructor(
   MyDoc.new)` from `cv` works too.
 * Identity, provided by the base class: `path` (settable, full firestore path
   like `users/1/posts/2`), `id` (last path segment), `hasId` (false for a new
@@ -69,8 +70,9 @@ reading and writing them.
   `timestamp` `CvField<Timestamp>`, `timedMixinFields` (spread it in
   `fields`) and `toMapWithServerTimestamp()` to write with a server-side time.
 * Serialization outside firestore: `document.toInfoJson()` gives
-  `{'path': ..., 'data': ...}`, `toInfoJsonList()` does it for a
-  `List<CvFirestoreDocument>` or a `List<DocumentSnapshot>`, and
+  `{'path': ..., 'data': ...}`, `toInfoJsonList()` does it for a typed
+  list (`List<MyDoc>`; on a `List<CvFirestoreDocument>` two extensions
+  match and it does not compile) or a `List<DocumentSnapshot>`, and
   `infoJsonToDocument<T>(json)` / `infoJsonListToDocumentList<T>(list)` read
   it back (export/import, http payloads, fixtures). `fsDataToJsonMap()` /
   `fsDataFromJsonMap(firestore, map)` handle the data part alone, keeping
@@ -142,6 +144,9 @@ class Note extends CvFirestoreDocumentBase {
 }
 
 void main() {
+  // fsClone() (as clone()) builds the copy through the builder.
+  cvFirestoreAddBuilder<Note>((_) => Note());
+
   var newNote = Note()..text.v = 'draft';
   print(newNote.hasId); // false
   print(newNote.idOrNull); // null

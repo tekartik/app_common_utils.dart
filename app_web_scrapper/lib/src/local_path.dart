@@ -9,8 +9,10 @@ import 'package:path/path.dart' as p;
 /// * A query is appended to the file name before its extension
 ///   (`css2?family=Roboto` gives `css2_family=Roboto`, `app.js?v=2` gives
 ///   `app_v=2.js`).
-/// * Characters invalid on common file systems (`<>:"\|?*`) are replaced by
-///   `_` and very long names are shortened with a hash suffix.
+/// * Characters invalid on common file systems (`<>:"\|?*`) and an encoded
+///   `/` (`%2F`) are replaced by `_`, `.` and `..` segments too: the path
+///   never leaves its `<host>` folder. Very long names are shortened with a
+///   hash suffix.
 ///
 /// Html contents whose path does not end with `.html` or `.htm` get `.html`
 /// appended when saved, see [webScrapperHtmlLocalPath].
@@ -48,7 +50,9 @@ String webScrapperHtmlLocalPath(String path) {
   return '$path.html';
 }
 
-final _invalidChars = RegExp(r'[<>:"\\|?*\x00-\x1f]');
+/// `/` included: the decoded path segments can hold one (`%2F`), which would
+/// create sub folders or `..` segments.
+final _invalidChars = RegExp(r'[<>:"/\\|?*\x00-\x1f]');
 
 String _sanitize(String segment) {
   if (segment.isEmpty || segment == '.' || segment == '..') {

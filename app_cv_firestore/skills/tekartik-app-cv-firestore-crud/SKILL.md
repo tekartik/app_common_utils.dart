@@ -66,9 +66,10 @@ objects (`firestore.cvGet<T>(path)`, `snapshot.cv<T>()`).
   the values.
 * Streams: `ref.onSnapshot(firestore)` / `collection.onSnapshots(firestore)`
   (and `docRef.cvOnSnapshot<T>()` / `query.cvOnSnapshots<T>()` on raw
-  objects) work even on a service without track-changes support, by polling.
-  Use the `*Support(firestore, options: TrackChangesPullOptions(...))`
-  variants to tune the polling.
+  objects) work even on a service without track-changes support, by polling
+  (every hour by default). Use the `*Support(firestore, options:
+  TrackChangesPullOptions(...))` variants to tune the polling. Errors (rules
+  denial...) are sent to the listener: handle `onError`.
 * Batch: `var batch = firestore.cvBatch();` then `cvSet(document)`,
   `cvUpdate(document)`, `refSet(ref, document)`, `refSetMap(ref, model)`,
   `refUpdate(ref, document)`, `refUpdateMap(ref, model)`, `refDelete(ref)`,

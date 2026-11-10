@@ -15,9 +15,10 @@ description: >-
 # Persistent preferences (tekartik_app_common_prefs)
 
 `tekartik_app_common_prefs` picks the right `tekartik_prefs` implementation for
-the current platform: sembast over sqflite/files on the Dart VM (io, desktop,
-mobile) and sembast over IndexedDB in the browser, behind the same
-`PrefsAsyncFactory` / `PrefsFactory` API.
+the current platform: a sembast_sqflite database file per prefs on io (Linux,
+macOS, Windows) and localStorage (`tekartik_prefs_browser`) in the browser,
+behind the same `PrefsAsyncFactory` / `PrefsFactory` API. For a Flutter app
+use `tekartik_app_prefs` (app_flutter_utils) instead.
 
 ## Guidelines
 
@@ -28,7 +29,6 @@ mobile) and sembast over IndexedDB in the browser, behind the same
       git:
         url: https://github.com/tekartik/app_common_utils.dart
         path: app_prefs
-      version: '>=0.1.0'
   ```
 * Prefer the async API: `import
   'package:tekartik_app_common_prefs/app_prefs_async.dart';` gives
@@ -42,13 +42,20 @@ mobile) and sembast over IndexedDB in the browser, behind the same
   `Prefs`, `PrefsFactory`). Its setters return `void` and write in the
   background: call `await prefs.save()` to flush, or `await prefs.close()`.
   New code should use the async API; the two can coexist in one file.
-* `packageName` only matters on desktop (Linux/Windows), where it selects a
-  shared per-application folder: `getPrefsAsyncFactory(packageName:
-  'com.example.myapp')`. Factories are cached per `packageName`, so call the
-  getter freely - it always returns the same instance. On the web the argument
-  is ignored.
+* On io, `packageName` selects the folder: `getPrefsAsyncFactory(packageName:
+  'com.example.myapp')` stores `<userAppDataPath>/<packageName>/databases/
+  <name>` (`~/.config`, `%APPDATA%`); without it (`prefsAsyncFactory`,
+  `getPrefsAsyncFactory()`) the prefs go to
+  `.dart_tool/sqflite_common_ffi/databases/<name>` of the current directory
+  (fine for tests and project tools, not for an installed program). The
+  folder is shared with the `tekartik_app_sembast` / `tekartik_app_sqflite`
+  databases of the same package name: use distinct names. Factories are
+  cached per `packageName`, so call the getter freely - it always returns the
+  same instance, and opening the same name again gives the same prefs. On the
+  web the argument is ignored.
 * Open with `await factory.openPreferences('name')`. The name behaves like a
-  path below the factory root, so `'sub/my_prefs'` is valid. Keep the returned
+  path below the factory root, so `'sub/my_prefs'` is valid (on the web a
+  prefs `sub` would then see and clear the keys of `sub/my_prefs`). Keep the returned
   object around (it is a cache-backed object, not a file handle) and
   `await prefs.close()` when done; `factory.deletePreferences(name)` removes it.
 * Schema migration: `openPreferences(name, version: 2, onVersionChanged:

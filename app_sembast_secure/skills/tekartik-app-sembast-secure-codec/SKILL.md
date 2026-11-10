@@ -27,7 +27,6 @@ password, plus a `DatabaseFactory` wrapper so the codec can never be forgotten.
       git:
         url: https://github.com/tekartik/app_common_utils.dart
         path: app_sembast_secure
-      version: '>=0.1.0'
   ```
 * One import gives the whole public API:
   `package:tekartik_app_sembast_secure/sembast_secure.dart` exports
@@ -39,27 +38,30 @@ password, plus a `DatabaseFactory` wrapper so the codec can never be forgotten.
 * Two equivalent ways to use it:
   * explicit codec: `var codec = getEncryptSembastCodec(password: userPassword);
     var db = await factory.openDatabase(path, codec: codec);` - use it when the
-    same factory also opens plain databases, or when a version/
-    `onVersionChanged` callback is needed.
+    same factory also opens plain databases.
   * wrapped factory:
     `EncryptedDatabaseFactory(databaseFactory: getDatabaseFactory(), password:
     userPassword)` - it implements `DatabaseFactory` and forwards
-    `openDatabase`, `deleteDatabase`, `databaseExists` and `hasStorage`, always
+    `openDatabase` (with `version`/`onVersionChanged`/`mode`),
+    `deleteDatabase`, `databaseExists`, `hasStorage` and `pathContext`, always
     injecting its own `codec`. Prefer it when *every* database of the app is
     encrypted, so no call site can forget the codec.
 * `EncryptedDatabaseFactory.openDatabase` asserts that the caller passes no
   `codec` (it is set internally); pass `version:`/`onVersionChanged:`/`mode:`
   normally. Its `codec` field is public (a `SembastCodec` with signature
   `'encrypt'`), which is handy in tests to decode the raw file lines.
-* `EncryptedDatabaseFactory.pathContext` throws `UnimplementedError`. Do not
-  use it, and do not pass an `EncryptedDatabaseFactory` to code that joins
-  paths through the factory (some sembast helpers do): build the absolute file
-  path yourself with `package:path` before calling `openDatabase`.
+* `EncryptedDatabaseFactory.pathContext` is the one of the wrapped factory,
+  so `factory.sandbox(path: 'user1')` works (it threw `UnimplementedError`
+  before 2026-11-10).
 * The password is never stored; the key is `md5(utf8(password))` (16 bytes,
-  the Salsa20 key size). A wrong password makes decoding fail (garbage JSON /
-  a `FormatException`) rather than returning empty data - catch it and treat it
-  as "wrong password". There is no way to change the password in place: export
-  the records, delete the database and re-import with a new factory/codec.
+  the Salsa20 key size). sembast checks the codec signature stored in the
+  database at open: a wrong password (or opening an encrypted database
+  without the codec) throws a `DatabaseException` with
+  `code == DatabaseException.errInvalidCodec` (checked on sembast io, the
+  memory file system and sembast_sqflite). The plain in memory factory
+  (`newDatabaseFactoryMemory()`) has no storage and checks nothing. There is
+  no way to change the password in place: export the records, delete the
+  database and re-import with a new factory/codec.
 * Security caveat, repeated from the source: this is a demonstration-grade
   implementation. The encryption is unauthenticated (no MAC), the password to
   key derivation is a bare md5 instead of a real KDF (pbkdf2, scrypt,
@@ -76,12 +78,12 @@ password, plus a `DatabaseFactory` wrapper so the codec can never be forgotten.
 * Testing: run against an in-memory factory (`databaseFactoryMemory` from
   `package:tekartik_app_sembast/sembast.dart`, or sembast's own
   `databaseFactoryMemoryFs`) - the memory *fs* factory keeps real file
-  content, so the test can read the lines back and check they are not plain
-  text.
+  content and checks the codec signature like a real file.
 * Anti-patterns: opening the same database sometimes with and sometimes
   without the codec (the file becomes unreadable); passing `codec:` to
   `EncryptedDatabaseFactory.openDatabase`; hard-coding the password in the
-  source; assuming a wrong password throws a dedicated exception.
+  source; catching every error as "wrong password" (check
+  `DatabaseException.errInvalidCodec`).
 
 ## Examples
 
@@ -99,7 +101,8 @@ Future<void> main() async {
     databaseFactory: getDatabaseFactory(),
     password: 'user_password',
   );
-  // pathContext is not implemented: build the path yourself.
+  // An absolute path (the factory without packageName would use
+  // .dart_tool/sqflite_common_ffi/databases).
   var path = normalize(absolute(join('.dart_tool', 'example', 'secure.db')));
   await Directory(dirname(path)).create(recursive: true);
 
@@ -140,9 +143,6 @@ Future<Database> openSecureDatabase(String path, String password) async {
 ### Test: the content on disk is not readable in plain text
 
 ```dart
-import 'dart:convert';
-
-import 'package:sembast/sembast.dart';
 import 'package:sembast/sembast_memory.dart';
 import 'package:tekartik_app_sembast_secure/sembast_secure.dart';
 import 'package:test/test.dart';
@@ -162,14 +162,29 @@ void main() {
     db = await factory.openDatabase('test.db');
     expect(await store.record(1).get(db), 'clear_text');
 
-    // The factory codec decodes a raw line of the file.
+    // The factory codec decodes a raw line of the file; the encoded line
+    // does not hold the clear text.
     var codec = factory.codec.codec!;
-    expect(codec.decode(codec.encode({'key': 1, 'value': 'clear_text'})), {
-      'key': 1,
-      'value': 'clear_text',
-    });
-    expect(json.encode({'key': 1}).contains('clear_text'), isFalse);
+    var encoded = codec.encode({'key': 1, 'value': 'clear_text'});
+    expect(encoded.contains('clear_text'), isFalse);
+    expect(codec.decode(encoded), {'key': 1, 'value': 'clear_text'});
     await db.close();
+
+    // A wrong password is refused.
+    var wrong = EncryptedDatabaseFactory(
+      databaseFactory: databaseFactoryMemoryFs,
+      password: 'wrong',
+    );
+    await expectLater(
+      wrong.openDatabase('test.db'),
+      throwsA(
+        isA<DatabaseException>().having(
+          (e) => e.code,
+          'code',
+          DatabaseException.errInvalidCodec,
+        ),
+      ),
+    );
   });
 }
 ```
@@ -180,7 +195,7 @@ void main() {
 import 'package:sembast/sembast_memory.dart';
 import 'package:tekartik_app_sembast_secure/sembast_secure.dart';
 
-/// Returns null when the password does not decode the database.
+/// Returns false when the password does not open the database.
 Future<bool> checkPassword(String path, String password) async {
   var factory = EncryptedDatabaseFactory(
     databaseFactory: databaseFactoryMemoryFs,
@@ -190,9 +205,12 @@ Future<bool> checkPassword(String path, String password) async {
     var db = await factory.openDatabase(path);
     await db.close();
     return true;
-  } catch (_) {
-    // Decoding garbage: FormatException, TypeError... treat all as a failure.
-    return false;
+  } on DatabaseException catch (e) {
+    // The codec signature stored in the database does not decode.
+    if (e.code == DatabaseException.errInvalidCodec) {
+      return false;
+    }
+    rethrow;
   }
 }
 ```

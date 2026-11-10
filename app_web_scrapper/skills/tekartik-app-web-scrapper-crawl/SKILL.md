@@ -17,7 +17,9 @@ description: >-
 `WebScrapper` downloads start urls and follows their links (html, css,
 javascript imports, optionally javascript/json strings), saving each file to a
 fs_shim `Directory` as `<host>/<path>`. Pure Dart (fs_shim + tekartik_app_http
-+ tekartik_html), the command line part is io only.
++ tekartik_html): the api runs on the VM, Flutter and the web (dart2js and
+dart2wasm tested; requests subject to CORS there), the command line part is
+io only.
 
 ## Guidelines
 
@@ -28,7 +30,6 @@ fs_shim `Directory` as `<host>/<path>`. Pure Dart (fs_shim + tekartik_app_http
       git:
         url: https://github.com/tekartik/app_common_utils.dart
         path: app_web_scrapper
-      version: '>=0.1.0'
   ```
 * Imports: `package:tekartik_app_web_scrapper/app_web_scrapper.dart` (api) and
   `package:tekartik_app_web_scrapper/app_web_scrapper_cli.dart` (command line,
@@ -65,8 +66,11 @@ fs_shim `Directory` as `<host>/<path>`. Pure Dart (fs_shim + tekartik_app_http
 * Layout (`webScrapperDefaultLocalPath`): `<host>[_<port>]/<path>`, `/` gives
   `index.html`, html without `.html`/`.htm` gets `.html` appended
   (`webScrapperHtmlLocalPath`), queries go before the extension
-  (`app.js?v=2` gives `app_v=2.js`). `localPath: (uri) => ...` overrides it
-  (relative posix path, null to not save).
+  (`app.js?v=2` gives `app_v=2.js`); an encoded `/` (`%2F`) and `.`/`..`
+  segments become `_`, a file never lands outside `<out>/<host>`.
+  `localPath: (uri) => ...` overrides it (relative posix path, null to not
+  save); an absolute path or one leaving the output directory fails the
+  entry (`ArgumentError`).
 * Cache: an existing file is read back instead of downloaded (entry status
   `cached`, `content.fromCache`), its links are still followed; `force: true`
   downloads again. Non text contents are streamed to disk.

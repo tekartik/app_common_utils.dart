@@ -47,12 +47,17 @@ documents (see the `-models` and `-crud` sibling skills).
   `DocumentSnapshot`. Page by re-running the query with
   `startAfter(values: [lastDocument.field.v])`, or keep `orderById()` and
   page on the id.
-* Execution, all taking the `Firestore`: `get(firestore)` returns
-  `List<T>`, `count(firestore)` returns the match count without reading the
-  documents, `onSnapshots(firestore)` is a `Stream<List<T>>` that works even
-  on services without track-changes support (polling), and
-  `onSnapshotsSupport(firestore, options: TrackChangesPullOptions(...))` tunes
-  it. `onSnapshot` (singular) on a query is deprecated: use `onSnapshots`.
+* Execution, all taking the `Firestore`: `get(firestore)` returns a read
+  only `List<T>` (documents converted on access: `toList()` before `sort`),
+  `count(firestore)` returns the match count (an aggregate query on
+  Firestore, the local backends read the documents),
+  `onSnapshots(firestore)` is a `Stream<List<T>>` that works even on
+  services without track-changes support (polling, every hour by default),
+  and `onSnapshotsSupport(firestore, options: TrackChangesPullOptions(...))`
+  tunes it (`refreshDelay`, or `.first()` for one snapshot then done). The
+  query errors (rules denial, missing index, a cursor document read) reach
+  the stream listener (uncaught, stream never ending before 2026-11-10).
+  `onSnapshot` (singular) on a query is deprecated: use `onSnapshots`.
 * Bulk delete: `await query.delete(firestore, limit: 100, batchSize: 50,
   keepIds: ['keep-me'])` (extension `CvFirestoreQueryReferenceUtilsExt`)
   deletes the matching documents in batches and returns how many were
@@ -140,7 +145,8 @@ Future<void> demo(Firestore firestore) async {
   cvFirestoreAddBuilder<Device>((_) => Device());
   var onlineQuery = devices.query().where('online', isEqualTo: true);
 
-  print(await onlineQuery.count(firestore)); // no document read
+  // An aggregate query on Firestore (no document read).
+  print(await onlineQuery.count(firestore));
 
   // Only the name field is fetched.
   var names = await onlineQuery.select(['name']).get(firestore);

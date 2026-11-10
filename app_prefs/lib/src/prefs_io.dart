@@ -2,10 +2,12 @@ import 'package:tekartik_app_sembast/sembast.dart';
 import 'package:tekartik_prefs_sembast/prefs.dart';
 import 'package:tekartik_prefs_sembast/prefs_async.dart';
 
-/// Default for io use a local folder
+/// No package name: `.dart_tool/sqflite_common_ffi/databases` of the current
+/// directory.
 PrefsFactory get prefsFactory => getPrefsFactory();
 
-/// Default for io use a local folder
+/// No package name: `.dart_tool/sqflite_common_ffi/databases` of the current
+/// directory.
 PrefsAsyncFactory get prefsAsyncFactory => getPrefsAsyncFactory();
 
 final _prefsFactoryMap = <String, PrefsFactory>{};
@@ -29,7 +31,8 @@ PrefsAsyncFactory newPrefsAsyncFactorySembast({String? packageName}) {
   );
 }
 
-/// Use sembast on linux and windows
+/// sembast_sqflite prefs files, in `<userAppDataPath>/<packageName>/databases`
+/// with a package name, cached per package name.
 PrefsFactory getPrefsFactory({String? packageName}) {
   var prefsFactory = _prefsFactoryMap[packageName];
   if (prefsFactory == null) {
@@ -44,7 +47,8 @@ PrefsFactory getPrefsFactory({String? packageName}) {
   return prefsFactory;
 }
 
-/// Use sembast on linux and windows
+/// sembast_sqflite prefs files, in `<userAppDataPath>/<packageName>/databases`
+/// with a package name, cached per package name.
 PrefsAsyncFactory getPrefsAsyncFactory({String? packageName}) {
   var prefsFactory = _prefsAsyncFactoryMap[packageName];
   if (prefsFactory == null) {

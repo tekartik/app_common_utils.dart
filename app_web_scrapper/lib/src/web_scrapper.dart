@@ -452,10 +452,26 @@ class _WebScrapperRun {
   String? _localPath(Uri uri) =>
       (options.localPath ?? webScrapperDefaultLocalPath)(uri);
 
+  /// The file of [localPath] in the output directory.
+  ///
+  /// Throws an [ArgumentError] (the entry fails) when [localPath] (i.e. from
+  /// a custom [WebScrapperOptions.localPath]) is absolute or leaves the
+  /// output directory.
   File _file(String localPath) {
     final directory = scrapper.outDirectory!;
+    final normalized = p.url.normalize(localPath);
+    if (p.url.isAbsolute(normalized) ||
+        normalized == '.' ||
+        normalized == '..' ||
+        normalized.startsWith('../')) {
+      throw ArgumentError.value(
+        localPath,
+        'localPath',
+        'not a relative path inside the output directory',
+      );
+    }
     return directory.fs.file(
-      directory.fs.path.joinAll([directory.path, ...p.url.split(localPath)]),
+      directory.fs.path.joinAll([directory.path, ...p.url.split(normalized)]),
     );
   }
 
@@ -526,11 +542,7 @@ class _WebScrapperRun {
       _seen.add(_urlKey(uri));
     }
     if (!isHttpStatusCodeSuccessful(response.statusCode)) {
-      try {
-        await response.stream.drain<void>();
-      } catch (_) {
-        // ignore
-      }
+      await _discardBody(response);
       return WebScrapperEntry._(
         uri: item.uri,
         finalUri: uri,
@@ -550,7 +562,16 @@ class _WebScrapperRun {
     if (localPath != null && format == WebScrapperContentFormat.html) {
       localPath = webScrapperHtmlLocalPath(localPath);
     }
-    final file = localPath == null ? null : _file(localPath);
+    File? file;
+    if (localPath != null) {
+      try {
+        file = _file(localPath);
+      } catch (e, st) {
+        await _discardBody(response);
+        // Not rethrow: dart2wasm sdk#64892.
+        Error.throwWithStackTrace(e, st);
+      }
+    }
     Uint8List? bytes;
     int size;
     if (format.isText || file == null) {
@@ -697,6 +718,15 @@ class _WebScrapperRun {
         ),
       );
     }
+  }
+}
+
+/// Reads and drops the body of [response], ignoring its errors.
+Future<void> _discardBody(http.StreamedResponse response) async {
+  try {
+    await response.stream.drain<void>();
+  } catch (_) {
+    // ignore
   }
 }
 

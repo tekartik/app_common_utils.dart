@@ -40,6 +40,8 @@ class CvQueryReference<T extends CvFirestoreDocument> {
   /// Runtime type of result.
   Type get type => T;
 
+  /// Runs the query, returns a read only list of typed documents (converted
+  /// on access, copy it with `toList()` to sort it).
   Future<List<T>> get(Firestore firestore) async {
     var query = await applyQueryInfo(
       firestore,
@@ -49,6 +51,8 @@ class CvQueryReference<T extends CvFirestoreDocument> {
     return query.cvGet<T>();
   }
 
+  /// Number of matching documents (an aggregate query on Firestore, the
+  /// local backends read the documents).
   Future<int> count(Firestore firestore) async {
     var query = await applyQueryInfo(
       firestore,
@@ -69,39 +73,20 @@ class CvQueryReference<T extends CvFirestoreDocument> {
       onSnapshotsSupport(firestore);
 
   /// Query snapshots, polling if the service does not support track changes.
+  ///
+  /// The query errors (and the read of a cursor document) are sent to the
+  /// stream, which closes when the query stream does (i.e. after the first
+  /// snapshot with `TrackChangesSupportOptions.first()`).
   Stream<List<T>> onSnapshotsSupport(
     Firestore firestore, {
     TrackChangesPullOptions? options,
-  }) {
-    final lock = Lock();
-    StreamSubscription? streamSubscription;
-    var done = false;
-    late StreamController<List<T>> ctlr;
-    ctlr = StreamController<List<T>>(
-      onListen: () {
-        lock.synchronized(() async {
-          var query = await applyQueryInfo(
-            firestore,
-            collectionReference.path,
-            _queryInfo,
-          );
-          streamSubscription = query
-              .cvOnSnapshotsSupport<T>(options: options)
-              .listen((event) {
-                if (!done) {
-                  ctlr.add(event);
-                }
-              });
-        });
-      },
-      onCancel: () {
-        done = true;
-        lock.synchronized(() {
-          streamSubscription?.cancel();
-        });
-      },
+  }) async* {
+    var query = await applyQueryInfo(
+      firestore,
+      collectionReference.path,
+      _queryInfo,
     );
-    return ctlr.stream;
+    yield* query.cvOnSnapshotsSupport<T>(options: options);
   }
 
   CvQueryReference<T> limit(int limit) =>

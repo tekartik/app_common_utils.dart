@@ -160,11 +160,20 @@ SembastCodec getEncryptSembastCodec({required String password}) => SembastCodec(
   codec: _EncryptCodec(_generateEncryptPassword(password)),
 );
 
-/// Wrap a factory to always use the codec
+/// Wraps [databaseFactory] so that every database is opened with the codec
+/// of [getEncryptSembastCodec] for a password (demonstration grade, see
+/// there).
+///
+/// A wrong password fails `openDatabase` with a [DatabaseException] whose
+/// code is [DatabaseException.errInvalidCodec].
 class EncryptedDatabaseFactory implements DatabaseFactory {
+  /// The wrapped factory.
   final DatabaseFactory databaseFactory;
+
+  /// The codec given to every `openDatabase` call.
   late final SembastCodec codec;
 
+  /// Wraps [databaseFactory], encrypting with a key derived from [password].
   EncryptedDatabaseFactory({
     required this.databaseFactory,
     required String password,
@@ -179,7 +188,8 @@ class EncryptedDatabaseFactory implements DatabaseFactory {
   @override
   bool get hasStorage => databaseFactory.hasStorage;
 
-  /// To use with codec, null
+  /// Opens [path] with the codec of this factory; the `codec` argument must
+  /// be null (asserted in debug, ignored in release).
   @override
   Future<Database> openDatabase(
     String path, {
@@ -203,7 +213,7 @@ class EncryptedDatabaseFactory implements DatabaseFactory {
     return databaseFactory.databaseExists(path);
   }
 
+  /// The path context of [databaseFactory] (used by `sandbox()`).
   @override
-  // TODO: implement pathContext
-  p.Context get pathContext => throw UnimplementedError();
+  p.Context get pathContext => databaseFactory.pathContext;
 }

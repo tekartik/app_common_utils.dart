@@ -27,7 +27,6 @@ factory, no `openPreferences` and no `close`.
       git:
         url: https://github.com/tekartik/app_common_utils.dart
         path: app_prefs
-      version: '>=0.1.0'
   ```
 * `import 'package:tekartik_app_common_prefs/app_prefs_light.dart';` gives
   `prefsLight` plus the `tekartik_prefs` light API: `PrefsLight`,
@@ -35,13 +34,15 @@ factory, no `openPreferences` and no `close`.
   `KvStoreWrite`, `KvStoreExt` and the `KvStoreGetStringFunction` /
   `KvStoreSetStringFunction` / `KvStoreRemoveFunction` typedefs.
 * `prefsLight` is a top-level mutable variable of type `PrefsLight`. Use it
-  directly: `await prefsLight.setInt('value', 1)`. Reads return null when the
-  key is missing **or** when the stored value has another type (the light
-  implementation swallows conversion errors instead of throwing).
+  directly: `await prefsLight.setInt('value', 1)`. Reads convert the stored
+  value when they can (after `setInt('value', 1)`, `getString('value')` is
+  `'1'` and `getBool('value')` is `true`) and return null when the key is
+  missing **or** the value cannot be converted (no exception).
 * Storage location is fixed: `.local/prefs_light` relative to the current
   directory on io (so it depends on where the process is started), and the
-  `prefs_light` database in IndexedDB on the web. When you need a chosen
-  location, a name or a version, use the full API instead - see
+  `prefs_light/prefs.db` sembast_web (IndexedDB) database on the web. When
+  you need a chosen location, a name or a version, use the full API
+  instead - see
   [tekartik-app-common-prefs-setup](../tekartik-app-common-prefs-setup/SKILL.md).
 * Values are `String`, `int`, `bool` and `double`. `PrefsLightExt` adds
   `setIntOrNull`, `setBoolOrNull`, `setDoubleOrNull`, `setMap`, `setMapOrNull`,
@@ -63,7 +64,8 @@ factory, no `openPreferences` and no `close`.
   backend.
 * Anti-patterns: using `prefsLight` for large or structured data (use sembast);
   calling `setX` without awaiting in a `main()` that exits immediately;
-  assuming a missing value and a wrong-typed value can be told apart;
+  reading a key with another type than it was written with (converted
+  silently, or null);
   hard-coding `prefsLight` deep in the code instead of injecting a
   `PrefsLight`.
 

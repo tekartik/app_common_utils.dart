@@ -23,14 +23,22 @@ not found (add start urls or links from `onContent`). Links are not rewritten.
 
 ## Setup
 
+Not on pub.dev, add it as a git dependency (Dart SDK `^3.12.0`):
+
 ```yaml
 dependencies:
   tekartik_app_web_scrapper:
     git:
       url: https://github.com/tekartik/app_common_utils.dart
       path: app_web_scrapper
-    version: '>=0.1.0'
 ```
+
+## Platforms
+
+| Library | Platforms |
+|---|---|
+| `app_web_scrapper.dart` (`WebScrapper`) | Dart VM, Flutter, web (dart2js, dart2wasm): the requests are then subject to CORS, save to an fs_shim web file system or pass no `outDirectory` |
+| `app_web_scrapper_cli.dart` (`webScrapperMain`, `WebScrapperCli`) | io only (`dart:io` for the exit code, stdout, stderr) |
 
 ## Command line
 
@@ -97,6 +105,8 @@ Future<void> main() async {
 }
 ```
 
+A complete program: [example/web_scrapper_example.dart](example/web_scrapper_example.dart).
+
 `WebScrapperCli` embeds the command line with an injected file system, http
 client factory, content handler and output (see `test/cli_test.dart`).
 
@@ -110,7 +120,10 @@ client factory, content handler and output (see `test/cli_test.dart`).
 - Layout: `<host>[_<port>]/<path>`, `/` gives `index.html`, html without an
   `.html`/`.htm` extension gets `.html` appended (`/about` gives
   `about.html`), a query is inserted before the extension (`app.js?v=2` gives
-  `app_v=2.js`). Override with `localPath`, return null to not save.
+  `app_v=2.js`). Characters invalid in a file name, an encoded `/` (`%2F`)
+  and `.`/`..` segments become `_`: a file never lands outside `<dir>/<host>`.
+  Override with `localPath` (a relative posix path, null to not save); a path
+  that is absolute or leaves the output directory fails the entry.
 - Cache: a file already present is not downloaded again but read back to
   follow its links, so an interrupted scrap resumes quickly; `force` to
   download again.
@@ -118,3 +131,20 @@ client factory, content handler and output (see `test/cli_test.dart`).
   failed entries, never thrown.
 - `stop()` stops a run: no new request, `run()` completes once the requests
   in progress are done with `WebScrapperResult.stopped` set.
+
+## Common pitfalls
+
+- A resource without extension (`/data`, served as json) and a file below
+  the same path (`/data/list.json`) cannot both be saved (a file and a
+  directory of the same name): the second one is a failed entry. Html pages
+  get `.html` appended so they never clash.
+- `stop()` does not cancel the requests in progress, including one waiting
+  for its `delay`.
+- `scanStrings` follows any string that looks like a file path: expect some
+  404 entries.
+- Before 2026-11-10 a link holding an encoded `/` (`..%2F..%2Fx`) was saved
+  outside the output directory: scrap untrusted sites with today's code.
+
+## Agent skill
+
+[skills/tekartik-app-web-scrapper-crawl](skills/tekartik-app-web-scrapper-crawl/SKILL.md).
