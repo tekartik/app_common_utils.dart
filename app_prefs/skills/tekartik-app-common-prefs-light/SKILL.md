@@ -5,10 +5,11 @@ description: >-
   prefs database, with tekartik_app_common_prefs: the global prefsLight
   (PrefsLight) from package:tekartik_app_common_prefs/app_prefs_light.dart,
   its getString/getInt/getBool/getDouble/setString/setInt/setBool/setDouble/
-  remove API, the PrefsLightExt helpers (setIntOrNull, setBoolOrNull,
-  setDoubleOrNull, getMap, setMap, getList, setList, setMapOrNull), the
-  KvStore / KvStoreRead / KvStoreWrite interfaces, PrefsMemory for tests and
-  PrefsLightAsync to wrap an existing PrefsAsync.
+  remove API, the PrefsLightExt helpers (kvStore, setStringOrNull,
+  setIntOrNull, setBoolOrNull, setDoubleOrNull, getMap, setMap, getList,
+  setList, setMapOrNull), the KvStore / KvStoreRead / KvStoreWrite interfaces
+  (prefsLight.kvStore), PrefsMemory for tests and PrefsLightAsync to wrap an
+  existing PrefsAsync.
 ---
 
 # Lightweight key/value prefs (tekartik_app_common_prefs)
@@ -32,7 +33,7 @@ factory, no `openPreferences` and no `close`.
   `prefsLight` plus the `tekartik_prefs` light API: `PrefsLight`,
   `PrefsLightExt`, `PrefsLightAsync`, `PrefsMemory`, `KvStore`, `KvStoreRead`,
   `KvStoreWrite`, `KvStoreExt` and the `KvStoreGetStringFunction` /
-  `KvStoreSetStringFunction` / `KvStoreRemoveFunction` typedefs.
+  `KvStoreSetStringFunction` typedefs.
 * `prefsLight` is a top-level mutable variable of type `PrefsLight`. Use it
   directly: `await prefsLight.setInt('value', 1)`. Reads convert the stored
   value when they can (after `setInt('value', 1)`, `getString('value')` is
@@ -45,9 +46,9 @@ factory, no `openPreferences` and no `close`.
   instead - see
   [tekartik-app-common-prefs-setup](../tekartik-app-common-prefs-setup/SKILL.md).
 * Values are `String`, `int`, `bool` and `double`. `PrefsLightExt` adds
-  `setIntOrNull`, `setBoolOrNull`, `setDoubleOrNull`, `setMap`, `setMapOrNull`,
-  `getMap`, `setList`, `setListOrNull` and `getList` (json encoded through the
-  string value). `KvStoreExt` adds `setStringOrNull`.
+  `setStringOrNull`, `setIntOrNull`, `setBoolOrNull`, `setDoubleOrNull`,
+  `setMap`, `setMapOrNull`, `getMap`, `setList`, `setListOrNull` and `getList`
+  (json encoded through the string value).
 * There is no `clear()`, no key listing and no `close()`: remove keys one by
   one with `remove(key)`. Writes are persisted as they complete, awaiting a
   `setX` is enough.
@@ -59,9 +60,10 @@ factory, no `openPreferences` and no `close`.
   or `PrefsLightAsync.lazy(initDelegate: () async => ...)` which opens on first
   use.
 * Depend on `KvStore` (or `KvStoreRead`) in code that only reads/writes
-  strings - `PrefsLight` implements it, and `KvStore(getString: ...,
-  setString: ..., remove: ...)` builds one from three functions for any other
-  backend.
+  strings: 2 methods, `getString` and `setString`, where a null value removes
+  the key. A `PrefsLight` is not a `KvStore` but gives one
+  (`prefsLight.kvStore`), and `KvStore(getString: ..., setString: ...)` builds
+  one from two functions for any other backend.
 * Anti-patterns: using `prefsLight` for large or structured data (use sembast);
   calling `setX` without awaiting in a `main()` that exits immediately;
   reading a key with another type than it was written with (converted
@@ -151,25 +153,31 @@ Future<void> main() async {
 ```dart
 import 'package:tekartik_app_common_prefs/app_prefs_light.dart';
 
-/// Anything that can read/write/remove a string can be a KvStore.
+/// Anything that can read a string and write or remove it (a null value
+/// removes the key) can be a KvStore.
 KvStore memoryKvStore() {
   var map = <String, String>{};
   return KvStore(
     getString: (key) async => map[key],
-    setString: (key, value) async => map[key] = value,
-    remove: (key) async => map.remove(key),
+    setString: (key, value) async {
+      if (value == null) {
+        map.remove(key);
+      } else {
+        map[key] = value;
+      }
+    },
   );
 }
 
 Future<void> useStore(KvStore store) async {
   await store.setString('key', 'value');
-  await store.setStringOrNull('other', null); // removes
+  await store.setString('other', null); // removes, as store.remove('other')
   print(await store.getString('key'));
 }
 
 Future<void> main() async {
   await useStore(memoryKvStore());
-  // prefsLight is a KvStore too.
-  await useStore(prefsLight);
+  // prefsLight as a KvStore.
+  await useStore(prefsLight.kvStore);
 }
 ```
